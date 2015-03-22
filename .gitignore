@@ -1,0 +1,14 @@
+syntax: glob
+
+lib_managed
+project/boot
+target
+.idea/ant.xml
+.DS_Store
+*~
+.idea
+.idea_modules
+.lib
+.ivy
+.boot
+

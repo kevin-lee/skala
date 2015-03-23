@@ -13,7 +13,10 @@ object Math {
   def abs(x: BigDecimal): BigDecimal = if (x < 0) -x else x
   def absBigInt(x: BigInt): BigInt = if (x < 0) -x else x
 
-  private def isGoodEnough(guess: BigDecimal, x: BigDecimal): Boolean = abs(guess * guess - x) / x < 1e-30
+  def isOdd(number: Int):Boolean = (number & 1) != 0
+  def isEven(number: Int):Boolean = !isOdd(number)
+
+  private def isGoodEnough(guess: BigDecimal, x: BigDecimal): Boolean = abs(guess * guess - x) / x < 1E-30
   private def improve(guess: BigDecimal, x: BigDecimal): BigDecimal = (guess + x / guess) / 2
 
   @tailrec
@@ -47,7 +50,7 @@ object Math {
 
   def calcBigIntMedian(sortedNumbers: Seq[BigInt], length: Int):BigDecimal = length match {
     case 0 => 0
-    case theLength if (theLength & 1) != 1 =>
+    case theLength if isEven(theLength) =>
       val half = theLength / 2
       BigDecimal(sortedNumbers(half - 1) + sortedNumbers(half)) / 2
     case theLength => BigDecimal(sortedNumbers(theLength / 2))

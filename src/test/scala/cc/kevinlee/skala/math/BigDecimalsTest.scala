@@ -83,6 +83,13 @@ class BigDecimalsTest extends WordSpec {
         assert(thrown.getMessage contains "sqrt can handle only non-negative numbers")
       }
     }
+    "sqrt(BigDecimal(0))" should {
+      "return BigDecimal(0)" in {
+        val number: BigDecimal = 0
+        val expected: BigDecimal = 0
+        assert(BigDecimals.sqrt(number) === expected)
+      }
+    }
     "sqrt(BigDecimal(1))" should {
       "return BigDecimal(1)" in {
         val number: BigDecimal = 1
@@ -124,28 +131,35 @@ class BigDecimalsTest extends WordSpec {
     "findSqrt(BigDecimal(1))" should {
       "return Some(BigDecimal(1))" in {
         val number: BigDecimal = 1
-        val expected = Option(1)
+        val expected = Option[BigDecimal](1)
+        assert(BigDecimals.findSqrt(number) === expected)
+      }
+    }
+    "findSqrt(BigDecimal(0))" should {
+      "return Some(BigDecimal(0))" in {
+        val number: BigDecimal = 0
+        val expected = Option[BigDecimal](0)
         assert(BigDecimals.findSqrt(number) === expected)
       }
     }
     "findSqrt(BigDecimal(2))" should {
       "return Some(BigDecimal(1.414213562373095...))" in {
         val number: BigDecimal = 2
-        val expected = Option(BigDecimals.sqrt(number))
+        val expected = Option[BigDecimal](BigDecimals.sqrt(number))
         assert(BigDecimals.findSqrt(number) === expected)
       }
     }
     "findSqrt(BigDecimal(9))" should {
       "return Some(BigDecimal(3))" in {
         val number: BigDecimal = 9
-        val expected = Option(3)
+        val expected = Option[BigDecimal](3)
         assert(BigDecimals.findSqrt(number) === expected)
       }
     }
     "findSqrt(BigDecimal(10))" should {
       "return Some(BigDecimal(3.162277660168379...))" in {
         val number: BigDecimal = 10
-        val expected = Option(BigDecimals.sqrt(number))
+        val expected = Option[BigDecimal](BigDecimals.sqrt(number))
         assert(BigDecimals.findSqrt(number) === expected)
       }
     }

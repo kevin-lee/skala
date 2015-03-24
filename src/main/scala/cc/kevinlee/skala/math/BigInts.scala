@@ -9,10 +9,22 @@ import scala.collection.TraversableLike
 object BigInts {
   import collection.immutable.Seq
 
-  def abs(x: BigInt): BigInt = if (x < 0) -x else x
+  /**
+   * Returns the absolute value of a BigInt
+   * @param number the given BigInt the absolute value of which is to be determined.
+   * @return the absolute value of the given number
+   */
+  def abs(number: BigInt): BigInt = if (number < 0) -number else number
 
-  def sqrt(x: BigInt): BigDecimal = BigDecimals.sqrt(BigDecimal(x))
-  def findSqrt(x: BigInt): Option[BigDecimal] = BigDecimals.findSqrt(BigDecimal(x))
+  /**
+   * Returns the square root of a BigInt value.
+   * @param number the given BitInt number
+   * @return the positive square root of the given number.
+   * @throws IllegalArgumentException If the argument is less than zero.
+   */
+  def sqrt(number: BigInt): BigDecimal = BigDecimals.sqrt(BigDecimal(number))
+
+  def findSqrt(number: BigInt): Option[BigDecimal] = BigDecimals.findSqrt(BigDecimal(number))
 
 
   implicit class MathBigInt(number: BigInt) {

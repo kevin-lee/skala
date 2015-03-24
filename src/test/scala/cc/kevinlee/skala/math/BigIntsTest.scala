@@ -59,35 +59,40 @@ class BigIntsTest extends WordSpec {
       "return BigDecimal(1)" in {
         val number: BigInt = 1
         val expected: BigDecimal = 1
-        assert(BigInts.sqrt(number) === expected)
+        val actual = BigInts.sqrt(number)
+        assert(actual === expected)
       }
     }
     "sqrt(BigInt(0))" should {
       "return BigDecimal(0)" in {
         val number: BigInt = 0
         val expected: BigDecimal = 0
-        assert(BigInts.sqrt(number) === expected)
+        val actual = BigInts.sqrt(number)
+        assert(actual === expected)
       }
     }
     "sqrt(BigInt(2))" should {
       "return BigDecimal(1.414213562373095...)" in {
         val number: BigInt = 2
         val expected = "1.414213562373095"
-        assert(BigInts.sqrt(number).toString startsWith expected)
+        val actual = BigInts.sqrt(number)
+        assert(actual.toString startsWith expected)
       }
     }
     "sqrt(BigInt(9))" should {
       "return BigDecimal(3)" in {
         val number: BigInt = 9
         val expected: BigDecimal = 3
-        assert(BigInts.sqrt(number) === expected)
+        val actual = BigInts.sqrt(number)
+        assert(actual === expected)
       }
     }
     "sqrt(BigInt(10))" should {
       "return BigDecimal(3.162277660168379...)" in {
         val number: BigInt = 10
         val expected = "3.162277660168379"
-        assert(BigInts.sqrt(number).toString startsWith expected)
+        val actual = BigInts.sqrt(number)
+        assert(actual.toString startsWith expected)
       }
     }
   }
@@ -104,35 +109,40 @@ class BigIntsTest extends WordSpec {
       "return BigDecimal(1)" in {
         val number: BigInt = 1
         val expected = Option[BigDecimal](1)
-        assert(BigInts.findSqrt(number) === expected)
+        val actual = BigInts.findSqrt(number)
+        assert(actual === expected)
       }
     }
     "findSqrt(BigInt(0))" should {
       "return BigDecimal(0)" in {
         val number: BigInt = 0
         val expected = Option[BigDecimal](0)
-        assert(BigInts.findSqrt(number) === expected)
+        val actual = BigInts.findSqrt(number)
+        assert(actual === expected)
       }
     }
     "findSqrt(BigInt(2))" should {
       "return BigDecimal(1.414213562373095...)" in {
         val number: BigInt = 2
         val expected = Option[BigDecimal](BigInts.sqrt(number))
-        assert(BigInts.findSqrt(number) === expected)
+        val actual = BigInts.findSqrt(number)
+        assert(actual === expected)
       }
     }
     "findSqrt(BigInt(9))" should {
       "return BigDecimal(3)" in {
         val number: BigInt = 9
         val expected = Option[BigDecimal](3)
-        assert(BigInts.findSqrt(number) === expected)
+        val actual = BigInts.findSqrt(number)
+        assert(actual === expected)
       }
     }
     "findSqrt(BigInt(10))" should {
       "return BigDecimal(3.162277660168379...)" in {
         val number: BigInt = 10
         val expected = Option[BigDecimal](BigInts.sqrt(number))
-        assert(BigInts.findSqrt(number) === expected)
+        val actual = BigInts.findSqrt(number)
+        assert(actual === expected)
       }
     }
   }

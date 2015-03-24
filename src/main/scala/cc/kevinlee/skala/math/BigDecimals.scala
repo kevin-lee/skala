@@ -10,22 +10,33 @@ import scala.collection.TraversableLike
 object BigDecimals {
   import collection.immutable.Seq
 
-  def abs(x: BigDecimal): BigDecimal = if (x < 0) -x else x
+  /**
+   * Returns the absolute value of a BigDecimal
+   * @param number the given BigDecimal the absolute value of which is to be determined.
+   * @return the absolute value of the given number
+   */
+  def abs(number: BigDecimal): BigDecimal = if (number < 0) -number else number
 
-  private def isGoodEnough(guess: BigDecimal, x: BigDecimal): Boolean = abs(guess * guess - x) / x < 1E-30
-  private def improve(guess: BigDecimal, x: BigDecimal): BigDecimal = (guess + x / guess) / 2
+  private def isGoodEnough(guess: BigDecimal, number: BigDecimal): Boolean = abs(guess * guess - number) / number < 1E-30
+  private def improve(guess: BigDecimal, number: BigDecimal): BigDecimal = (guess + number / guess) / 2
 
-  private[math] def sqrt(guess: BigDecimal, x: BigDecimal): BigDecimal = {
+  private[math] def sqrt(guess: BigDecimal, number: BigDecimal): BigDecimal = {
     @tailrec
-    def sqrtIter(guess: BigDecimal, x: BigDecimal): BigDecimal =
-      if (isGoodEnough(guess, x)) guess
-      else sqrtIter(improve(guess, x), x)
+    def sqrtIter(guess: BigDecimal, number: BigDecimal): BigDecimal =
+      if (isGoodEnough(guess, number)) guess
+      else sqrtIter(improve(guess, number), number)
 
-    if (x == 0) BigDecimal(0) else sqrtIter(guess, x)
+    if (number == 0) BigDecimal(0) else sqrtIter(guess, number)
   }
 
-  def sqrt(x: BigDecimal): BigDecimal = if (x < 0) throw new IllegalArgumentException(s"\u221A of negative number! sqrt can handle only non-negative numbers. [entered: $x]") else sqrt(1, x)
-  def findSqrt(x: BigDecimal): Option[BigDecimal] = if (x < 0) None else Option(sqrt(1, x))
+  /**
+   * Returns the square root of a BigDecimal value.
+   * @param number the given BigDecimal number
+   * @return the positive square root of the given number.
+   * @throws IllegalArgumentException If the argument is less than zero.
+   */
+  def sqrt(number: BigDecimal): BigDecimal = if (number < 0) throw new IllegalArgumentException(s"\u221A of negative number! sqrt can handle only non-negative numbers. [entered: $number]") else sqrt(1, number)
+  def findSqrt(number: BigDecimal): Option[BigDecimal] = if (number < 0) None else Option(sqrt(1, number))
 
   implicit class MathBigDecimal(number: BigDecimal) {
     def sqrt(): BigDecimal = BigDecimals.sqrt(number)

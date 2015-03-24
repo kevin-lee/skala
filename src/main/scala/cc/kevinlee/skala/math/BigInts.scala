@@ -11,11 +11,12 @@ object BigInts {
 
   def abs(x: BigInt): BigInt = if (x < 0) -x else x
 
-  def sqrt(x: BigInt): BigInt = BigDecimals.sqrtIter(1, BigDecimal(x)).toBigInt()
+  def sqrt(x: BigInt): BigDecimal = BigDecimals.sqrt(BigDecimal(x))
+  def findSqrt(x: BigInt): Option[BigDecimal] = BigDecimals.findSqrt(BigDecimal(x))
 
 
   implicit class MathBigInt(number: BigInt) {
-    def sqrt(): BigInt = BigInts.sqrt(number)
+    def sqrt(): BigDecimal = BigInts.sqrt(number)
   }
 
   def calcMean(numbers: TraversableLike[BigInt, TraversableLike[BigInt, _]]):BigDecimal = if (numbers.isEmpty) 0 else BigDecimal(numbers.sum) / numbers.size

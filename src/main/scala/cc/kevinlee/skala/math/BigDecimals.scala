@@ -20,7 +20,8 @@ object BigDecimals {
     if (isGoodEnough(guess, x)) guess
     else sqrtIter(improve(guess, x), x)
 
-  def sqrt(x: BigDecimal): BigDecimal = sqrtIter(1, x)
+  def sqrt(x: BigDecimal): BigDecimal = if (x < 1) throw new IllegalArgumentException(s"\u221A of negative number! sqrt can handle only non-negative numbers. [entered: $x]") else sqrtIter(1, x)
+  def findSqrt(x: BigDecimal): Option[BigDecimal] = if (x < 1) None else Option(sqrtIter(1, x))
 
   implicit class MathBigDecimal(number: BigDecimal) {
     def sqrt(): BigDecimal = BigDecimals.sqrt(number)

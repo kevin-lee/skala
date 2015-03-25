@@ -1,5 +1,7 @@
 package cc.kevinlee.skala.math
 
+import java.math.MathContext
+
 import org.scalatest.WordSpec
 
 /**
@@ -47,7 +49,7 @@ class BigIntsTest extends WordSpec {
   }
   "BigInts.sqrt" when {
     "sqrt(BigInt(-1))" should {
-      "throw java.lang.NumberFormatException" in {
+      "throw java.lang.IllegalArgumentException" in {
         val number: BigInt = -1
         val thrown = intercept[IllegalArgumentException] {
           BigInts.sqrt(number)
@@ -72,27 +74,30 @@ class BigIntsTest extends WordSpec {
       }
     }
     "sqrt(BigInt(2))" should {
-      "return BigDecimal(1.414213562373095...)" in {
+      "return BigDecimal(1.414213562373095...) and actual * actual === BigInt(2)" in {
         val number: BigInt = 2
         val expected = "1.414213562373095"
         val actual = BigInts.sqrt(number)
         assert(actual.toString startsWith expected)
+        assert((actual * actual) === number)
       }
     }
     "sqrt(BigInt(9))" should {
-      "return BigDecimal(3)" in {
+      "return BigDecimal(3) and actual * actual === BigInt(9)" in {
         val number: BigInt = 9
         val expected: BigDecimal = 3
         val actual = BigInts.sqrt(number)
         assert(actual === expected)
+        assert((actual * actual) === number)
       }
     }
     "sqrt(BigInt(10))" should {
-      "return BigDecimal(3.162277660168379...)" in {
+      "return BigDecimal(3.162277660168379...) and actual * actual === BigInt(10)" in {
         val number: BigInt = 10
         val expected = "3.162277660168379"
         val actual = BigInts.sqrt(number)
         assert(actual.toString startsWith expected)
+        assert((actual * actual).round(MathContext.DECIMAL64) === number)
       }
     }
   }
@@ -122,27 +127,30 @@ class BigIntsTest extends WordSpec {
       }
     }
     "findSqrt(BigInt(2))" should {
-      "return BigDecimal(1.414213562373095...)" in {
+      "return BigDecimal(1.414213562373095...) and actual * actual === BigInt(2)" in {
         val number: BigInt = 2
         val expected = Option[BigDecimal](BigInts.sqrt(number))
         val actual = BigInts.findSqrt(number)
         assert(actual === expected)
+        assert(actual.map(x => x * x).get === number)
       }
     }
     "findSqrt(BigInt(9))" should {
-      "return BigDecimal(3)" in {
+      "return BigDecimal(3) and actual * actual === BigInt(9)" in {
         val number: BigInt = 9
         val expected = Option[BigDecimal](3)
         val actual = BigInts.findSqrt(number)
         assert(actual === expected)
+        assert(actual.map(x => x * x).get === number)
       }
     }
     "findSqrt(BigInt(10))" should {
-      "return BigDecimal(3.162277660168379...)" in {
+      "return BigDecimal(3.162277660168379...) and actual * actual === BigInt(10)" in {
         val number: BigInt = 10
         val expected = Option[BigDecimal](BigInts.sqrt(number))
         val actual = BigInts.findSqrt(number)
         assert(actual === expected)
+        assert(actual.map(x => x * x).get.round(MathContext.DECIMAL64) === number)
       }
     }
   }

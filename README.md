@@ -4,7 +4,7 @@ Skala
 
 Utilities for Scala
 
-##skala.math
+## skala.math
 
 ### skala.math.BigInts
 #### abs()

@@ -1,5 +1,7 @@
 package cc.kevinlee.skala.math
 
+import java.math.{RoundingMode, MathContext}
+
 import scala.annotation.tailrec
 import scala.collection.TraversableLike
 
@@ -17,7 +19,7 @@ object BigDecimals {
    */
   def abs(number: BigDecimal): BigDecimal = if (number < 0) -number else number
 
-  private def isGoodEnough(guess: BigDecimal, number: BigDecimal): Boolean = abs(guess * guess - number) / number < 1E-30
+  private def isGoodEnough(guess: BigDecimal, number: BigDecimal): Boolean = (abs(guess * guess - number) / number) < 1E-32
   private def improve(guess: BigDecimal, number: BigDecimal): BigDecimal = (guess + number / guess) / 2
 
   private[math] def sqrt(guess: BigDecimal, number: BigDecimal): BigDecimal = {

@@ -24,10 +24,10 @@ object BigInts {
     def sqrt(): BigDecimal = BigInts.sqrt(number)
   }
 
-  def calcMean(numbers: TraversableLike[BigInt, TraversableLike[BigInt, _]]):BigDecimal = if (numbers.isEmpty) 0 else BigDecimal(numbers.sum) / numbers.size
+  def mean(numbers: TraversableLike[BigInt, TraversableLike[BigInt, _]]):BigDecimal = if (numbers.isEmpty) 0 else BigDecimal(numbers.sum) / numbers.size
 
 
-  def calcMedian(sortedNumbers: Seq[BigInt], length: Int):BigDecimal = length match {
+  def median(sortedNumbers: Seq[BigInt], length: Int):BigDecimal = length match {
     case 0 => 0
     case theLength if isEven(theLength) =>
       val half = theLength / 2
@@ -35,12 +35,12 @@ object BigInts {
     case theLength => BigDecimal(sortedNumbers(theLength / 2))
   }
 
-  def calcMedian(numbers: Seq[BigInt]):BigDecimal = calcMedian(numbers.sortBy(identity), numbers.length)
+  def median(numbers: Seq[BigInt]):BigDecimal = median(numbers.sortBy(identity), numbers.length)
 
-  def calcMode(sortedNumbers: Seq[BigInt]): BigInt = if (sortedNumbers.isEmpty) 0 else sortedNumbers.groupBy(identity).maxBy(_._2.length)._1
+  def mode(sortedNumbers: Seq[BigInt]): BigInt = if (sortedNumbers.isEmpty) 0 else sortedNumbers.groupBy(identity).maxBy(_._2.length)._1
 
 
-  def calcStandardDeviation(numbers: TraversableLike[BigInt, TraversableLike[BigInt, _]], length: Int, mean: BigDecimal): BigDecimal =
+  def standardDeviation(numbers: TraversableLike[BigInt, TraversableLike[BigInt, _]], length: Int, mean: BigDecimal): BigDecimal =
     if (length == 0)
       0
     else
@@ -50,13 +50,14 @@ object BigInts {
                .sum / length
       )
 
-  def calcStandardDeviation(numbers: TraversableLike[BigInt, TraversableLike[BigInt, _]]): BigDecimal = calcStandardDeviation(numbers, numbers.size, calcMean(numbers))
+  def standardDeviation(numbers: TraversableLike[BigInt, TraversableLike[BigInt, _]]): BigDecimal = standardDeviation(numbers, numbers.size, mean(numbers))
+  def stdev(numbers: TraversableLike[BigInt, TraversableLike[BigInt, _]]): BigDecimal = standardDeviation(numbers)
 
   implicit class BigIntSeq(numbers: Seq[BigInt]) {
     def sortedNumbers = numbers.sortBy(identity)
-    def mean = calcMean(numbers)
-    def median = calcMedian(sortedNumbers, numbers.length)
-    def mode = calcMode(sortedNumbers)
-    def standardDeviation = calcStandardDeviation(numbers, numbers.length, mean)
+    def mean = BigInts.mean(numbers)
+    def median = BigInts.median(sortedNumbers, numbers.length)
+    def mode = BigInts.mode(sortedNumbers)
+    def standardDeviation = BigInts.standardDeviation(numbers, numbers.length, mean)
   }
 }

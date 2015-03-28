@@ -10,13 +10,6 @@ object BigInts {
   import collection.immutable.Seq
 
   /**
-   * Returns the absolute value of a BigInt
-   * @param number the given BigInt the absolute value of which is to be determined.
-   * @return the absolute value of the given number
-   */
-  def abs(number: BigInt): BigInt = if (number < 0) -number else number
-
-  /**
    * Returns the square root of a BigInt value.
    * @param number the given BitInt number
    * @return the positive square root of the given number.
@@ -59,7 +52,7 @@ object BigInts {
 
   def calcStandardDeviation(numbers: TraversableLike[BigInt, TraversableLike[BigInt, _]]): BigDecimal = calcStandardDeviation(numbers, numbers.size, calcMean(numbers))
 
-  implicit class BigIntPlus (numbers: Seq[BigInt]) {
+  implicit class BigIntSeq(numbers: Seq[BigInt]) {
     def sortedNumbers = numbers.sortBy(identity)
     def mean = calcMean(numbers)
     def median = calcMedian(sortedNumbers, numbers.length)

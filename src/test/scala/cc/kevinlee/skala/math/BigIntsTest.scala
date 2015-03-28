@@ -10,43 +10,6 @@ import org.scalatest.WordSpec
  */
 class BigIntsTest extends WordSpec {
 
-  "BigInts.abs" when {
-    "abs(BigInt(-100))" should {
-      "return BigInt(100)" in {
-        val number: BigInt = -100
-        val expected: BigInt = 100
-        assert(BigInts.abs(number) === expected)
-      }
-    }
-    "abs(BigInt(-1))" should {
-      "return BigInt(1)" in {
-        val number: BigInt = -1
-        val expected: BigInt = 1
-        assert(BigInts.abs(number) === expected)
-      }
-    }
-    "abs(BigInt(0))" should {
-      "return BigInt(0)" in {
-        val number: BigInt = 0
-        val expected: BigInt = 0
-        assert(BigInts.abs(number) === expected)
-      }
-    }
-    "abs(BigInt(1))" should {
-      "return BigInt(1)" in {
-        val number: BigInt = 1
-        val expected: BigInt = 1
-        assert(BigInts.abs(number) === expected)
-      }
-    }
-    "abs(BigInt(100))" should {
-      "return BigInt(100)" in {
-        val number: BigInt = 100
-        val expected: BigInt = 100
-        assert(BigInts.abs(number) === expected)
-      }
-    }
-  }
   "BigInts.sqrt" when {
     "sqrt(BigInt(-1))" should {
       "throw java.lang.IllegalArgumentException" in {
@@ -151,6 +114,81 @@ class BigIntsTest extends WordSpec {
         val actual = BigInts.findSqrt(number)
         assert(actual === expected)
         assert(actual.map(x => x * x).get.round(MathContext.DECIMAL64) === number)
+      }
+    }
+  }
+
+  "BigInts.calcMedian" when {
+    val emptyList = Nil
+    s"calcMedian($emptyList)" should {
+      val expected: BigDecimal = 0
+      s"return $expected" in {
+        val actual = BigInts.calcMedian(emptyList)
+        assert(actual === expected)
+      }
+    }
+    val numbers0 = List[BigInt](0)
+    s"calcMedian($numbers0)" should {
+      val expected: BigDecimal = 0
+      s"return $expected" in {
+        val actual = BigInts.calcMedian(numbers0)
+        assert(actual === expected)
+      }
+    }
+    val numbers1 = List[BigInt](999)
+    s"calcMedian($numbers1)" should {
+      val expected: BigDecimal = 999
+      s"return $expected" in {
+        val actual = BigInts.calcMedian(numbers1)
+        assert(actual === expected)
+      }
+    }
+    val numbers2 = List[BigInt](1, 2)
+    s"calcMedian($numbers2)" should {
+      val expected: BigDecimal = 1.5
+      s"return $expected" in {
+        val actual = BigInts.calcMedian(numbers2)
+        assert(actual === expected)
+      }
+    }
+    val numbers3 = List[BigInt](1, 2, 3)
+    s"calcMedian($numbers3)" should {
+      val expected: BigDecimal = 2
+      s"return $expected" in {
+        val actual = BigInts.calcMedian(numbers3)
+        assert(actual === expected)
+      }
+    }
+    val numbers4 = List[BigInt](1, 2, 3, 4)
+    s"calcMedian($numbers4)" should {
+      val expected: BigDecimal = BigDecimal(numbers4(1) + numbers4(2)) / 2
+      s"return $expected" in {
+        val actual = BigInts.calcMedian(numbers4)
+        assert(actual === expected)
+      }
+    }
+    val numbers5 = List[BigInt](1, 2, 3, 4, 5)
+    s"calcMedian($numbers5)" should {
+      val expected: BigDecimal = 3
+      s"return $expected" in {
+        val actual = BigInts.calcMedian(numbers5)
+        assert(actual === expected)
+      }
+    }
+    val numbers10 = List[BigInt](1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+    s"calcMedian($numbers10)" should {
+      val expected: BigDecimal = BigDecimal((numbers10(4)) + numbers10(5)) / 2
+      s"return $expected" in {
+        val actual = BigInts.calcMedian(numbers10)
+        assert(actual === expected)
+      }
+    }
+    val numbers11 = List[BigInt](1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11)
+    s"calcMedian($numbers11)" should {
+      val expected: BigDecimal = 6
+      s"return $expected" in {
+        val actual = BigInts.calcMedian(numbers11)
+        assert(actual === expected)
       }
     }
   }

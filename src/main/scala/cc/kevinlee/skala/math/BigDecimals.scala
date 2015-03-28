@@ -12,14 +12,7 @@ import scala.collection.TraversableLike
 object BigDecimals {
   import collection.immutable.Seq
 
-  /**
-   * Returns the absolute value of a BigDecimal
-   * @param number the given BigDecimal the absolute value of which is to be determined.
-   * @return the absolute value of the given number
-   */
-  def abs(number: BigDecimal): BigDecimal = if (number < 0) -number else number
-
-  private def isGoodEnough(guess: BigDecimal, number: BigDecimal): Boolean = (abs(guess * guess - number) / number) < 1E-32
+  private def isGoodEnough(guess: BigDecimal, number: BigDecimal): Boolean = ((guess * guess - number).abs / number) < 1E-32
   private def improve(guess: BigDecimal, number: BigDecimal): BigDecimal = (guess + number / guess) / 2
 
   private[math] def sqrt(guess: BigDecimal, number: BigDecimal): BigDecimal = {
@@ -38,6 +31,7 @@ object BigDecimals {
    * @throws IllegalArgumentException If the argument is less than zero.
    */
   def sqrt(number: BigDecimal): BigDecimal = if (number < 0) throw new IllegalArgumentException(s"\u221A of negative number! sqrt can handle only non-negative numbers. [entered: $number]") else sqrt(1, number)
+
   def findSqrt(number: BigDecimal): Option[BigDecimal] = if (number < 0) None else Option(sqrt(1, number))
 
   implicit class MathBigDecimal(number: BigDecimal) {
@@ -48,7 +42,7 @@ object BigDecimals {
 
   def calcMedian(sortedNumbers: Seq[BigDecimal], length: Int):BigDecimal = length match {
     case 0 => 0
-    case theLength if (theLength & 1) != 1 =>
+    case theLength if isEven(theLength) =>
       val half = theLength / 2
       (sortedNumbers(half - 1) + sortedNumbers(half)) / 2
     case theLength => sortedNumbers(theLength / 2)
@@ -69,7 +63,7 @@ object BigDecimals {
 
   def calcStandardDeviation(numbers: TraversableLike[BigDecimal, TraversableLike[BigDecimal, _]]): BigDecimal = calcStandardDeviation(numbers, numbers.size, calcMean(numbers))
 
-  implicit class BigDecimalPlus (numbers: Seq[BigDecimal]) {
+  implicit class BigDecimalSeq(numbers: Seq[BigDecimal]) {
     def sortedNumbers = numbers.sortBy(identity)
     def mean = calcMean(numbers)
     def median = calcMedian(sortedNumbers, numbers.length)

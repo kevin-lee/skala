@@ -63,6 +63,24 @@ class BigDecimalsTest extends WordSpec {
         assert((actual * actual).round(MathContext.DECIMAL64) === number)
       }
     }
+    "sqrt(BigDecimal(6E-10))" should {
+      "return BigDecimal(0.00002449489742783178...) and actual * actual === BigDecimal(6E-10)" in {
+        val number: BigDecimal = 6E-10
+        val expected = "0.00002449489742783178"
+        val actual = BigDecimals.sqrt(number)
+        assert(actual.toString startsWith expected)
+        assert((actual * actual).round(MathContext.DECIMAL64) === number)
+      }
+    }
+    "sqrt(BigDecimal(894792233.72423))" should {
+      "return BigDecimal(29913.07797141962...) and actual * actual === BigDecimal(894792233.72423)" in {
+        val number: BigDecimal = BigDecimal("894792233.72423")
+        val expected = "29913.07797141962"
+        val actual = BigDecimals.sqrt(number)
+        assert(actual.toString startsWith expected)
+        assert((actual * actual).round(MathContext.DECIMAL64) === number)
+      }
+    }
   }
   "BigDecimals.findSqrt" when {
     "findSqrt(BigDecimal(-1))" should {
@@ -110,6 +128,24 @@ class BigDecimalsTest extends WordSpec {
     "findSqrt(BigDecimal(10))" should {
       "return Some(BigDecimal(3.162277660168379...)) and actual * actual === BigDecimal(10)" in {
         val number: BigDecimal = 10
+        val expected = Option[BigDecimal](BigDecimals.sqrt(number))
+        val actual = BigDecimals.findSqrt(number)
+        assert(actual === expected)
+        assert(actual.map(x => x * x).get.round(MathContext.DECIMAL64) === number)
+      }
+    }
+    "findSqrt(BigDecimal(6E-10))" should {
+      "return Some(BigDecimal(0.00002449489742783178...)) and actual * actual === BigDecimal(6E-10)" in {
+        val number: BigDecimal = 6E-10
+        val expected = Option[BigDecimal](BigDecimals.sqrt(number))
+        val actual = BigDecimals.findSqrt(number)
+        assert(actual === expected)
+        assert(actual.map(x => x * x).get.round(MathContext.DECIMAL64) === number)
+      }
+    }
+    "findSqrt(BigDecimal(894792233.72423))" should {
+      "return Some(BigDecimal(29913.07797141962...)) and actual * actual === BigDecimal(894792233.72423)" in {
+        val number: BigDecimal = BigDecimal("894792233.72423")
         val expected = Option[BigDecimal](BigDecimals.sqrt(number))
         val actual = BigDecimals.findSqrt(number)
         assert(actual === expected)

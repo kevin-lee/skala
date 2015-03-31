@@ -63,6 +63,16 @@ class BigIntsTest extends WordSpec {
         assert((actual * actual).round(MathContext.DECIMAL64) === number)
       }
     }
+    "sqrt(BigInt(89479223372))" should {
+      "return BigDecimal(299130.779713489...) and actual * actual === BigInt(89479223372)" in {
+        val number: BigInt = 89479223372L
+
+        val expected = "299130.779713489"
+        val actual = BigInts.sqrt(number)
+        assert(actual.toString startsWith expected)
+        assert((actual * actual).round(MathContext.DECIMAL64) === number)
+      }
+    }
   }
   "BigInts.findSqrt" when {
     "findSqrt(BigInt(-1))" should {
@@ -109,6 +119,15 @@ class BigIntsTest extends WordSpec {
     }
     "findSqrt(BigInt(10))" should {
       "return BigDecimal(3.162277660168379...) and actual * actual === BigInt(10)" in {
+        val number: BigInt = 10
+        val expected = Option[BigDecimal](BigInts.sqrt(number))
+        val actual = BigInts.findSqrt(number)
+        assert(actual === expected)
+        assert(actual.map(x => x * x).get.round(MathContext.DECIMAL64) === number)
+      }
+    }
+    "findSqrt(BigInt(89479223372))" should {
+      "return BigDecimal(299130.779713489...) and actual * actual === BigInt(89479223372)" in {
         val number: BigInt = 10
         val expected = Option[BigDecimal](BigInts.sqrt(number))
         val actual = BigInts.findSqrt(number)

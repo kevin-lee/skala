@@ -284,4 +284,270 @@ class BigIntsTest extends WordSpec {
       }
     }
   }
+
+
+  "BigInts.toOrdinal" when {
+    "toOrdinal(1)" should {
+      val number: BigInt = 1
+      val expected = s"${number}st"
+      s"""return "$expected"""" in {
+        val actual = BigInts.toOrdinal(number)
+        assert(actual === expected)
+      }
+    }
+    "toOrdinal(2)" should {
+      val number = 2
+      val expected = s"${number}nd"
+      s"""return "$expected"""" in {
+        val actual = BigInts.toOrdinal(number)
+        assert(actual === expected)
+      }
+    }
+    "toOrdinal(3)" should {
+      val number = 3
+      val expected = s"${number}rd"
+      s"""return "$expected"""" in {
+        val actual = BigInts.toOrdinal(number)
+        assert(actual === expected)
+      }
+    }
+    "toOrdinal(4)" should {
+      val number = 4
+      val expected = s"${number}th"
+      s"""return "$expected"""" in {
+        val actual = BigInts.toOrdinal(number)
+        assert(actual === expected)
+      }
+    }
+    "toOrdinal(5)" should {
+      val number = 5
+      val expected = s"${number}th"
+      s"""return "$expected"""" in {
+        val actual = BigInts.toOrdinal(number)
+        assert(actual === expected)
+      }
+    }
+    "toOrdinal(10)" should {
+      val number = 10
+      val expected = s"${number}th"
+      s"""return "$expected"""" in {
+        val actual = BigInts.toOrdinal(number)
+        assert(actual === expected)
+      }
+    }
+    "toOrdinal(11)" should {
+      val number = 11
+      val expected = s"${number}th"
+      s"""return "$expected"""" in {
+        val actual = BigInts.toOrdinal(number)
+        assert(actual === expected)
+      }
+    }
+    "toOrdinal(12)" should {
+      val number = 12
+      val expected = s"${number}th"
+      s"""return "$expected"""" in {
+        val actual = BigInts.toOrdinal(number)
+        assert(actual === expected)
+      }
+    }
+    "toOrdinal(13)" should {
+      val number = 13
+      val expected = s"${number}th"
+      s"""return "$expected"""" in {
+        val actual = BigInts.toOrdinal(number)
+        assert(actual === expected)
+      }
+    }
+    "toOrdinal(14)" should {
+      val number = 14
+      val expected = s"${number}th"
+      s"""return "$expected"""" in {
+        val actual = BigInts.toOrdinal(number)
+        assert(actual === expected)
+      }
+    }
+    "toOrdinal(20)" should {
+      val number = 20
+      val expected = s"${number}th"
+      s"""return "$expected"""" in {
+        val actual = BigInts.toOrdinal(number)
+        assert(actual === expected)
+      }
+    }
+    "toOrdinal(21)" should {
+      val number = 21
+      val expected = s"${number}st"
+      s"""return "$expected"""" in {
+        val actual = BigInts.toOrdinal(number)
+        assert(actual === expected)
+      }
+    }
+    "toOrdinal(22)" should {
+      val number = 22
+      val expected = s"${number}nd"
+      s"""return "$expected"""" in {
+        val actual = BigInts.toOrdinal(number)
+        assert(actual === expected)
+      }
+    }
+    "toOrdinal(23)" should {
+      val number = 23
+      val expected = s"${number}rd"
+      s"""return "$expected"""" in {
+        val actual = BigInts.toOrdinal(number)
+        assert(actual === expected)
+      }
+    }
+    "toOrdinal(24)" should {
+      val number = 24
+      val expected = s"${number}th"
+      s"""return "$expected"""" in {
+        val actual = BigInts.toOrdinal(number)
+        assert(actual === expected)
+      }
+    }
+
+  }
+
+  "BigInts.findOrdinal" when {
+
+    "findOrdinal(-1)" should {
+      val number = -1
+      val expected = None
+      s"return $expected" in {
+        val actual = BigInts.findOrdinal(number)
+        assert(actual === expected)
+      }
+    }
+    "findOrdinal(0)" should {
+      val number = 0
+      val expected = None
+      s"return $expected" in {
+        val actual = BigInts.findOrdinal(number)
+        assert(actual === expected)
+      }
+    }
+    "findOrdinal(1)" should {
+      val number = 1
+      val expected = Some(s"${number}st")
+      s"return $expected" in {
+        val actual = BigInts.findOrdinal(number)
+        assert(actual === expected)
+      }
+    }
+    "findOrdinal(2)" should {
+      val number = 2
+      val expected = Some(s"${number}nd")
+      s"return $expected" in {
+        val actual = BigInts.findOrdinal(number)
+        assert(actual === expected)
+      }
+    }
+    "findOrdinal(3)" should {
+      val number = 3
+      val expected = Some(s"${number}rd")
+      s"return $expected" in {
+        val actual = BigInts.findOrdinal(number)
+        assert(actual === expected)
+      }
+    }
+    "findOrdinal(4)" should {
+      val number = 4
+      val expected = Some(s"${number}th")
+      s"return $expected" in {
+        val actual = BigInts.findOrdinal(number)
+        assert(actual === expected)
+      }
+    }
+    "findOrdinal(5)" should {
+      val number = 5
+      val expected = Some(s"${number}th")
+      s"return $expected" in {
+        val actual = BigInts.findOrdinal(number)
+        assert(actual === expected)
+      }
+    }
+    "findOrdinal(10)" should {
+      val number = 10
+      val expected = Some(s"${number}th")
+      s"return $expected" in {
+        val actual = BigInts.findOrdinal(number)
+        assert(actual === expected)
+      }
+    }
+    "findOrdinal(11)" should {
+      val number = 11
+      val expected = Some(s"${number}th")
+      s"return $expected" in {
+        val actual = BigInts.findOrdinal(number)
+        assert(actual === expected)
+      }
+    }
+    "findOrdinal(12)" should {
+      val number = 12
+      val expected = Some(s"${number}th")
+      s"return $expected" in {
+        val actual = BigInts.findOrdinal(number)
+        assert(actual === expected)
+      }
+    }
+    "findOrdinal(13)" should {
+      val number = 13
+      val expected = Some(s"${number}th")
+      s"return $expected" in {
+        val actual = BigInts.findOrdinal(number)
+        assert(actual === expected)
+      }
+    }
+    "findOrdinal(14)" should {
+      val number = 14
+      val expected = Some(s"${number}th")
+      s"return $expected" in {
+        val actual = BigInts.findOrdinal(number)
+        assert(actual === expected)
+      }
+    }
+    "findOrdinal(20)" should {
+      val number = 20
+      val expected = Some(s"${number}th")
+      s"return $expected" in {
+        val actual = BigInts.findOrdinal(number)
+        assert(actual === expected)
+      }
+    }
+    "findOrdinal(21)" should {
+      val number = 21
+      val expected = Some(s"${number}st")
+      s"return $expected" in {
+        val actual = BigInts.findOrdinal(number)
+        assert(actual === expected)
+      }
+    }
+    "findOrdinal(22)" should {
+      val number = 22
+      val expected = Some(s"${number}nd")
+      s"return $expected" in {
+        val actual = BigInts.findOrdinal(number)
+        assert(actual === expected)
+      }
+    }
+    "findOrdinal(23)" should {
+      val number = 23
+      val expected = Some(s"${number}rd")
+      s"return $expected" in {
+        val actual = BigInts.findOrdinal(number)
+        assert(actual === expected)
+      }
+    }
+    "findOrdinal(24)" should {
+      val number = 24
+      val expected = Some(s"${number}th")
+      s"return $expected" in {
+        val actual = BigInts.findOrdinal(number)
+        assert(actual === expected)
+      }
+    }
+
+  }
 }

@@ -22,6 +22,8 @@ object BigInts {
 
   implicit class MathBigInt(number: BigInt) {
     def sqrt(): BigDecimal = BigInts.sqrt(number)
+    def toOrdinal: String = BigInts.toOrdinal(number)
+    def findOrdinal: Option[String] = BigInts.findOrdinal(number)
   }
 
   def mean(numbers: TraversableLike[BigInt, TraversableLike[BigInt, _]]):BigDecimal = if (numbers.isEmpty) 0 else BigDecimal(numbers.sum) / numbers.size
@@ -60,4 +62,19 @@ object BigInts {
     def mode = BigInts.mode(sortedNumbers)
     def standardDeviation = BigInts.standardDeviation(numbers, numbers.length, mean)
   }
+
+  private final val bigInts_11_12_13 =List(BigInt(11), BigInt(12), BigInt(13))
+  def toOrdinal(number: BigInt): String =
+    if (bigInts_11_12_13 contains number)
+      s"${number}th"
+    else if (number > 0)
+      (number % 10).toInt match {
+        case 1 => s"${number}st"
+        case 2 => s"${number}nd"
+        case 3 => s"${number}rd"
+        case _ => s"${number}th"
+      }
+    else ""
+
+  def findOrdinal(number: BigInt): Option[String] = Option(number).map(toOrdinal).filterNot(_.isEmpty)
 }

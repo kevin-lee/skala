@@ -1,7 +1,5 @@
 package cc.kevinlee.skala
 
-import java.lang.{Math => JavaMath}
-
 /**
  * @author Lee, SeongHyun (Kevin)
  * @since 2015-03-22

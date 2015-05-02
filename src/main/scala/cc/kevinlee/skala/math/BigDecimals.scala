@@ -30,24 +30,26 @@ object BigDecimals {
    * @return the positive square root of the given number.
    * @throws IllegalArgumentException If the argument is less than zero.
    */
-  def sqrt(number: BigDecimal): BigDecimal = if (number < 0) throw new IllegalArgumentException(s"\u221A of negative number! sqrt can handle only non-negative numbers. [entered: $number]") else sqrt(1, number)
+  def sqrt(number: BigDecimal): BigDecimal =
+    if (number < 0) throw new IllegalArgumentException(s"\u221A of negative number! sqrt can handle only non-negative numbers. [entered: $number]")
+    else sqrt(1, number)
 
   def findSqrt(number: BigDecimal): Option[BigDecimal] = if (number < 0) None else Option(sqrt(1, number))
 
-  implicit class MathBigDecimal(number: BigDecimal) {
+  implicit class MathBigDecimal(val number: BigDecimal) extends AnyVal {
     def sqrt(): BigDecimal = BigDecimals.sqrt(number)
   }
 
-  def mean(numbers: TraversableLike[BigDecimal, TraversableLike[BigDecimal, _]]):BigDecimal = if (numbers.isEmpty) 0 else numbers.sum / numbers.size
+  def mean(numbers: TraversableLike[BigDecimal, TraversableLike[BigDecimal, _]]): BigDecimal = if (numbers.isEmpty) 0 else numbers.sum / numbers.size
 
-  def median(sortedNumbers: Seq[BigDecimal], length: Int):BigDecimal = length match {
+  def median(sortedNumbers: Seq[BigDecimal], length: Int): BigDecimal = length match {
     case 0 => 0
     case theLength if isEven(theLength) =>
       val half = theLength / 2
       (sortedNumbers(half - 1) + sortedNumbers(half)) / 2
     case theLength => sortedNumbers(theLength / 2)
   }
-  def median(numbers: Seq[BigDecimal]):BigDecimal = median(numbers.sortBy(identity), numbers.length)
+  def median(numbers: Seq[BigDecimal]): BigDecimal = median(numbers.sortBy(identity), numbers.length)
 
   def mode(sortedNumbers: Seq[BigDecimal]): BigDecimal = if (sortedNumbers.isEmpty) 0 else sortedNumbers.groupBy(identity).maxBy(_._2.length)._1
 
@@ -64,12 +66,12 @@ object BigDecimals {
   def standardDeviation(numbers: TraversableLike[BigDecimal, TraversableLike[BigDecimal, _]]): BigDecimal = standardDeviation(numbers, numbers.size, mean(numbers))
   def stdev(numbers: TraversableLike[BigDecimal, TraversableLike[BigDecimal, _]]): BigDecimal = standardDeviation(numbers)
 
-  implicit class BigDecimalSeq(numbers: Seq[BigDecimal]) {
-    def sortedNumbers = numbers.sortBy(identity)
-    def mean = BigDecimals.mean(numbers)
-    def median = BigDecimals.median(sortedNumbers, numbers.length)
-    def mode = BigDecimals.mode(sortedNumbers)
-    def standardDeviation = BigDecimals.standardDeviation(numbers, numbers.length, mean)
+  implicit class BigDecimalSeq(val numbers: Seq[BigDecimal]) extends AnyVal {
+    def sortedNumbers: Seq[BigDecimal] = numbers.sortBy(identity)
+    def mean: BigDecimal = BigDecimals.mean(numbers)
+    def median: BigDecimal = BigDecimals.median(sortedNumbers, numbers.length)
+    def mode: BigDecimal = BigDecimals.mode(sortedNumbers)
+    def standardDeviation: BigDecimal = BigDecimals.standardDeviation(numbers, numbers.length, mean)
   }
 
 

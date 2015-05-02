@@ -40,14 +40,15 @@ package object math {
   }
   def findOrdinal(number: Long): Option[String] = Option(number).map(toOrdinal).filterNot(_.isEmpty)
 
-  implicit class MathInt(number: Int) {
+  implicit class MathInt(val number: Int) extends AnyVal {
     def isOdd: Boolean = math.isOdd(number)
     def isEven: Boolean = math.isEven(number)
     def sqrt: Double = math.sqrt(number)
     def toOrdinal: String = math.toOrdinal(number)
     def findOrdinal: Option[String] = math.findOrdinal(number)
   }
-  implicit class MathLong(number: Long) {
+
+  implicit class MathLong(val number: Long) extends AnyVal {
     def isOdd: Boolean = math.isOdd(number)
     def isEven: Boolean = math.isEven(number)
     def sqrt: BigDecimal = math.sqrt(number)

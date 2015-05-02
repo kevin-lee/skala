@@ -19,17 +19,16 @@ object BigInts {
 
   def findSqrt(number: BigInt): Option[BigDecimal] = BigDecimals.findSqrt(BigDecimal(number))
 
-
-  implicit class MathBigInt(number: BigInt) {
+  implicit class MathBigInt(val number: BigInt) extends AnyVal {
     def sqrt(): BigDecimal = BigInts.sqrt(number)
     def toOrdinal: String = BigInts.toOrdinal(number)
     def findOrdinal: Option[String] = BigInts.findOrdinal(number)
   }
 
-  def mean(numbers: TraversableLike[BigInt, TraversableLike[BigInt, _]]):BigDecimal = if (numbers.isEmpty) 0 else BigDecimal(numbers.sum) / numbers.size
+  def mean(numbers: TraversableLike[BigInt, TraversableLike[BigInt, _]]): BigDecimal = if (numbers.isEmpty) 0 else BigDecimal(numbers.sum) / numbers.size
 
 
-  def median(sortedNumbers: Seq[BigInt], length: Int):BigDecimal = length match {
+  def median(sortedNumbers: Seq[BigInt], length: Int): BigDecimal = length match {
     case 0 => 0
     case theLength if isEven(theLength) =>
       val half = theLength / 2
@@ -37,7 +36,7 @@ object BigInts {
     case theLength => BigDecimal(sortedNumbers(theLength / 2))
   }
 
-  def median(numbers: Seq[BigInt]):BigDecimal = median(numbers.sortBy(identity), numbers.length)
+  def median(numbers: Seq[BigInt]): BigDecimal = median(numbers.sortBy(identity), numbers.length)
 
   def mode(sortedNumbers: Seq[BigInt]): BigInt = if (sortedNumbers.isEmpty) 0 else sortedNumbers.groupBy(identity).maxBy(_._2.length)._1
 
@@ -55,12 +54,12 @@ object BigInts {
   def standardDeviation(numbers: TraversableLike[BigInt, TraversableLike[BigInt, _]]): BigDecimal = standardDeviation(numbers, numbers.size, mean(numbers))
   def stdev(numbers: TraversableLike[BigInt, TraversableLike[BigInt, _]]): BigDecimal = standardDeviation(numbers)
 
-  implicit class BigIntSeq(numbers: Seq[BigInt]) {
-    def sortedNumbers = numbers.sortBy(identity)
-    def mean = BigInts.mean(numbers)
-    def median = BigInts.median(sortedNumbers, numbers.length)
-    def mode = BigInts.mode(sortedNumbers)
-    def standardDeviation = BigInts.standardDeviation(numbers, numbers.length, mean)
+  implicit class BigIntSeq(val numbers: Seq[BigInt]) extends AnyVal {
+    def sortedNumbers: Seq[BigInt] = numbers.sortBy(identity)
+    def mean: BigDecimal = BigInts.mean(numbers)
+    def median: BigDecimal = BigInts.median(sortedNumbers, numbers.length)
+    def mode: BigInt = BigInts.mode(sortedNumbers)
+    def standardDeviation: BigDecimal = BigInts.standardDeviation(numbers, numbers.length, mean)
   }
 
   private final val bigInts_11_12_13 =List(BigInt(11), BigInt(12), BigInt(13))

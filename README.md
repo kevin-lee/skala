@@ -1,6 +1,6 @@
 Skala
 =====
-[![Build Status](https://travis-ci.org/Kevin-Lee/skala.svg)](https://travis-ci.org/Kevin-Lee/skala)
+[![Build Status](https://travis-ci.org/Kevin-Lee/skala.svg)](https://travis-ci.org/Kevin-Lee/skala) [![Codacy Badge](https://www.codacy.com/project/badge/6918a01879ce4870b7210f0f1c0bef18)](https://www.codacy.com/app/kevin-code/skala)
 
 Utilities for Scala
 

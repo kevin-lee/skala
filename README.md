@@ -6,6 +6,9 @@ Skala
 [![Download](https://api.bintray.com/packages/kevinlee/maven/skala/images/download.svg)](https://bintray.com/kevinlee/maven/skala/_latestVersion)
 [![Issue Stats](http://www.issuestats.com/github/Kevin-Lee/skala/badge/issue)](http://www.issuestats.com/github/Kevin-Lee/skala)
 
+[![views](https://sourcegraph.com/api/repos/github.com/Kevin-Lee/skala/.counters/views.svg)](https://sourcegraph.com/github.com/Kevin-Lee/skala)
+[![views 24h](https://sourcegraph.com/api/repos/github.com/Kevin-Lee/skala/.counters/views-24h.svg)](https://sourcegraph.com/github.com/Kevin-Lee/skala)
+
 Utilities for Scala
 
 ## skala.math

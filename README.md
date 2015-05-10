@@ -4,6 +4,7 @@ Skala
 [![Codacy Badge](https://www.codacy.com/project/badge/6918a01879ce4870b7210f0f1c0bef18)](https://www.codacy.com/app/kevin-lee/skala)
 [![Download](https://api.bintray.com/packages/kevinlee/maven/skala/images/download.svg)](https://bintray.com/kevinlee/maven/skala/_latestVersion)
 [![Issue Stats](http://www.issuestats.com/github/Kevin-Lee/skala/badge/issue)](http://www.issuestats.com/github/Kevin-Lee/skala)
+[![Coverage Status](https://coveralls.io/repos/Kevin-Lee/skala/badge.svg)](https://coveralls.io/r/Kevin-Lee/skala)
 
 Utilities for Scala
 

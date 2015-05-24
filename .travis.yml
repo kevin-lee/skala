@@ -1,13 +1,31 @@
 language: scala
 cache:
   directories:
-    - "$HOME/.ivy2"
-    - "$HOME/.sbt"
+    - "$HOME/.ivy2/cache"
+    - "$HOME/.sbt/boot"
 scala:
-  - 2.11.2
   - 2.11.6
 jdk:
   - oraclejdk8
   - openjdk7
 script:
-  - sbt ++$TRAVIS_SCALA_VERSION test
+  - sbt clean coverage test package
+#  - if [ "$TRAVIS_BRANCH" == "release" ]; then sbt publish; fi
+  - find $HOME/.sbt -name "*.lock" | xargs rm
+  - find $HOME/.ivy2 -name "ivydata-*.properties" | xargs rm
+after_success: "sbt coveralls"
+before_deploy:
+  - ./.before-deploy.sh
+deploy:
+  - provider: releases
+    api_key:
+      secure: TWTQiWJKJdcK+v1o+RWyUPq+IIlzGhyIuibH1kFxwnDP/MpCKdAD5bXeIwNlGj0G97KyMSkbNE/bUxdwYaMMrImt+8nJ17EhxxmVl86WYt/89k+Tm0xvJ6i2L0+8yV2aR0VGy725zRsbYhmdhT4kaYg9ZLaG0HyqCDa71S270TU=
+    file_glob: true
+    file: "target/all-bin/*"
+    skip_cleanup: true
+    on:
+      repo: Kevin-Lee/skala
+      branch: release
+branches:
+  except:
+    - /^v([0-9]+(?:\.[0-9]+){0,2})/

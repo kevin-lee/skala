@@ -6,10 +6,74 @@ import org.scalatest.WordSpec
  * @author Lee, Seong Hyun (Kevin)
  * @since 2015-05-17
  */
-class PathStringsTest extends WordSpec {
+class StringGluesTest extends WordSpec {
 
-  "import PathStrings._" when {
-    import PathStrings._
+  "StringGlues.glueWithSlash" when {
+    import StringGlues.glueWithSlash
+    """glueWithSlash("a", "b")""" should {
+      """return "a/b"""" in {
+        val expected = "a/b"
+        val actual = glueWithSlash("a", "b")
+        assert(actual === expected)
+      }
+    }
+    """glueWithSlash("a/", "b")""" should {
+      """return "a/b"""" in {
+        val expected = "a/b"
+        val actual = glueWithSlash("a/", "b")
+        assert(actual === expected)
+      }
+    }
+    """glueWithSlash("a", "/b")""" should {
+      """return "a/b"""" in {
+        val expected = "a/b"
+        val actual = glueWithSlash("a", "/b")
+        assert(actual === expected)
+      }
+    }
+    """glueWithSlash("a/", "/b")""" should {
+      """return "a/b"""" in {
+        val expected = "a/b"
+        val actual = glueWithSlash("a/", "/b")
+        assert(actual === expected)
+      }
+    }
+  }
+
+  "StringGlues.glueWithBackSlash" when {
+    import StringGlues.glueWithBackSlash
+    """glueWithSlash("a", "b")""" should {
+      """return "a\b"""" in {
+        val expected = "a\\b"
+        val actual = glueWithBackSlash("a", "b")
+        assert(actual === expected)
+      }
+    }
+    """glueWithSlash("a\", "b")""" should {
+      """return "a\b"""" in {
+        val expected = "a\\b"
+        val actual = glueWithBackSlash("a\\", "b")
+        assert(actual === expected)
+      }
+    }
+    """glueWithSlash("a", "\b")""" should {
+      """return "a\b"""" in {
+        val expected = "a\\b"
+        val actual = glueWithBackSlash("a", "\\b")
+        assert(actual === expected)
+      }
+    }
+    """glueWithSlash("a\", "\b")""" should {
+      """return "a\b"""" in {
+        val expected = "a\\b"
+        val actual = glueWithBackSlash("a\\", "\\b")
+        assert(actual === expected)
+      }
+    }
+  }
+
+  "import StringGlues.PathString" when {
+    import StringGlues.PathString
     """"path1" / "path2"""" should {
       """return "path1/path2"""" in {
         val expected = "path1/path2"

@@ -1,6 +1,8 @@
 name := "skala"
 
-version := "0.0.1"
+organization := "cc.kevinlee"
+
+version := "0.0.2"
 
 scalaVersion := "2.11.6"
 

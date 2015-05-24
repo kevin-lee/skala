@@ -166,3 +166,15 @@ import cc.kevinlee.skala.math.BigDecimals._
 val numbers = List[BigDecimal](2, 3, 5, 4, 1)
 median(numbers)  // return BigDecimal(3)
 ```
+
+# Get Skala
+
+In your `build.sbt`, add the following repo and dependency.
+
+**Note: It supports only Skala 2.11.x.**
+
+```scala
+resolvers += "3rd Party Repo" at "http://dl.bintray.com/kevinlee/maven"
+
+libraryDependencies += "cc.kevinlee" %% "skala" % "0.0.2"
+```

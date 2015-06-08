@@ -9,7 +9,7 @@ import org.scalatest.{BeforeAndAfterEach, WordSpec}
  * @author Lee, Seong Hyun (Kevin)
  * @since 2015-04-13
  */
-class package$Test extends WordSpec with BeforeAndAfterEach {
+class package$Spec extends WordSpec with BeforeAndAfterEach {
 
   "package$Test" when {
 

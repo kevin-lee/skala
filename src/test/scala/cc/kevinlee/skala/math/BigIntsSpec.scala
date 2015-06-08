@@ -8,7 +8,7 @@ import org.scalatest.WordSpec
  * @author Lee, SeongHyun (Kevin)
  * @since 2015-03-22
  */
-class BigIntsTest extends WordSpec {
+class BigIntsSpec extends WordSpec {
 
   "BigInts.sqrt" when {
     "sqrt(BigInt(-1))" should {

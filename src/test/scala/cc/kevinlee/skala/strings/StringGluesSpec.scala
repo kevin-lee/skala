@@ -6,7 +6,7 @@ import org.scalatest.WordSpec
  * @author Lee, Seong Hyun (Kevin)
  * @since 2015-05-17
  */
-class StringGluesTest extends WordSpec {
+class StringGluesSpec extends WordSpec {
 
   "StringGlues.glueWithSlash" when {
     import StringGlues.glueWithSlash

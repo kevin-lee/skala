@@ -37,9 +37,17 @@ Seq(bintrayPublishSettings:_*)
 
 repository in bintray := "maven"
 
+
+
 lazy val writeVersion = inputKey[Unit]("Write Version in File'")
 
 writeVersion := versionWriter(() => Def.spaceDelimited("filename").parsed)(projectVersion)
+
+
+import org.scoverage.coveralls.Imports.CoverallsKeys._
+
+coverallsTokenFile := Option(s"""${sys.props("user.home")}/.coveralls-credentials""")
+
 
 val repoLocation = "Kevin-Lee/skala"
 

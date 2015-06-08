@@ -1,12 +1,16 @@
+import CommonUtils._
+
 name := "skala"
 
 organization := "cc.kevinlee"
 
-version := "0.0.2"
+val projectVersion = "0.0.2"
+
+version := projectVersion
 
 scalaVersion := "2.11.6"
 
-libraryDependencies += "org.scalatest" % "scalatest_2.11" % "2.2.1" % "test"
+libraryDependencies += "org.scalatest" % "scalatest_2.11" % "2.2.4" % "test"
 
 publishMavenStyle := true
 
@@ -32,3 +36,30 @@ licenses += ("MIT", url("http://opensource.org/licenses/MIT"))
 Seq(bintrayPublishSettings:_*)
 
 repository in bintray := "maven"
+
+lazy val writeVersion = inputKey[Unit]("Write Version in File'")
+
+writeVersion := versionWriter(() => Def.spaceDelimited("filename").parsed)(projectVersion)
+
+val repoLocation = "Kevin-Lee/skala"
+
+/* GitHub Release { */
+GithubRelease.repo := repoLocation
+
+GithubRelease.tag := s"v${projectVersion}"
+
+GithubRelease.releaseName := GithubRelease.tag.value
+
+GithubRelease.commitish := "release"
+
+GithubRelease.notesFile := GithubRelease.notesDir.value / s"${projectVersion}.md"
+
+GithubRelease.releaseAssets := {
+
+  val binNames = listFiles(target.value / "ci", "*.jar")
+
+  println(s"fileNames: $binNames")
+
+  binNames
+}
+/* } GitHub Release */

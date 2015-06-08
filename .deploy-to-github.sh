@@ -14,13 +14,13 @@ if sbt checkGithubCredentials releaseOnGithub ; then
 #    echo "============================================"
 #  else
 #    echo "============================================"
-#    echo "Build and Deploy: Failed"
+#    echo "Build and Deploy: Failed" 1>&2
 #    echo "============================================"
 #    exit 1
 #  fi
 else
   echo "============================================"
-  echo "Build and Deploy: Failed"
+  echo "Build and Deploy: Failed" 1>&2
   echo "============================================"
   exit 1
 fi

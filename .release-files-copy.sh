@@ -2,7 +2,7 @@
 
 if [ ! -n "$PROJECT_BUILD_NAME" ]
   then
-  echo "NO PROJECT_BUILD_NAME is found so quit!"
+  echo "NO PROJECT_BUILD_NAME is found so quit!" 1>&2
   exit 1
 fi
 
@@ -15,7 +15,7 @@ echo "------------------------------------------------------"
 if sbt publish ; then
   echo "Done: sbt publish"
 else
-  echo "Failed: sbt publish"
+  echo "Failed: sbt publish" 1>&2
   exit 1
 fi
 echo "======================================================"

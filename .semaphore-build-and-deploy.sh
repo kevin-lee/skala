@@ -30,7 +30,7 @@ if [ "$THIS_BRANCH" == "release" ];
 
   if [ ! -f "$VERSION_FILE" ]
     then
-    echo "NO version file, '$VERSION_FILE', exists so quit!"
+    echo "NO version file, '$VERSION_FILE', exists so quit!" 1>&2
     exit 1
   fi
 
@@ -39,7 +39,7 @@ if [ "$THIS_BRANCH" == "release" ];
 
   if [ ! -n "$PROJECT_VERSION" ]
     then
-    echo "NO PROJECT_VERSION is found so quit!"
+    echo "NO PROJECT_VERSION is found so quit!" 1>&2
     exit 1
   fi
 

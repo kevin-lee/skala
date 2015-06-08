@@ -1,9 +1,11 @@
 Skala
 =====
 [![Build Status](https://travis-ci.org/Kevin-Lee/skala.svg)](https://travis-ci.org/Kevin-Lee/skala)
+[![Build Status](https://semaphoreci.com/api/v1/projects/0749a644-9deb-49a2-8781-da758bc731be/439826/badge.svg)](https://semaphoreci.com/kevin-lee/skala)
+[![Download](https://api.bintray.com/packages/kevinlee/maven/skala/images/download.svg)](https://bintray.com/kevinlee/maven/skala/_latestVersion)
+
 [![Codacy Badge](https://www.codacy.com/project/badge/6918a01879ce4870b7210f0f1c0bef18)](https://www.codacy.com/app/kevin-lee/skala)
 [![Coverage Status](https://coveralls.io/repos/Kevin-Lee/skala/badge.svg)](https://coveralls.io/r/Kevin-Lee/skala)
-[![Download](https://api.bintray.com/packages/kevinlee/maven/skala/images/download.svg)](https://bintray.com/kevinlee/maven/skala/_latestVersion)
 [![Issue Stats](http://www.issuestats.com/github/Kevin-Lee/skala/badge/issue)](http://www.issuestats.com/github/Kevin-Lee/skala)
 
 [![views](https://sourcegraph.com/api/repos/github.com/Kevin-Lee/skala/.counters/views.svg)](https://sourcegraph.com/github.com/Kevin-Lee/skala)

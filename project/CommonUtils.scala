@@ -81,9 +81,9 @@ object CommonUtils {
     println(
       s"""
          |      basePath: ${basePath.base}
-          |           dir: ${basePath.dir}
-          |        prefix: ${prefix.value}
-          |basePathLength: $basePathLength
+         |           dir: ${basePath.dir}
+         |        prefix: ${prefix.value}
+         |basePathLength: $basePathLength
        """.stripMargin)
     listFiles(basePath.base / basePath.dir.getOrElse(""), names)
       .map(f => (f, f.getPath))

@@ -4,15 +4,18 @@ echo "======================================================"
 echo "Build packages"
 echo "------------------------------------------------------"
 
+sbt clean
+sbt writeVersion
+
 echo ""
 echo "======================================================"
-echo "Run: sbt clean package"
+echo "Run: sbt package"
 echo "------------------------------------------------------"
 if sbt clean package ; then
-  echo "Done: sbt clean package"
+  echo "Done: sbt package"
   echo "======================================================"
 else
-  echo "Failed: sbt clean package" 1>&2
+  echo "Failed: sbt package" 1>&2
   echo "======================================================"
   exit 1
 fi

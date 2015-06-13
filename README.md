@@ -1,6 +1,7 @@
 Skala
 =====
 [![Build Status](https://semaphoreci.com/api/v1/projects/0749a644-9deb-49a2-8781-da758bc731be/439826/badge.svg)](https://semaphoreci.com/kevin-lee/skala)
+[![Build Status](https://semaphoreci.com/api/v1/projects/0749a644-9deb-49a2-8781-da758bc731be/439826/shields_badge.svg)](https://semaphoreci.com/kevin-lee/skala)
 [![Build Status](https://travis-ci.org/Kevin-Lee/skala.svg)](https://travis-ci.org/Kevin-Lee/skala)
 [![Download](https://api.bintray.com/packages/kevinlee/maven/skala/images/download.svg)](https://bintray.com/kevinlee/maven/skala/_latestVersion)
 

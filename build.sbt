@@ -8,9 +8,14 @@ val projectVersion = "0.0.2"
 
 version := projectVersion
 
-scalaVersion := "2.11.6"
+scalaVersion := "2.11.7"
 
-libraryDependencies += "org.scalatest" % "scalatest_2.11" % "2.2.4" % "test"
+libraryDependencies ++= List(
+//  "org.scala-lang" % "scala-library" % "2.11.7",
+//  "org.scala-lang" % "scala-reflect" % "2.11.7",
+//  "org.scala-lang.modules" % "scala-xml_2.11" % "1.0.4",
+  "org.scalatest" % "scalatest_2.11" % "2.2.4" % "test"
+)
 
 publishMavenStyle := true
 
@@ -29,14 +34,7 @@ pomExtra := (
       <connection>scm:git:git@github.com:Kevin-Lee/skala.git</connection>
     </scm>)
 
-import bintray.Keys._
-
 licenses += ("MIT", url("http://opensource.org/licenses/MIT"))
-
-Seq(bintrayPublishSettings:_*)
-
-repository in bintray := "maven"
-
 
 
 lazy val writeVersion = inputKey[Unit]("Write Version in File'")

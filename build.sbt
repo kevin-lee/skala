@@ -22,7 +22,7 @@ publishMavenStyle := true
 pomIncludeRepository := { _ => false }
 
 pomExtra := (
-  <url>https://github.com/Kevin-Lee/skala</url>
+    <url>https://github.com/Kevin-Lee/skala</url>
     <licenses>
       <license>
         <name>The MIT License</name>
@@ -44,7 +44,7 @@ writeVersion := versionWriter(() => Def.spaceDelimited("filename").parsed)(proje
 
 import org.scoverage.coveralls.Imports.CoverallsKeys._
 
-coverallsTokenFile := Option(s"""${sys.props("user.home")}/.coveralls-credentials""")
+coverallsTokenFile := Option(s"""${Path.userHome.absolutePath}/.coveralls-credentials""")
 
 
 val repoLocation = "Kevin-Lee/skala"
@@ -52,7 +52,7 @@ val repoLocation = "Kevin-Lee/skala"
 /* GitHub Release { */
 GithubRelease.repo := repoLocation
 
-GithubRelease.tag := s"v${projectVersion}"
+GithubRelease.tag := s"v$projectVersion"
 
 GithubRelease.releaseName := GithubRelease.tag.value
 

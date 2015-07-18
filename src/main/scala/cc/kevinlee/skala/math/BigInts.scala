@@ -6,7 +6,7 @@ import scala.collection.TraversableLike
  * @author Lee, SeongHyun (Kevin)
  * @since 2015-03-22
  */
-object BigInts extends CommonMath {
+object BigInts {
 
   /**
    * Returns the square root of a BigInt value.
@@ -92,6 +92,7 @@ object BigInts extends CommonMath {
    */
   def median(numbers: Seq[BigInt]): BigDecimal = median(numbers.sortBy(identity), numbers.length)
 
+  def mode(numbers: Seq[BigInt]): Seq[BigInt] = CommonMath.mode(numbers)
 
   def standardDeviation(numbers: TraversableLike[BigInt, TraversableLike[BigInt, _]], length: Int, mean: BigDecimal): BigDecimal =
     if (length == 0)

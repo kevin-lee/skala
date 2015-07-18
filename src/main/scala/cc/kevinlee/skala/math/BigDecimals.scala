@@ -7,7 +7,7 @@ import scala.collection.TraversableLike
  * @author Lee, SeongHyun (Kevin)
  * @since 2015-03-22
  */
-object BigDecimals extends CommonMath {
+object BigDecimals {
 
   private def isGoodEnough(guess: BigDecimal, number: BigDecimal): Boolean = ((guess * guess - number).abs / number) < 1E-32
   private def improve(guess: BigDecimal, number: BigDecimal): BigDecimal = (guess + number / guess) / 2
@@ -47,6 +47,8 @@ object BigDecimals extends CommonMath {
     case theLength => sortedNumbers(theLength / 2)
   }
   def median(numbers: Seq[BigDecimal]): BigDecimal = median(numbers.sortBy(identity), numbers.length)
+
+  def mode(numbers: Seq[BigDecimal]): Seq[BigDecimal] = CommonMath.mode(numbers)
 
   def standardDeviation(numbers: TraversableLike[BigDecimal, TraversableLike[BigDecimal, _]], length: Int, mean: BigDecimal): BigDecimal =
     if (length == 0)

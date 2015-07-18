@@ -293,4 +293,83 @@ class BigDecimalsSpec extends WordSpec {
       }
     }
   }
+
+  "BigDecimals.mode" when {
+    val emptyList = List.empty[BigDecimal]
+    s"mode($emptyList)" should {
+      val expected = List.empty[BigDecimal]
+      s"return $expected" in {
+        val actual = BigDecimals.mode(emptyList)
+        assert(actual === expected)
+      }
+    }
+    val numbers0 = List[BigDecimal](0)
+    s"mode($numbers0)" should {
+      val expected = List[BigDecimal](0)
+      s"return $expected" in {
+        val actual = BigDecimals.mode(numbers0)
+        assert(actual === expected)
+      }
+    }
+    val numbers1 = List[BigDecimal](999)
+    s"mode($numbers1)" should {
+      val expected = List[BigDecimal](999)
+      s"return $expected" in {
+        val actual = BigDecimals.mode(numbers1)
+        assert(actual === expected)
+      }
+    }
+    val numbers2 = List[BigDecimal](1, 2)
+    s"mode($numbers2)" should {
+      val expected = List[BigDecimal](1, 2)
+      s"return $expected" in {
+        val actual = BigDecimals.mode(numbers2)
+        assert(actual === expected)
+      }
+    }
+    val numbers3 = List[BigDecimal](1, 2, 3)
+    s"mode($numbers3)" should {
+      val expected = List[BigDecimal](1, 2, 3)
+      s"return $expected" in {
+        val actual = BigDecimals.mode(numbers3)
+        assert(actual === expected)
+      }
+    }
+    val numbers4 = List[BigDecimal](3, 7, 5, 13, 20, 23, 39, 23, 40, 23, 14, 12, 56, 23, 29)
+    s"mode($numbers4)" should {
+      val expected = List[BigDecimal](23)
+      s"return $expected" in {
+        val actual = BigDecimals.mode(numbers4)
+        assert(actual === expected)
+      }
+    }
+    val numbers5 = List[BigDecimal](1, 3, 3, 3, 4, 4, 6, 6, 6, 9)
+    s"mode($numbers5)" should {
+      val expected = List[BigDecimal](3, 6)
+      s"return $expected" in {
+        val actual = BigDecimals.mode(numbers5)
+        assert(actual === expected)
+      }
+    }
+    val numbers6 = List[BigDecimal](1, 1, 2, 3, 3, 3, 3, 5, 5, 7, 7, 7, 7, 100, 101, 101, 101, 101, 8)
+    s"mode($numbers6)" should {
+      val expected = List[BigDecimal](3, 7, 101)
+      s"return $expected" in {
+        val actual = BigDecimals.mode(numbers6)
+        assert(actual === expected)
+      }
+    }
+    val bigIntOfLongMax = BigDecimal(Long.MaxValue)
+    val longMaxX2 = bigIntOfLongMax * 2
+    val longMaxX3 = bigIntOfLongMax * 3
+    val numbers7 = List[BigDecimal](1, 1, 2, longMaxX3, longMaxX3, longMaxX3, longMaxX3, longMaxX3, 5, 5, 7, 7, 7, 7, longMaxX2, longMaxX2, longMaxX2, longMaxX2, longMaxX2, 8)
+    s"mode($numbers7)" should {
+      val expected = List[BigDecimal](longMaxX2, longMaxX3)
+      s"return $expected" in {
+        val actual = BigDecimals.mode(numbers7)
+        assert(actual === expected)
+      }
+    }
+  }
+
 }

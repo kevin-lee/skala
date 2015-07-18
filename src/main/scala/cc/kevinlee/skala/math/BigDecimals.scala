@@ -1,7 +1,5 @@
 package cc.kevinlee.skala.math
 
-import java.math.{RoundingMode, MathContext}
-
 import scala.annotation.tailrec
 import scala.collection.TraversableLike
 
@@ -9,8 +7,7 @@ import scala.collection.TraversableLike
  * @author Lee, SeongHyun (Kevin)
  * @since 2015-03-22
  */
-object BigDecimals {
-  import collection.immutable.Seq
+object BigDecimals extends CommonMath {
 
   private def isGoodEnough(guess: BigDecimal, number: BigDecimal): Boolean = ((guess * guess - number).abs / number) < 1E-32
   private def improve(guess: BigDecimal, number: BigDecimal): BigDecimal = (guess + number / guess) / 2
@@ -51,8 +48,6 @@ object BigDecimals {
   }
   def median(numbers: Seq[BigDecimal]): BigDecimal = median(numbers.sortBy(identity), numbers.length)
 
-  def mode(sortedNumbers: Seq[BigDecimal]): BigDecimal = if (sortedNumbers.isEmpty) 0 else sortedNumbers.groupBy(identity).maxBy(_._2.length)._1
-
   def standardDeviation(numbers: TraversableLike[BigDecimal, TraversableLike[BigDecimal, _]], length: Int, mean: BigDecimal): BigDecimal =
     if (length == 0)
       0
@@ -70,7 +65,7 @@ object BigDecimals {
     def sortedNumbers: Seq[BigDecimal] = numbers.sortBy(identity)
     def mean: BigDecimal = BigDecimals.mean(numbers)
     def median: BigDecimal = BigDecimals.median(sortedNumbers, numbers.length)
-    def mode: BigDecimal = BigDecimals.mode(sortedNumbers)
+    def mode: Seq[BigDecimal] = BigDecimals.mode(sortedNumbers)
     def standardDeviation: BigDecimal = BigDecimals.standardDeviation(numbers, numbers.length, mean)
   }
 

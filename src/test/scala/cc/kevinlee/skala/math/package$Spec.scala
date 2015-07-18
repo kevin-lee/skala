@@ -188,7 +188,7 @@ class package$Spec extends WordSpec with BeforeAndAfterEach {
     }
     "sqrt(2)" should {
       val number = 2
-      val expected = math.sqrt(number)
+      val expected = math.sqrt(number.toDouble)
       s"return $expected" in {
         val actual = sqrt(number)
         assert(actual === expected)
@@ -204,7 +204,7 @@ class package$Spec extends WordSpec with BeforeAndAfterEach {
     }
     "sqrt(10)" should {
       val number = 10
-      val expected = math.sqrt(number)
+      val expected = math.sqrt(number.toDouble)
       s"return $expected" in {
         val actual = sqrt(number)
         assert(actual === expected)
@@ -212,7 +212,7 @@ class package$Spec extends WordSpec with BeforeAndAfterEach {
     }
     s"sqrt(${Int.MaxValue})" should {
       val number = Int.MaxValue
-      val expected = math.sqrt(number)
+      val expected = math.sqrt(number.toDouble)
       s"return $expected" in {
         val actual = sqrt(number)
         assert(actual === expected)

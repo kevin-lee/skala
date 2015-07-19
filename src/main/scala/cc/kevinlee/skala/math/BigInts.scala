@@ -7,7 +7,6 @@ import scala.collection.TraversableLike
  * @since 2015-03-22
  */
 object BigInts {
-  import collection.immutable.Seq
 
   /**
    * Returns the square root of a BigInt value.
@@ -28,20 +27,74 @@ object BigInts {
   def mean(numbers: TraversableLike[BigInt, TraversableLike[BigInt, _]]): BigDecimal = if (numbers.isEmpty) 0 else BigDecimal(numbers.sum) / numbers.size
 
 
+  /**
+   * Returns Median value of the given Seq of BigInt.
+   * <pre>
+   * WARNING!!! The given Seq must be sorted.
+   * </pre>
+   *
+   * <p>
+   *   <ul>
+   *     <li>
+   *       If the number of elements (n) is 0, it returns 0.
+   *     </li>
+   *   </ul>
+   *   <ul>
+   *     <li>
+   *       If the number of elements (n) is odd, median(sorted Seq of BigInt) = The value of (n / 2)th item.
+   *     </li>
+   *   </ul>
+   *   <ul>
+   *     <li>
+   *       If the number of elements (n) is even, median(sorted Seq of BigInt) = The value of [(n / 2 - 1)th item + (n / 2)th item term ] / 2
+   *     </li>
+   *   </ul>
+   * </p>
+   *
+   * @param sortedNumbers the given Seq of BigInt. This must be sorted.
+   * @param length The length of the given Seq
+   * @return The median value of the given Seq.
+   */
   def median(sortedNumbers: Seq[BigInt], length: Int): BigDecimal = length match {
     case 0 => 0
-    case theLength if isEven(theLength) =>
+    case theLength if CommonMath.isEven(theLength) =>
       val half = theLength / 2
       BigDecimal(sortedNumbers(half - 1) + sortedNumbers(half)) / 2
-    case theLength => BigDecimal(sortedNumbers(theLength / 2))
+    case theLength =>
+      BigDecimal(sortedNumbers(theLength / 2))
   }
 
-  def median(numbers: Seq[BigInt]): BigDecimal = median(numbers.sortBy(identity), numbers.length)
+  /**
+   * Returns Median value of the given Seq of BigInt.
+   * The given Seq will be sorted so it doesn't have to be soreted when it's passed as a parameter.
+   * If the Seq is already sorted, better use [[BigInts!.median(sortedNumbers:Seq[BigInt],length:Int)*]]
+   *
+   * <p>
+   *   <ul>
+   *     <li>
+   *       If the number of elements (n) is 0, it returns 0.
+   *     </li>
+   *   </ul>
+   *   <ul>
+   *     <li>
+   *       If the number of elements (n) is odd, median(sorted Seq of BigInt) = The value of (n / 2)th item.
+   *     </li>
+   *   </ul>
+   *   <ul>
+   *     <li>
+   *       If the number of elements (n) is even, median(sorted Seq of BigInt) = The value of [(n / 2 - 1)th item + (n / 2)th item term ] / 2
+   *     </li>
+   *   </ul>
+   * </p>
+   *
+   * @param numbers the given Seq of BigInt. This does not have to be sorted and it will be sorted.
+   * @return The median value of the given Seq.
+   */
+  def median(numbers: Seq[BigInt]): BigDecimal = median(numbers.sorted, numbers.length)
 
-  def mode(sortedNumbers: Seq[BigInt]): BigInt = if (sortedNumbers.isEmpty) 0 else sortedNumbers.groupBy(identity).maxBy(_._2.length)._1
+  def mode(numbers: Seq[BigInt]): Seq[BigInt] = CommonMath.mode(numbers)
 
-
-  def standardDeviation(numbers: TraversableLike[BigInt, TraversableLike[BigInt, _]], length: Int, mean: BigDecimal): BigDecimal =
+  def stdev(numbers: TraversableLike[BigInt, TraversableLike[BigInt, _]], length: Int, mean: BigDecimal): BigDecimal =
     if (length == 0)
       0
     else
@@ -51,18 +104,29 @@ object BigInts {
                .sum / length
       )
 
-  def standardDeviation(numbers: TraversableLike[BigInt, TraversableLike[BigInt, _]]): BigDecimal = standardDeviation(numbers, numbers.size, mean(numbers))
-  def stdev(numbers: TraversableLike[BigInt, TraversableLike[BigInt, _]]): BigDecimal = standardDeviation(numbers)
+  /**
+   * Computes the Standard Deviation of the given BigInt numbers.
+   *
+   * <pre>
+   * variance = ((x1 - mean)&#94;2 + (x2 - mean)&#94;2  + ... + (xn - mean)&#94;2) / n
+   * </pre>
+   * <pre>
+   * standard deviation = √variance
+   * </pre>
+   *
+   * @param numbers the given BigInt numbers
+   * @return the Standard Deviation of the given BigInt numbers
+   */
+  def stdev(numbers: TraversableLike[BigInt, TraversableLike[BigInt, _]]): BigDecimal = stdev(numbers, numbers.size, mean(numbers))
 
   implicit class BigIntSeq(val numbers: Seq[BigInt]) extends AnyVal {
-    def sortedNumbers: Seq[BigInt] = numbers.sortBy(identity)
     def mean: BigDecimal = BigInts.mean(numbers)
-    def median: BigDecimal = BigInts.median(sortedNumbers, numbers.length)
-    def mode: BigInt = BigInts.mode(sortedNumbers)
-    def standardDeviation: BigDecimal = BigInts.standardDeviation(numbers, numbers.length, mean)
+    def median: BigDecimal = BigInts.median(numbers.sorted, numbers.length)
+    def mode: Seq[BigInt] = BigInts.mode(numbers.sorted)
+    def stdev: BigDecimal = BigInts.stdev(numbers, numbers.length, mean)
   }
 
-  private final val bigInts_11_12_13 =List(BigInt(11), BigInt(12), BigInt(13))
+  private final val bigInts_11_12_13 =Set(BigInt(11), BigInt(12), BigInt(13))
   def toOrdinal(number: BigInt): String =
     if (bigInts_11_12_13 contains number)
       s"${number}th"

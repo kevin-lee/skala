@@ -18,17 +18,17 @@ fi
 
 echo ""
 
-echo "============================================"
-echo "Run: sbt coveralls"
-echo "--------------------------------------------"
-if sbt coveralls ; then
-  echo "Done: sbt coveralls"
-  echo "============================================"
-else
-  echo "Failed: sbt coveralls" 1>&2
-  echo "============================================"
-  exit 1
-fi
+# echo "============================================"
+# echo "Run: sbt coveralls"
+# echo "--------------------------------------------"
+# if sbt coveralls ; then
+#   echo "Done: sbt coveralls"
+#   echo "============================================"
+# else
+#   echo "Failed: sbt coveralls" 1>&2
+#   echo "============================================"
+#   exit 1
+# fi
 echo ""
 echo "============================================"
 echo "Building projects: Done"

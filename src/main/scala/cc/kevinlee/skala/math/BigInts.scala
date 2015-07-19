@@ -57,7 +57,7 @@ object BigInts {
    */
   def median(sortedNumbers: Seq[BigInt], length: Int): BigDecimal = length match {
     case 0 => 0
-    case theLength if isEven(theLength) =>
+    case theLength if CommonMath.isEven(theLength) =>
       val half = theLength / 2
       BigDecimal(sortedNumbers(half - 1) + sortedNumbers(half)) / 2
     case theLength =>
@@ -126,7 +126,7 @@ object BigInts {
     def stdev: BigDecimal = BigInts.stdev(numbers, numbers.length, mean)
   }
 
-  private final val bigInts_11_12_13 =List(BigInt(11), BigInt(12), BigInt(13))
+  private final val bigInts_11_12_13 =Set(BigInt(11), BigInt(12), BigInt(13))
   def toOrdinal(number: BigInt): String =
     if (bigInts_11_12_13 contains number)
       s"${number}th"

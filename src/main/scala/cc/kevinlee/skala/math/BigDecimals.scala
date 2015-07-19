@@ -41,7 +41,7 @@ object BigDecimals {
 
   def median(sortedNumbers: Seq[BigDecimal], length: Int): BigDecimal = length match {
     case 0 => 0
-    case theLength if isEven(theLength) =>
+    case theLength if CommonMath.isEven(theLength) =>
       val half = theLength / 2
       (sortedNumbers(half - 1) + sortedNumbers(half)) / 2
     case theLength => sortedNumbers(theLength / 2)

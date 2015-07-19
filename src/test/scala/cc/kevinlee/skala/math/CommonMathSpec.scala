@@ -1,8 +1,7 @@
 package cc.kevinlee.skala.math
 
-import java.math.MathContext
-
 import org.scalameter.api._
+import org.scalatest.Matchers._
 import org.scalatest.WordSpec
 
 import scala.util.Random
@@ -282,22 +281,21 @@ class CommonMathSpec extends WordSpec {
       }
     }
     "sqrt(10L)" should {
-      "return BigDecimal(3.162277660168379...) and actual * actual === BigInt(10)" in {
+      "return BigDecimal(3.162277660168379...) and actual * actual === (BigInt(10) +- 0.00000000000000000000000000000001)" in {
         val number = 10L
         val expected = "3.162277660168379"
         val actual = commonMath.sqrt(number)
         assert(actual.toString startsWith expected)
-        assert((actual * actual).round(MathContext.DECIMAL64) === number)
+        assert((actual * actual) === (BigDecimal(number) +- BigDecimal("0.00000000000000000000000000000001")))
       }
     }
     "sqrt(89479223372L)" should {
-      "return BigDecimal(299130.779713489...) and actual * actual === BigInt(89479223372)" in {
+      "return BigDecimal(299130.779713489...) and actual * actual === (BigInt(89479223372) +- 0.0000000000000000000001)" in {
         val number = 89479223372L
-
         val expected = "299130.779713489"
         val actual = commonMath.sqrt(number)
         assert(actual.toString startsWith expected)
-        assert((actual * actual).round(MathContext.DECIMAL64) === number)
+        assert((actual * actual) === (BigDecimal(number) +- BigDecimal("0.0000000000000000000001")))
       }
     }
   }

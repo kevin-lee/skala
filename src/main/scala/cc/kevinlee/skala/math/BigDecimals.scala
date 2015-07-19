@@ -25,8 +25,8 @@ object BigDecimals {
    * Returns the square root of a BigDecimal value.
    * @param number the given BigDecimal number
    * @return the positive square root of the given number.
-   * @throws IllegalArgumentException If the argument is less than zero.
    */
+  @throws[IllegalArgumentException]("If the argument is less than zero.")
   def sqrt(number: BigDecimal): BigDecimal =
     if (number < 0) throw new IllegalArgumentException(s"\u221A of negative number! sqrt can handle only non-negative numbers. [entered: $number]")
     else sqrt(1, number)

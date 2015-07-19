@@ -12,8 +12,8 @@ object BigInts {
    * Returns the square root of a BigInt value.
    * @param number the given BitInt number
    * @return the positive square root of the given number.
-   * @throws IllegalArgumentException If the argument is less than zero.
    */
+  @throws[IllegalArgumentException]("If the argument is less than zero.")
   def sqrt(number: BigInt): BigDecimal = BigDecimals.sqrt(BigDecimal(number))
 
   def findSqrt(number: BigInt): Option[BigDecimal] = BigDecimals.findSqrt(BigDecimal(number))
@@ -67,7 +67,7 @@ object BigInts {
   /**
    * Returns Median value of the given Seq of BigInt.
    * The given Seq will be sorted so it doesn't have to be soreted when it's passed as a parameter.
-   * If the Seq is already sorted, better use [[BigInts!.median(sortedNumbers:Seq[BigInt],length:Int)*]]
+   * If the Seq is already sorted, better use `BigInts.median(sortedNumbers: Seq[BigInt], length: Int)`
    *
    * <p>
    *   <ul>

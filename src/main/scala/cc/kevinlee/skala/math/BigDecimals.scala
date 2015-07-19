@@ -1,7 +1,5 @@
 package cc.kevinlee.skala.math
 
-import java.math.{RoundingMode, MathContext}
-
 import scala.annotation.tailrec
 import scala.collection.TraversableLike
 
@@ -10,7 +8,6 @@ import scala.collection.TraversableLike
  * @since 2015-03-22
  */
 object BigDecimals {
-  import collection.immutable.Seq
 
   private def isGoodEnough(guess: BigDecimal, number: BigDecimal): Boolean = ((guess * guess - number).abs / number) < 1E-32
   private def improve(guess: BigDecimal, number: BigDecimal): BigDecimal = (guess + number / guess) / 2
@@ -44,16 +41,16 @@ object BigDecimals {
 
   def median(sortedNumbers: Seq[BigDecimal], length: Int): BigDecimal = length match {
     case 0 => 0
-    case theLength if isEven(theLength) =>
+    case theLength if CommonMath.isEven(theLength) =>
       val half = theLength / 2
       (sortedNumbers(half - 1) + sortedNumbers(half)) / 2
     case theLength => sortedNumbers(theLength / 2)
   }
-  def median(numbers: Seq[BigDecimal]): BigDecimal = median(numbers.sortBy(identity), numbers.length)
+  def median(numbers: Seq[BigDecimal]): BigDecimal = median(numbers.sorted, numbers.length)
 
-  def mode(sortedNumbers: Seq[BigDecimal]): BigDecimal = if (sortedNumbers.isEmpty) 0 else sortedNumbers.groupBy(identity).maxBy(_._2.length)._1
+  def mode(numbers: Seq[BigDecimal]): Seq[BigDecimal] = CommonMath.mode(numbers)
 
-  def standardDeviation(numbers: TraversableLike[BigDecimal, TraversableLike[BigDecimal, _]], length: Int, mean: BigDecimal): BigDecimal =
+  def stdev(numbers: TraversableLike[BigDecimal, TraversableLike[BigDecimal, _]], length: Int, mean: BigDecimal): BigDecimal =
     if (length == 0)
       0
     else
@@ -63,15 +60,26 @@ object BigDecimals {
                .sum / length
       )
 
-  def standardDeviation(numbers: TraversableLike[BigDecimal, TraversableLike[BigDecimal, _]]): BigDecimal = standardDeviation(numbers, numbers.size, mean(numbers))
-  def stdev(numbers: TraversableLike[BigDecimal, TraversableLike[BigDecimal, _]]): BigDecimal = standardDeviation(numbers)
+  /**
+   * Computes the Standard Deviation of the given BigDecimal numbers.
+   *
+   * <pre>
+   * variance = ((x1 - mean)&#94;2 + (x2 - mean)&#94;2  + ... + (xn - mean)&#94;2) / n
+   * </pre>
+   * <pre>
+   * standard deviation = √variance
+   * </pre>
+   *
+   * @param numbers the given BigDecimal numbers
+   * @return the Standard Deviation of the given BigInt numbers
+   */
+  def stdev(numbers: TraversableLike[BigDecimal, TraversableLike[BigDecimal, _]]): BigDecimal = stdev(numbers, numbers.size, mean(numbers))
 
   implicit class BigDecimalSeq(val numbers: Seq[BigDecimal]) extends AnyVal {
-    def sortedNumbers: Seq[BigDecimal] = numbers.sortBy(identity)
     def mean: BigDecimal = BigDecimals.mean(numbers)
-    def median: BigDecimal = BigDecimals.median(sortedNumbers, numbers.length)
-    def mode: BigDecimal = BigDecimals.mode(sortedNumbers)
-    def standardDeviation: BigDecimal = BigDecimals.standardDeviation(numbers, numbers.length, mean)
+    def median: BigDecimal = BigDecimals.median(numbers.sorted, numbers.length)
+    def mode: Seq[BigDecimal] = BigDecimals.mode(numbers.sorted)
+    def stdev: BigDecimal = BigDecimals.stdev(numbers, numbers.length, mean)
   }
 
 

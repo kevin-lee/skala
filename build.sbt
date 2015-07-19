@@ -4,20 +4,44 @@ name := "skala"
 
 organization := "cc.kevinlee"
 
-val projectVersion = "0.0.2"
+val projectVersion = "0.0.3"
 
 version := projectVersion
 
-scalaVersion := "2.11.6"
+scalaVersion := "2.11.7"
 
-libraryDependencies += "org.scalatest" % "scalatest_2.11" % "2.2.4" % "test"
+scalacOptions ++= Seq(
+  "-deprecation",             // Emit warning and location for usages of deprecated APIs.
+  "-feature",                 // Emit warning and location for usages of features that should be imported explicitly.
+  "-unchecked",               // Enable additional warnings where generated code depends on assumptions.
+  "-Xfatal-warnings",         // Fail the compilation if there are any warnings.
+//  "-Xlint",                 // Enable recommended additional warnings.
+  "-Ywarn-adapted-args",      // Warn if an argument list is modified to match the receiver.
+  "-Ywarn-dead-code",         // Warn when dead code is identified.
+  "-Ywarn-inaccessible",      // Warn about inaccessible types in method signatures.
+  "-Ywarn-nullary-override",  // Warn when non-nullary overrides nullary, e.g. def foo() over def foo.
+  "-Ywarn-numeric-widen"      // Warn when numerics are widened.
+)
+
+libraryDependencies ++= List(
+//  "org.scala-lang" % "scala-library" % "2.11.7",
+//  "org.scala-lang" % "scala-reflect" % "2.11.7",
+//  "org.scala-lang.modules" % "scala-xml_2.11" % "1.0.4",
+  "org.scalatest" % "scalatest_2.11" % "2.2.4" % "test",
+  "com.storm-enroute" %% "scalameter" % "0.6"
+)
+
+testFrameworks += new TestFramework("org.scalameter.ScalaMeterFramework")
+
+parallelExecution in Test := false
+
 
 publishMavenStyle := true
 
 pomIncludeRepository := { _ => false }
 
 pomExtra := (
-  <url>https://github.com/Kevin-Lee/skala</url>
+    <url>https://github.com/Kevin-Lee/skala</url>
     <licenses>
       <license>
         <name>The MIT License</name>
@@ -29,14 +53,7 @@ pomExtra := (
       <connection>scm:git:git@github.com:Kevin-Lee/skala.git</connection>
     </scm>)
 
-import bintray.Keys._
-
 licenses += ("MIT", url("http://opensource.org/licenses/MIT"))
-
-Seq(bintrayPublishSettings:_*)
-
-repository in bintray := "maven"
-
 
 
 lazy val writeVersion = inputKey[Unit]("Write Version in File'")
@@ -46,7 +63,7 @@ writeVersion := versionWriter(() => Def.spaceDelimited("filename").parsed)(proje
 
 import org.scoverage.coveralls.Imports.CoverallsKeys._
 
-coverallsTokenFile := Option(s"""${sys.props("user.home")}/.coveralls-credentials""")
+coverallsTokenFile := Option(s"""${Path.userHome.absolutePath}/.coveralls-credentials""")
 
 
 val repoLocation = "Kevin-Lee/skala"
@@ -54,7 +71,7 @@ val repoLocation = "Kevin-Lee/skala"
 /* GitHub Release { */
 GithubRelease.repo := repoLocation
 
-GithubRelease.tag := s"v${projectVersion}"
+GithubRelease.tag := s"v$projectVersion"
 
 GithubRelease.releaseName := GithubRelease.tag.value
 

@@ -2,6 +2,7 @@ package cc.kevinlee.skala.math
 
 import java.math.MathContext
 
+import org.scalatest.Matchers._
 import org.scalatest.WordSpec
 
 /**
@@ -39,9 +40,9 @@ class BigIntsSpec extends WordSpec {
     "sqrt(BigInt(2))" should {
       "return BigDecimal(1.414213562373095...) and actual * actual === BigInt(2)" in {
         val number: BigInt = 2
-        val expected = "1.414213562373095"
+        val expected = BigDecimal("1.414213562373095")
         val actual = BigInts.sqrt(number)
-        assert(actual.toString startsWith expected)
+        assert(actual === (expected +- 0.000000000000001))
         assert((actual * actual) === number)
       }
     }
@@ -57,20 +58,20 @@ class BigIntsSpec extends WordSpec {
     "sqrt(BigInt(10))" should {
       "return BigDecimal(3.162277660168379...) and actual * actual === BigInt(10)" in {
         val number: BigInt = 10
-        val expected = "3.162277660168379"
+        val expected = BigDecimal("3.162277660168379")
         val actual = BigInts.sqrt(number)
-        assert(actual.toString startsWith expected)
-        assert((actual * actual).round(MathContext.DECIMAL64) === number)
+        assert(actual === (expected +- 0.000000000000001))
+        assert((actual * actual) === (BigDecimal(number) +- 0.00000000000000000000000000000001))
       }
     }
     "sqrt(BigInt(89479223372))" should {
       "return BigDecimal(299130.779713489...) and actual * actual === BigInt(89479223372)" in {
         val number: BigInt = 89479223372L
 
-        val expected = "299130.779713489"
+        val expected = BigDecimal("299130.779713489")
         val actual = BigInts.sqrt(number)
-        assert(actual.toString startsWith expected)
-        assert((actual * actual).round(MathContext.DECIMAL64) === number)
+        assert(actual === (expected +- 0.000000001))
+        assert((actual * actual) === (BigDecimal(number) +- 0.0000000000000000000001))
       }
     }
   }
@@ -123,7 +124,7 @@ class BigIntsSpec extends WordSpec {
         val expected = Option[BigDecimal](BigInts.sqrt(number))
         val actual = BigInts.findSqrt(number)
         assert(actual === expected)
-        assert(actual.map(x => x * x).get.round(MathContext.DECIMAL64) === number)
+        assert(actual.map(x => x * x).get === (BigDecimal(number) +- 0.00000000000000000000000000000001))
       }
     }
     "findSqrt(BigInt(89479223372))" should {
@@ -132,7 +133,7 @@ class BigIntsSpec extends WordSpec {
         val expected = Option[BigDecimal](BigInts.sqrt(number))
         val actual = BigInts.findSqrt(number)
         assert(actual === expected)
-        assert(actual.map(x => x * x).get.round(MathContext.DECIMAL64) === number)
+        assert(actual.map(x => x * x).get === (BigDecimal(number) +- 0.0000000000000000000001))
       }
     }
   }
@@ -244,7 +245,7 @@ class BigIntsSpec extends WordSpec {
     }
     val numbers4unordered = List[BigInt](2, 4, 3, 1)
     s"median($numbers4unordered)" should {
-      val numbers4ordered = numbers4unordered.sortBy(identity)
+      val numbers4ordered = numbers4unordered.sorted
       val expected: BigDecimal = BigDecimal(numbers4ordered(1) + numbers4ordered(2)) / 2
       s"return $expected" in {
         val actual = BigInts.median(numbers4unordered)
@@ -360,6 +361,57 @@ class BigIntsSpec extends WordSpec {
       s"return $expected" in {
         val actual = BigInts.mode(numbers7)
         assert(actual === expected)
+      }
+    }
+  }
+
+  "BigInts.stdev" when {
+    val emptyList = List.empty[BigInt]
+    s"stdev($emptyList)" should {
+      val expected = BigDecimal(0)
+      s"return $expected" in {
+        val actual = BigInts.stdev(emptyList)
+        assert(actual === expected)
+      }
+    }
+    val numbers0 = List[BigInt](0)
+    s"stdev($numbers0)" should {
+      val expected = BigDecimal(0)
+      s"return $expected" in {
+        val actual = BigInts.stdev(numbers0)
+        assert(actual === expected)
+      }
+    }
+    val numbers1 = List[BigInt](999)
+    s"stdev($numbers1)" should {
+      val expected = BigDecimal(0)
+      s"return $expected" in {
+        val actual = BigInts.stdev(numbers1)
+        assert(actual === expected)
+      }
+    }
+    val numbers2 = List[BigInt](1, 2)
+    s"stdev($numbers2)" should {
+      val expected = BigDecimals.sqrt(BigDecimal("0.25"))
+      s"return $expected" in {
+        val actual = BigInts.stdev(numbers2)
+        assert(actual === expected)
+      }
+    }
+    val numbers3 = List[BigInt](1, 2, 3)
+    s"stdev($numbers3)" should {
+      val expected = BigDecimals.sqrt(BigDecimal(2) / 3)
+      s"return $expected" in {
+        val actual = BigInts.stdev(numbers3)
+        assert(actual === expected)
+      }
+    }
+    val numbers4 = List[BigInt](9, 2, 5, 4, 12, 7, 8, 11, 9, 3, 7, 4, 12, 5, 4, 10, 9, 6, 9, 4)
+    s"stdev($numbers4)" should {
+      val expected = BigDecimal("2.9832")
+      s"return $expected" in {
+        val actual = BigInts.stdev(numbers4)
+        assert(actual === (expected +- 0.0001))
       }
     }
   }

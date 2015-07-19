@@ -24,7 +24,7 @@ package object math {
     }
     case _ => ""
   }
-  def findOrdinal(number: Int): Option[String] = Option(number).map(toOrdinal).filterNot(_.isEmpty)
+  def findOrdinal(number: Int): Option[String] = Option(number).map(toOrdinal).filter(_.nonEmpty)
 
   def toOrdinal(number: Long): String = number match {
     case (11 | 12 | 13) => s"${number}th"
@@ -36,7 +36,7 @@ package object math {
     }
     case _ => ""
   }
-  def findOrdinal(number: Long): Option[String] = Option(number).map(toOrdinal).filterNot(_.isEmpty)
+  def findOrdinal(number: Long): Option[String] = Option(number).map(toOrdinal).filter(_.nonEmpty)
 
   implicit class MathInt(val number: Int) extends AnyVal {
     def isOdd: Boolean = math.isOdd(number)

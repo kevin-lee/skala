@@ -90,11 +90,11 @@ object BigInts {
    * @param numbers the given Seq of BigInt. This does not have to be sorted and it will be sorted.
    * @return The median value of the given Seq.
    */
-  def median(numbers: Seq[BigInt]): BigDecimal = median(numbers.sortBy(identity), numbers.length)
+  def median(numbers: Seq[BigInt]): BigDecimal = median(numbers.sorted, numbers.length)
 
   def mode(numbers: Seq[BigInt]): Seq[BigInt] = CommonMath.mode(numbers)
 
-  def standardDeviation(numbers: TraversableLike[BigInt, TraversableLike[BigInt, _]], length: Int, mean: BigDecimal): BigDecimal =
+  def stdev(numbers: TraversableLike[BigInt, TraversableLike[BigInt, _]], length: Int, mean: BigDecimal): BigDecimal =
     if (length == 0)
       0
     else
@@ -104,15 +104,26 @@ object BigInts {
                .sum / length
       )
 
-  def standardDeviation(numbers: TraversableLike[BigInt, TraversableLike[BigInt, _]]): BigDecimal = standardDeviation(numbers, numbers.size, mean(numbers))
-  def stdev(numbers: TraversableLike[BigInt, TraversableLike[BigInt, _]]): BigDecimal = standardDeviation(numbers)
+  /**
+   * Computes the Standard Deviation of the given BigInt numbers.
+   *
+   * <pre>
+   * variance = ((x1 - mean)&#94;2 + (x2 - mean)&#94;2  + ... + (xn - mean)&#94;2) / n
+   * </pre>
+   * <pre>
+   * standard deviation = √variance
+   * </pre>
+   *
+   * @param numbers the given BigInt numbers
+   * @return the Standard Deviation of the given BigInt numbers
+   */
+  def stdev(numbers: TraversableLike[BigInt, TraversableLike[BigInt, _]]): BigDecimal = stdev(numbers, numbers.size, mean(numbers))
 
   implicit class BigIntSeq(val numbers: Seq[BigInt]) extends AnyVal {
-    def sortedNumbers: Seq[BigInt] = numbers.sortBy(identity)
     def mean: BigDecimal = BigInts.mean(numbers)
-    def median: BigDecimal = BigInts.median(sortedNumbers, numbers.length)
-    def mode: Seq[BigInt] = BigInts.mode(sortedNumbers)
-    def standardDeviation: BigDecimal = BigInts.standardDeviation(numbers, numbers.length, mean)
+    def median: BigDecimal = BigInts.median(numbers.sorted, numbers.length)
+    def mode: Seq[BigInt] = BigInts.mode(numbers.sorted)
+    def stdev: BigDecimal = BigInts.stdev(numbers, numbers.length, mean)
   }
 
   private final val bigInts_11_12_13 =List(BigInt(11), BigInt(12), BigInt(13))

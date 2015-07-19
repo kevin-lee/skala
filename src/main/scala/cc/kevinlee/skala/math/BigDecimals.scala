@@ -46,11 +46,11 @@ object BigDecimals {
       (sortedNumbers(half - 1) + sortedNumbers(half)) / 2
     case theLength => sortedNumbers(theLength / 2)
   }
-  def median(numbers: Seq[BigDecimal]): BigDecimal = median(numbers.sortBy(identity), numbers.length)
+  def median(numbers: Seq[BigDecimal]): BigDecimal = median(numbers.sorted, numbers.length)
 
   def mode(numbers: Seq[BigDecimal]): Seq[BigDecimal] = CommonMath.mode(numbers)
 
-  def standardDeviation(numbers: TraversableLike[BigDecimal, TraversableLike[BigDecimal, _]], length: Int, mean: BigDecimal): BigDecimal =
+  def stdev(numbers: TraversableLike[BigDecimal, TraversableLike[BigDecimal, _]], length: Int, mean: BigDecimal): BigDecimal =
     if (length == 0)
       0
     else
@@ -60,15 +60,26 @@ object BigDecimals {
                .sum / length
       )
 
-  def standardDeviation(numbers: TraversableLike[BigDecimal, TraversableLike[BigDecimal, _]]): BigDecimal = standardDeviation(numbers, numbers.size, mean(numbers))
-  def stdev(numbers: TraversableLike[BigDecimal, TraversableLike[BigDecimal, _]]): BigDecimal = standardDeviation(numbers)
+  /**
+   * Computes the Standard Deviation of the given BigDecimal numbers.
+   *
+   * <pre>
+   * variance = ((x1 - mean)&#94;2 + (x2 - mean)&#94;2  + ... + (xn - mean)&#94;2) / n
+   * </pre>
+   * <pre>
+   * standard deviation = √variance
+   * </pre>
+   *
+   * @param numbers the given BigDecimal numbers
+   * @return the Standard Deviation of the given BigInt numbers
+   */
+  def stdev(numbers: TraversableLike[BigDecimal, TraversableLike[BigDecimal, _]]): BigDecimal = stdev(numbers, numbers.size, mean(numbers))
 
   implicit class BigDecimalSeq(val numbers: Seq[BigDecimal]) extends AnyVal {
-    def sortedNumbers: Seq[BigDecimal] = numbers.sortBy(identity)
     def mean: BigDecimal = BigDecimals.mean(numbers)
-    def median: BigDecimal = BigDecimals.median(sortedNumbers, numbers.length)
-    def mode: Seq[BigDecimal] = BigDecimals.mode(sortedNumbers)
-    def standardDeviation: BigDecimal = BigDecimals.standardDeviation(numbers, numbers.length, mean)
+    def median: BigDecimal = BigDecimals.median(numbers.sorted, numbers.length)
+    def mode: Seq[BigDecimal] = BigDecimals.mode(numbers.sorted)
+    def stdev: BigDecimal = BigDecimals.stdev(numbers, numbers.length, mean)
   }
 
 

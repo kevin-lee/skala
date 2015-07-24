@@ -442,6 +442,10 @@ class BigDecimalsSpec extends WordSpec {
     }
   }
 
+    val longMax = BigDecimal(Long.MaxValue)
+    val longMaxX2 = longMax * 2
+    val longMaxX3 = longMax * 3
+    val numbersContainingBigLong = List[BigDecimal](1, 1, 2, longMaxX3, longMaxX3, longMaxX3, longMaxX3, longMaxX3, 5, 5, 7, 7, 7, 7, longMaxX2, longMaxX2, longMaxX2, longMaxX2, longMaxX2, 8)
 
   "BigDecimals.mode" when {
     val emptyList = List.empty[BigDecimal]
@@ -508,14 +512,10 @@ class BigDecimalsSpec extends WordSpec {
         assert(actual === expected)
       }
     }
-    val longMax = BigDecimal(Long.MaxValue)
-    val longMaxX2 = longMax * 2
-    val longMaxX3 = longMax * 3
-    val numbers7 = List[BigDecimal](1, 1, 2, longMaxX3, longMaxX3, longMaxX3, longMaxX3, longMaxX3, 5, 5, 7, 7, 7, 7, longMaxX2, longMaxX2, longMaxX2, longMaxX2, longMaxX2, 8)
-    s"mode($numbers7)" should {
+    s"mode($numbersContainingBigLong)" should {
       val expected = List[BigDecimal](longMaxX2, longMaxX3)
       s"return $expected" in {
-        val actual = BigDecimals.mode(numbers7)
+        val actual = BigDecimals.mode(numbersContainingBigLong)
         assert(actual === expected)
       }
     }
@@ -588,14 +588,10 @@ class BigDecimalsSpec extends WordSpec {
         assert(actual === expected)
       }
     }
-    val longMax = BigDecimal(Long.MaxValue)
-    val longMaxX2 = longMax * 2
-    val longMaxX3 = longMax * 3
-    val numbers7 = List[BigDecimal](1, 1, 2, longMaxX3, longMaxX3, longMaxX3, longMaxX3, longMaxX3, 5, 5, 7, 7, 7, 7, longMaxX2, longMaxX2, longMaxX2, longMaxX2, longMaxX2, 8)
-    s"$numbers7.mode" should {
+    s"$numbersContainingBigLong.mode" should {
       val expected = List[BigDecimal](longMaxX2, longMaxX3)
       s"return $expected" in {
-        val actual = numbers7.mode
+        val actual = numbersContainingBigLong.mode
         assert(actual === expected)
       }
     }

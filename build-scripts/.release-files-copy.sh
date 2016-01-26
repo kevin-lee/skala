@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 if [ ! -n "$PROJECT_BUILD_NAME" ]
   then

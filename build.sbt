@@ -31,10 +31,12 @@ libraryDependencies ++= List(
   "com.storm-enroute" %% "scalameter" % "0.6"
 )
 
+/* Performance Test { */
 testFrameworks += new TestFramework("org.scalameter.ScalaMeterFramework")
 
 parallelExecution in Test := false
 
+/* } Performance Test */
 
 publishMavenStyle := true
 

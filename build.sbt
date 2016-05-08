@@ -2,13 +2,13 @@ import CommonUtils._
 
 name := "skala"
 
-organization := "cc.kevinlee"
+organization := "io.kevinlee"
 
-val projectVersion = "0.0.3"
+val projectVersion = "0.0.4"
 
 version := projectVersion
 
-scalaVersion := "2.11.7"
+scalaVersion := "2.11.8"
 
 scalacOptions ++= Seq(
   "-deprecation",             // Emit warning and location for usages of deprecated APIs.
@@ -28,7 +28,8 @@ libraryDependencies ++= List(
 //  "org.scala-lang" % "scala-reflect" % "2.11.7",
 //  "org.scala-lang.modules" % "scala-xml_2.11" % "1.0.4",
   "org.scalatest" % "scalatest_2.11" % "2.2.4" % "test",
-  "com.storm-enroute" %% "scalameter" % "0.6"
+  "com.storm-enroute" %% "scalameter" % "0.6",
+  "org.scalamock" %% "scalamock-scalatest-support" % "3.2.2" % "test"
 )
 
 /* Performance Test { */

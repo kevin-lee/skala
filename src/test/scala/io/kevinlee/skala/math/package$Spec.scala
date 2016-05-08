@@ -1,7 +1,4 @@
-package cc.kevinlee.skala.math
-
-import java.math.MathContext
-import cc.kevinlee.{skala => skala}
+package io.kevinlee.skala.math
 
 import org.scalatest.{BeforeAndAfterEach, WordSpec}
 

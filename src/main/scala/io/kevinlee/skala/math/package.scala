@@ -1,6 +1,4 @@
-package cc.kevinlee.skala
-
-import cc.kevinlee.skala.math.CommonMath
+package io.kevinlee.skala
 
 /**
  * @author Lee, SeongHyun (Kevin)

@@ -27,8 +27,8 @@ libraryDependencies ++= List(
 //  "org.scala-lang" % "scala-library" % "2.11.7",
 //  "org.scala-lang" % "scala-reflect" % "2.11.7",
 //  "org.scala-lang.modules" % "scala-xml_2.11" % "1.0.4",
-  "org.scalatest" % "scalatest_2.11" % "2.2.4" % "test",
-  "com.storm-enroute" %% "scalameter" % "0.6",
+  "org.scalatest" % "scalatest_2.11" % "2.2.6" % "test",
+  "com.storm-enroute" %% "scalameter" % "0.7",
   "org.scalamock" %% "scalamock-scalatest-support" % "3.2.2" % "test"
 )
 
@@ -80,7 +80,7 @@ GithubRelease.releaseName := GithubRelease.tag.value
 
 GithubRelease.commitish := "release"
 
-GithubRelease.notesFile := GithubRelease.notesDir.value / s"${projectVersion}.md"
+GithubRelease.notesFile := GithubRelease.notesDir.value / s"$projectVersion.md"
 
 GithubRelease.releaseAssets := {
 

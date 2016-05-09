@@ -23,6 +23,20 @@ class package$Spec extends WordSpec with MockFactory {
 
   "tryWith" when {
 
+    "tryWith(resource which is null) { // run block }" should {
+
+      "nothing happens to the resource (no NPE)" in {
+
+        val resource: AutoCloseable = null
+
+        tryWith(resource) { someResource =>
+        }
+      }
+    }
+  }
+
+  "tryWith" when {
+
     "tryWith(SomeResource) { // run block }" should {
 
       "call close SomeResource after run block" in {
@@ -54,9 +68,9 @@ class package$Spec extends WordSpec with MockFactory {
         val resource = mock[SomeResource[String]]
 
         inSequence {
-          (resource.run _).expects().returning(expected).once()
+          resource.run _ expects() returning expected once()
 
-          (resource.close _).expects().once()
+          resource.close _ expects() once()
         }
         val actual = tryWith(resource) { someResource =>
           someResource.run()
@@ -84,9 +98,9 @@ class package$Spec extends WordSpec with MockFactory {
 
         inSequence {
 
-          (resource.run _) expects() returning (()) once()
+          (resource.run _).expects().returning(()).once()
 
-          (resource.close _) expects() returning (()) twice()
+          (resource.close _).expects().returning(()).twice()
         }
 
         tryWith(resource) { someResource =>
@@ -118,11 +132,11 @@ class package$Spec extends WordSpec with MockFactory {
         val anotherResource = mock[SomeResource[String]]
 
         inSequence {
-          (anotherResource.run _) expects() onCall { _ => resource.run() } once()
-          (resource.run _) expects() returning expected once()
+          anotherResource.run _ expects() onCall { _ => resource.run() } once()
+          resource.run _ expects() returning expected once()
 
-          (anotherResource.close _) expects() onCall { _ => resource.close() } once()
-          (resource.close _) expects() twice()
+          anotherResource.close _ expects() onCall { _ => resource.close() } once()
+          resource.close _ expects() twice()
         }
 
         val actual = tryWith(resource) { someResource =>
@@ -155,11 +169,11 @@ class package$Spec extends WordSpec with MockFactory {
         val anotherResource = mock[SomeResource[String]]
 
         inSequence {
-          (anotherResource.run _) expects() onCall { _ => resource.run() } once()
-          (resource.run _) expects() returning expected once()
+          anotherResource.run _ expects() onCall { _ => resource.run() } once()
+          resource.run _ expects() returning expected once()
 
-          (anotherResource.close _) expects() once()
-          (resource.close _) expects() once()
+          anotherResource.close _ expects() once()
+          resource.close _ expects() once()
         }
 
         val actual = tryWith(resource) { someResource =>

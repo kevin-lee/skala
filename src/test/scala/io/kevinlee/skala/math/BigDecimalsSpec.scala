@@ -1,4 +1,4 @@
-package cc.kevinlee.skala.math
+package io.kevinlee.skala.math
 
 import org.scalatest.Matchers._
 import org.scalatest.WordSpec

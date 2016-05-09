@@ -1,4 +1,4 @@
-package cc.kevinlee.skala.math
+package io.kevinlee.skala.math
 
 /**
  * @author Lee, Seong Hyun (Kevin)

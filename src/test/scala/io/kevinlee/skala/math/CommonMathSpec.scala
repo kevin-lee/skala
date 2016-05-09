@@ -1,4 +1,4 @@
-package cc.kevinlee.skala.math
+package io.kevinlee.skala.math
 
 import org.scalameter.api._
 import org.scalatest.Matchers._
@@ -12,7 +12,7 @@ import scala.util.Random
  */
 class CommonMathSpec extends WordSpec {
 
-  import cc.kevinlee.skala.math.{CommonMath => commonMath}
+  import io.kevinlee.skala.math.{CommonMath => commonMath}
 
   "CommonMath.isOdd" when {
 

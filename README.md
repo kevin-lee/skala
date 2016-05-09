@@ -22,7 +22,7 @@ Utilities for Scala
 The square root of a BigInt value
 
 ```scala
-import cc.kevinlee.skala.math.BigInts._
+import io.kevinlee.skala.math.BigInts._
 
 sqrt(BigInt(9))
 // Result: BigDecimal(3)
@@ -39,7 +39,7 @@ sqrt(BigInt(-1))
 It returns `Option` may or may not have a square root of a `BigInt` value. This method doesn't throw any exception when a negative number is passed as a parameter. Instead, it returns `None`.
 
 ```scala
-import cc.kevinlee.skala.math.BigInts._
+import io.kevinlee.skala.math.BigInts._
 
 findSqrt(BigInt(9))
 // Result: Some(BigDecimal(3))
@@ -56,7 +56,7 @@ findSqrt(BigInt(-1))
 It calculates a mean of `TraversableLike[BigInt, TraversableLike[BigInt, _]]`.
 
 ```scala
-import cc.kevinlee.skala.math.BigInts._
+import io.kevinlee.skala.math.BigInts._
 
 val numbers = List[BigInt](1, 2, 3)
 mean(numbers)  // returns BigDecimal(2)
@@ -66,28 +66,28 @@ mean(numbers)  // returns BigDecimal(2)
 It finds a median of `Seq[BigInt]`.
 
 ```scala
-import cc.kevinlee.skala.math.BigInts._
+import io.kevinlee.skala.math.BigInts._
 
 val numbers = List[BigInt](1, 2, 3, 4)
 median(numbers)  // return BigDecimal(2.5)
 ```
 
 ```scala
-import cc.kevinlee.skala.math.BigInts._
+import io.kevinlee.skala.math.BigInts._
 
 val numbers = List[BigInt](2, 4, 3, 1)
 median(numbers)  // return BigDecimal(2.5)
 ```
 
 ```scala
-import cc.kevinlee.skala.math.BigInts._
+import io.kevinlee.skala.math.BigInts._
 
 val numbers = List[BigInt](1, 2, 3, 4, 5)
 median(numbers)  // return BigDecimal(3)
 ```
 
 ```scala
-import cc.kevinlee.skala.math.BigInts._
+import io.kevinlee.skala.math.BigInts._
 
 val numbers = List[BigInt](2, 3, 5, 4, 1)
 median(numbers)  // return BigDecimal(3)
@@ -100,7 +100,7 @@ median(numbers)  // return BigDecimal(3)
 The square root of a BigDecimal value
 
 ```scala
-import cc.kevinlee.skala.math.BigDecimals._
+import io.kevinlee.skala.math.BigDecimals._
 
 sqrt(BigDecimal(9))
 // Result: BigDecimal(3)
@@ -116,7 +116,7 @@ sqrt(BigDecimal(-1))
 It returns `Option` may or may not have a square root of a `BigDecimal` value. This method doesn't throw any exception when a negative number is passed as a parameter. Instead, it returns `None`.
 
 ```scala
-import cc.kevinlee.skala.math.BigDecimals._
+import io.kevinlee.skala.math.BigDecimals._
 
 findSqrt(BigDecimal(9))
 // Result: Some(BigDecimal(3))
@@ -133,7 +133,7 @@ findSqrt(BigDecimal(-1))
 It calculates a mean of `TraversableLike[BigDecimal, TraversableLike[BigDecimal, _]]`.
 
 ```scala
-import cc.kevinlee.skala.math.BigDecimals._
+import io.kevinlee.skala.math.BigDecimals._
 
 val numbers = List[BigDecimal](1, 2, 3)
 mean(numbers)  // returns BigDecimal(2)
@@ -143,31 +143,73 @@ mean(numbers)  // returns BigDecimal(2)
 It finds a median of `Seq[BigDecimal]`.
 
 ```scala
-import cc.kevinlee.skala.math.BigDecimals._
+import io.kevinlee.skala.math.BigDecimals._
 
 val numbers = List[BigDecimal](1, 2, 3, 4)
 median(numbers)  // return BigDecimal(2.5)
 ```
 
 ```scala
-import cc.kevinlee.skala.math.BigDecimals._
+import io.kevinlee.skala.math.BigDecimals._
 
 val numbers = List[BigDecimal](2, 4, 3, 1)
 median(numbers)  // return BigDecimal(2.5)
 ```
 
 ```scala
-import cc.kevinlee.skala.math.BigDecimals._
+import io.kevinlee.skala.math.BigDecimals._
 
 val numbers = List[BigDecimal](1, 2, 3, 4, 5)
 median(numbers)  // return BigDecimal(3)
 ```
 
 ```scala
-import cc.kevinlee.skala.math.BigDecimals._
+import io.kevinlee.skala.math.BigDecimals._
 
 val numbers = List[BigDecimal](2, 3, 5, 4, 1)
 median(numbers)  // return BigDecimal(3)
+```
+
+## Try with Resource
+
+```
+tryWith(AutoCloseable) { autoCloseable =>
+  // run block
+}
+```
+
+```
+val result = tryWith(AutoCloseable) { autoCloseable =>
+  // run block
+}
+```
+
+```scala
+tryWith(new FileInputStream("/path/to/file.txt")) { inputStream =>
+  var c = inputStream.read()
+  while (c != -1) {
+    print(c.asInstanceOf[Char])
+    c = inputStream.read()
+  }
+}
+```
+
+```scala
+tryWith(new FileInputStream("/path/to/file.txt")) { inputStream =>
+  tryWith(new InputStreamReader(inputStream)) { reader =>
+    var c = reader.read()
+    while (c != -1) {
+      print(c.asInstanceOf[Char])
+      c = reader.read()
+    }
+  }
+}
+```
+
+```scala
+val result = tryWith(new SomeResource()) { someSource =>
+  someSource.get
+}
 ```
 
 # Get Skala
@@ -179,5 +221,5 @@ In your `build.sbt`, add the following repo and dependency.
 ```scala
 resolvers += "3rd Party Repo" at "http://dl.bintray.com/kevinlee/maven"
 
-libraryDependencies += "cc.kevinlee" %% "skala" % "0.0.2"
+libraryDependencies += "io.kevinlee" %% "skala" % "0.0.4"
 ```

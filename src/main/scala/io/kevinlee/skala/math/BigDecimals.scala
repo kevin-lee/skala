@@ -1,4 +1,4 @@
-package cc.kevinlee.skala.math
+package io.kevinlee.skala.math
 
 import scala.annotation.tailrec
 import scala.collection.TraversableLike

@@ -43,11 +43,12 @@ package object skala {
     * @return The result from the given function f.
     */
   def tryWith[T <: AutoCloseable, R](closeable: => T)(f: T => R): R = {
+    val resource = closeable
     try {
-      f(closeable)
+      f(resource)
     } finally {
-      if (closeable != null) {
-        closeable.close()
+      if (resource != null) {
+        resource.close()
       }
     }
   }

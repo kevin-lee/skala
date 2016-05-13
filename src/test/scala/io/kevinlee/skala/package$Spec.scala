@@ -33,9 +33,6 @@ class package$Spec extends WordSpec with MockFactory {
         }
       }
     }
-  }
-
-  "tryWith" when {
 
     "tryWith(SomeResource) { // run block }" should {
 
@@ -55,9 +52,6 @@ class package$Spec extends WordSpec with MockFactory {
 
       }
     }
-  }
-
-  "tryWith" when {
 
     "val actual = tryWith(SomeResource) { // run block }" should {
 
@@ -78,10 +72,6 @@ class package$Spec extends WordSpec with MockFactory {
         assert(actual === expected)
       }
     }
-  }
-
-
-  "tryWith" when {
 
     """:
       |    tryWith(SomeResource) {
@@ -111,9 +101,6 @@ class package$Spec extends WordSpec with MockFactory {
 
       }
     }
-  }
-
-  "tryWith" when {
 
     """:
       |    val actual = tryWith(SomeResource) {
@@ -147,9 +134,6 @@ class package$Spec extends WordSpec with MockFactory {
         assert(actual === expected)
       }
     }
-  }
-
-  "tryWith" when {
 
     """anotherResource.close() does not call resource.close()
       |
@@ -184,6 +168,29 @@ class package$Spec extends WordSpec with MockFactory {
         assert(actual === expected)
       }
     }
+
+    var count = 0
+
+    case class CountableCloseable() extends AutoCloseable {
+      count += 1
+
+      def run(): Unit = ()
+
+      def close(): Unit = ()
+    }
+
+    "tryWith(an instantiation of a resource)" should {
+      "instantiate it once and use the same one" in {
+
+        tryWith(new CountableCloseable()) { resource =>
+          resource.run()
+        }
+
+        assert(count == 1)
+
+      }
+    }
+
   }
 
 }

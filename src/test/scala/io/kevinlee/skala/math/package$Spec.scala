@@ -1,7 +1,7 @@
 package io.kevinlee.skala.math
 
-import org.scalatest.{BeforeAndAfterEach, WordSpec}
 import org.scalatest.Matchers._
+import org.scalatest.{BeforeAndAfterEach, WordSpec}
 
 import scala.language.postfixOps
 

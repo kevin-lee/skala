@@ -7,6 +7,18 @@ echo ""
 echo "============================================"
 echo "Run: sbt clean coverage test package"
 echo "--------------------------------------------"
+if [[ "$BRANCH_NAME" == "rc" ]]
+  then
+  if sbt clean coverage test packageBin packageSrc packageDoc ; then
+    echo "Done: sbt clean coverage test packageBin packageSrc packageDoc"
+    echo "============================================"
+  else
+    echo "Failed: sbt clean coverage test packageBin packageSrc packageDoc" 1>&2
+    echo "============================================"
+    exit 1
+  fi
+fi
+
 if sbt clean coverage test package ; then
   echo "Done: sbt clean coverage test package"
   echo "============================================"

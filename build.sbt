@@ -35,6 +35,10 @@ libraryDependencies ++= Seq(
   "org.scalamock" %% "scalamock-scalatest-support" % "3.2.2" % "test"
 )
 
+scalacOptions in (Compile, doc) ++= Seq(
+  "-no-link-warnings" // To ignore Scaladoc error saying "Could not find any member to link for ..."
+)
+
 /* Performance Test { */
 testFrameworks += new TestFramework("org.scalameter.ScalaMeterFramework")
 

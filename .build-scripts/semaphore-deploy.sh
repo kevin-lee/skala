@@ -9,6 +9,8 @@ export THIS_BRANCH="$BRANCH_NAME"
 if [ "$THIS_BRANCH" == "release" ];
   then
 
+  . "$BUILD_SCRIPTS_DIR/build-packages.sh"
+
   export VERSION_FILE="target/version.tmp"
   echo "Version File=$VERSION_FILE"
 
@@ -77,8 +79,8 @@ if [ "$THIS_BRANCH" == "release" ];
 
   fi
 
-  $BUILD_SCRIPTS_DIR/release-files-copy.sh
-  $BUILD_SCRIPTS_DIR/deploy-to-github.sh
+  . "$BUILD_SCRIPTS_DIR/release-files-copy.sh"
+  . "$BUILD_SCRIPTS_DIR/deploy-to-github.sh"
 
   echo "======================================================"
   echo "Build and Deploy: Done"

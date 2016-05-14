@@ -1,14 +1,16 @@
 package io.kevinlee.skala
 
 import org.scalamock.scalatest.MockFactory
-import org.scalatest.WordSpec
+import org.scalatest.{Matchers, WordSpec}
+
+import scala.util.{Failure, Success}
 
 
 /**
   * @author Kevin Lee
   * @since 2016-05-08
   */
-class package$Spec extends WordSpec with MockFactory {
+class package$Spec extends WordSpec with Matchers with MockFactory {
 
   trait SomeResource[T] extends AutoCloseable {
     def run(): T
@@ -27,9 +29,15 @@ class package$Spec extends WordSpec with MockFactory {
 
       "nothing happens to the resource (no NPE)" in {
 
-        val resource: AutoCloseable = null
+        val resource: SomeResource[Nothing] = null
 
-        tryWith(resource) { someResource =>
+        val actual = tryWith(resource) { someResource =>
+          someResource.run()
+        }
+
+        actual match {
+          case Failure(npe: NullPointerException) =>
+          case actual => fail(s"$actual did not return Failure(NullPointerException)")
         }
       }
     }
@@ -38,6 +46,7 @@ class package$Spec extends WordSpec with MockFactory {
 
       "call close SomeResource after run block" in {
 
+        val expected = Success(())
         val resource = mock[SomeResource[Unit]]
 
         inSequence {
@@ -46,23 +55,26 @@ class package$Spec extends WordSpec with MockFactory {
           (resource.close _).expects().returning(()).once()
         }
 
-        tryWith(resource) { someResource =>
+        val actual = tryWith(resource) { someResource =>
           someResource.run()
         }
+
+        actual should be(expected)
 
       }
     }
 
     "val actual = tryWith(SomeResource) { // run block }" should {
 
-      val expected = "Hello"
+      val expectedString = "Hello"
+      val expected = Success(expectedString)
 
-      s"call close SomeResource after run block and actual === $expected" in {
+      s"call close SomeResource after run block and actual === $expectedString" in {
 
         val resource = mock[SomeResource[String]]
 
         inSequence {
-          resource.run _ expects() returning expected once()
+          resource.run _ expects() returning expectedString once()
 
           resource.close _ expects() once()
         }
@@ -107,11 +119,10 @@ class package$Spec extends WordSpec with MockFactory {
       |      tryWith(AnotherResource) {
       |        // run block
       |      }
-      |    }
-      |
-    """.stripMargin should {
+      |    }""".stripMargin should {
 
-      val expected = "Hello"
+      val expectedString = "Hello"
+      val expected = Success(expectedString)
 
       s"call close SomeResource after run block and actual === $expected" in {
 
@@ -120,7 +131,7 @@ class package$Spec extends WordSpec with MockFactory {
 
         inSequence {
           anotherResource.run _ expects() onCall { _ => resource.run() } once()
-          resource.run _ expects() returning expected once()
+          resource.run _ expects() returning expectedString once()
 
           anotherResource.close _ expects() onCall { _ => resource.close() } once()
           resource.close _ expects() twice()
@@ -141,11 +152,10 @@ class package$Spec extends WordSpec with MockFactory {
       |      tryWith(AnotherResource) {
       |        // run block
       |      }
-      |    }
-      |
-    """.stripMargin should {
+      |    }""".stripMargin should {
 
-      val expected = "Hello"
+      val expectedString = "Hello"
+      val expected = Success(expectedString)
 
       s"call close SomeResource after run block and actual === $expected" in {
 
@@ -154,7 +164,7 @@ class package$Spec extends WordSpec with MockFactory {
 
         inSequence {
           anotherResource.run _ expects() onCall { _ => resource.run() } once()
-          resource.run _ expects() returning expected once()
+          resource.run _ expects() returning expectedString once()
 
           anotherResource.close _ expects() once()
           resource.close _ expects() once()
@@ -169,18 +179,38 @@ class package$Spec extends WordSpec with MockFactory {
       }
     }
 
-    var count = 0
 
-    case class CountableCloseable() extends AutoCloseable {
-      count += 1
+    "tryWith(SomeResource) { someResource => someResource.run() // throwing  RuntimeException }" should {
 
-      def run(): Unit = ()
+      "call close SomeResource after run block" in {
 
-      def close(): Unit = ()
+        val resource = mock[SomeResource[Unit]]
+
+        inSequence {
+          (resource.run _) expects() throws new RuntimeException()
+
+          (resource.close _).expects().returning(()).once()
+        }
+
+        tryWith(resource) { someResource =>
+          someResource.run()
+        }
+
+      }
     }
 
     "tryWith(an instantiation of a resource)" should {
       "instantiate it once and use the same one" in {
+
+        var count = 0
+
+        case class CountableCloseable() extends AutoCloseable {
+          count += 1
+
+          def run(): Unit = ()
+
+          def close(): Unit = ()
+        }
 
         tryWith(new CountableCloseable()) { resource =>
           resource.run()

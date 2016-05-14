@@ -4,7 +4,7 @@ name := "skala"
 
 organization := "io.kevinlee"
 
-val projectVersion = "0.0.4"
+val projectVersion = "0.0.5"
 
 version := projectVersion
 
@@ -23,10 +23,13 @@ scalacOptions ++= Seq(
   "-Ywarn-numeric-widen"      // Warn when numerics are widened.
 )
 
-libraryDependencies ++= List(
-//  "org.scala-lang" % "scala-library" % "2.11.7",
-//  "org.scala-lang" % "scala-reflect" % "2.11.7",
-//  "org.scala-lang.modules" % "scala-xml_2.11" % "1.0.4",
+libraryDependencies ++= Seq(
+//  "org.scala-lang" % "scala-compiler" % "2.11.8",
+//  "org.scala-lang" % "scala-library" % "2.11.8",
+//  "org.scala-lang" % "scala-reflect" % "2.11.8",
+//  "org.scala-lang.modules" % "scala-xml_2.11" % "1.0.5",
+//  "org.scala-lang.modules" % "scala-parser-combinators_2.11" % "1.0.4",
+
   "org.scalatest" % "scalatest_2.11" % "2.2.4" % "test",
   "com.storm-enroute" %% "scalameter" % "0.6",
   "org.scalamock" %% "scalamock-scalatest-support" % "3.2.2" % "test"

@@ -4,9 +4,9 @@ name := "skala"
 
 organization := "io.kevinlee"
 
-val projectVersion = "0.0.5"
+val ProjectVersion = "0.0.6"
 
-version := projectVersion
+version := ProjectVersion
 
 scalaVersion := "2.11.8"
 
@@ -30,9 +30,9 @@ libraryDependencies ++= Seq(
 //  "org.scala-lang.modules" % "scala-xml_2.11" % "1.0.5",
 //  "org.scala-lang.modules" % "scala-parser-combinators_2.11" % "1.0.4",
 
-  "org.scalatest" % "scalatest_2.11" % "2.2.4" % "test",
-  "com.storm-enroute" %% "scalameter" % "0.6",
-  "org.scalamock" %% "scalamock-scalatest-support" % "3.2.2" % "test"
+  "org.scalatest" % "scalatest_2.11" % "2.2.4" % Test,
+  "com.storm-enroute" %% "scalameter" % "0.7" % Test,
+  "org.scalamock" %% "scalamock-scalatest-support" % "3.2.2" % Test
 )
 
 scalacOptions in (Compile, doc) ++= Seq(
@@ -50,25 +50,24 @@ publishMavenStyle := true
 
 pomIncludeRepository := { _ => false }
 
-pomExtra := (
-    <url>https://github.com/Kevin-Lee/skala</url>
-    <licenses>
-      <license>
-        <name>The MIT License</name>
-        <url>https://github.com/Kevin-Lee/skala/blob/master/LICENSE</url>
-      </license>
-    </licenses>
-    <scm>
-      <url>git@github.com:Kevin-Lee/skala.git</url>
-      <connection>scm:git:git@github.com:Kevin-Lee/skala.git</connection>
-    </scm>)
+pomExtra := <url>https://github.com/Kevin-Lee/skala</url>
+              <licenses>
+                <license>
+                  <name>The MIT License</name>
+                  <url>https://github.com/Kevin-Lee/skala/blob/master/LICENSE</url>
+                </license>
+              </licenses>
+              <scm>
+                <url>git@github.com:Kevin-Lee/skala.git</url>
+                <connection>scm:git:git@github.com:Kevin-Lee/skala.git</connection>
+              </scm>
 
 licenses += ("MIT", url("http://opensource.org/licenses/MIT"))
 
 
 lazy val writeVersion = inputKey[Unit]("Write Version in File'")
 
-writeVersion := versionWriter(() => Def.spaceDelimited("filename").parsed)(projectVersion)
+writeVersion := versionWriter(() => Def.spaceDelimited("filename").parsed)(ProjectVersion)
 
 
 import org.scoverage.coveralls.Imports.CoverallsKeys._
@@ -81,13 +80,13 @@ val repoLocation = "Kevin-Lee/skala"
 /* GitHub Release { */
 GithubRelease.repo := repoLocation
 
-GithubRelease.tag := s"v$projectVersion"
+GithubRelease.tag := s"v$ProjectVersion"
 
 GithubRelease.releaseName := GithubRelease.tag.value
 
 GithubRelease.commitish := "release"
 
-GithubRelease.notesFile := GithubRelease.notesDir.value / s"${projectVersion}.md"
+GithubRelease.notesFile := GithubRelease.notesDir.value / s"${ProjectVersion}.md"
 
 GithubRelease.releaseAssets := {
 

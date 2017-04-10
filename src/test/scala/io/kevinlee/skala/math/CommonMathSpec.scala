@@ -908,7 +908,7 @@ class CommonMathSpec extends WordSpec {
 }
 
 
-object CommonMathBenchmark extends PerformanceTest.Quickbenchmark {
+object CommonMathBenchmark extends Bench.LocalTime {
   val sizes = Gen.range("size")(10, 100011, 10000)
   val upTo = 10
   val numberPool = (0 to upTo).toVector
@@ -930,7 +930,7 @@ object CommonMathBenchmark extends PerformanceTest.Quickbenchmark {
     }
   }
 }
-object CommonMathBenchmark2 extends PerformanceTest.Quickbenchmark {
+object CommonMathBenchmark2 extends Bench.LocalTime {
   val sizes = Gen.range("size")(10, 1000010, 500000)
   val upTo = 10
   val numberPool = (0 to upTo).toVector

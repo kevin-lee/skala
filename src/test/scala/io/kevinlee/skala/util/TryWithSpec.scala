@@ -1,16 +1,19 @@
-package io.kevinlee.skala
+package io.kevinlee.skala.util
 
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{Matchers, WordSpec}
 
 import scala.util.{Failure, Success, Try}
 
+import TryWith.SideEffect.tryWith
 
 /**
   * @author Kevin Lee
   * @since 2016-05-08
   */
-class package$Spec extends WordSpec with Matchers with MockFactory {
+class TryWithSpec extends WordSpec with Matchers with MockFactory {
+
+  import io.kevinlee.skala.util.TryWith.printlnLogger
 
   trait SomeResource[T] extends AutoCloseable {
     def run(): T
@@ -566,6 +569,51 @@ class package$Spec extends WordSpec with Matchers with MockFactory {
         count should be(1)
 
         actual should be(expected)
+
+      }
+    }
+
+    "tryWith(an instantiation of a resource that throws a RuntimException when close is called){ // block }(logger)" should {
+      val expected = 999
+      s"instantiate it once and use the same one and return $expected and the exception when closing should be handled by the logger" in {
+
+        var count = 0
+        val expectedException = new RuntimeException()
+
+        case class CountableCloseable() extends AutoCloseable {
+          count += 1
+
+          def run(): Int = 999
+
+          def close(): Unit = throw expectedException
+        }
+
+        var logCount = 0
+        var exceptionThrown: Option[Throwable] = None
+
+        val actual = tryWith(CountableCloseable()) { resource =>
+          resource.run()
+        } { x =>
+          exceptionThrown = Some(x)
+          logCount += 1
+        }
+
+        count should be (1)
+        logCount should be (1)
+
+        actual should be (expected)
+
+        exceptionThrown shouldBe defined
+
+        exceptionThrown should contain (expectedException)
+
+        exceptionThrown match {
+          case Some(ex) =>
+            ex shouldBe a [RuntimeException]
+            ex should be theSameInstanceAs expectedException
+          case _ =>
+            fail(s"$expectedException was not thrown.")
+        }
 
       }
     }

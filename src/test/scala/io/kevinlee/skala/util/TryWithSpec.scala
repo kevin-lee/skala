@@ -5,6 +5,7 @@ import org.scalatest.{Matchers, WordSpec}
 
 import scala.util.{Failure, Success, Try}
 
+import TryWith.SideEffect.tryWith
 
 /**
   * @author Kevin Lee
@@ -29,16 +30,16 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
 
   case object AnotherTryTestException extends RuntimeException
 
-  "TryWith" when {
+  "tryWith" when {
 
-    "TryWith(resource which is null) { // run block }" should {
+    "tryWith(resource which is null) { // run block }" should {
 
       "throw NullPointerException" in {
 
         val resource: SomeResource[Nothing] = null
 
         a[NullPointerException] should be thrownBy {
-          TryWith(resource) { someResource =>
+          tryWith(resource) { someResource =>
             someResource.run()
           }
         }
@@ -46,7 +47,7 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
       }
     }
 
-    "TryWith(SomeResource) { // run block }" should {
+    "tryWith(SomeResource) { // run block }" should {
 
       val expected = ()
       s"call close SomeResource after run block and return $expected" in {
@@ -59,7 +60,7 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
           (resource.close _).expects().returning(()).once()
         }
 
-        val actual = TryWith(resource) { someResource =>
+        val actual = tryWith(resource) { someResource =>
           someResource.run()
         }
 
@@ -68,7 +69,7 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
       }
     }
 
-    "val actual = TryWith(SomeResource) { // run block }" should {
+    "val actual = tryWith(SomeResource) { // run block }" should {
 
       val expected = "Hello"
 
@@ -81,7 +82,7 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
 
           resource.close _ expects() once()
         }
-        val actual = TryWith(resource) { someResource =>
+        val actual = tryWith(resource) { someResource =>
           someResource.run()
         }
         actual should be(expected)
@@ -89,8 +90,8 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
     }
 
     """:
-      |    TryWith(SomeResource) {
-      |      TryWith(AnotherResource) {
+      |    tryWith(SomeResource) {
+      |      tryWith(AnotherResource) {
       |        // run block
       |      }
       |    }""".stripMargin should {
@@ -107,8 +108,8 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
           (resource.close _).expects().returning(()).twice()
         }
 
-        val actual = TryWith(resource) { someResource =>
-          TryWith(new AnotherResource[Unit](someResource)) { anotherSource =>
+        val actual = tryWith(resource) { someResource =>
+          tryWith(new AnotherResource[Unit](someResource)) { anotherSource =>
             anotherSource.run()
           }
         }
@@ -119,8 +120,8 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
     }
 
     """:
-      |    val actual = TryWith(SomeResource) {
-      |      TryWith(AnotherResource) {
+      |    val actual = tryWith(SomeResource) {
+      |      tryWith(AnotherResource) {
       |        // run block
       |      }
       |    }""".stripMargin should {
@@ -140,8 +141,8 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
           resource.close _ expects() twice()
         }
 
-        val actual = TryWith(resource) { someResource =>
-          TryWith(anotherResource) { someOtherResource =>
+        val actual = tryWith(resource) { someResource =>
+          tryWith(anotherResource) { someOtherResource =>
             someOtherResource.run()
           }
         }
@@ -149,8 +150,8 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
       }
     }
 
-    """val actual = TryWith(SomeResource) { someResource =>
-      |      TryWith(AnotherResource) { someOtherResource =>
+    """val actual = tryWith(SomeResource) { someResource =>
+      |      tryWith(AnotherResource) { someOtherResource =>
       |        // run block
       |      }
       |    }""".stripMargin should {
@@ -170,8 +171,8 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
           resource.close _ expects() once()
         }
 
-        val actual = TryWith(resource) { someResource =>
-          TryWith(anotherResource) { someOtherResource =>
+        val actual = tryWith(resource) { someResource =>
+          tryWith(anotherResource) { someOtherResource =>
             someOtherResource.run()
           }
         }
@@ -179,7 +180,7 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
       }
     }
 
-    "TryWith(SomeResource) { someResource => someResource.run() // throwing TryTestException }" should {
+    "tryWith(SomeResource) { someResource => someResource.run() // throwing TryTestException }" should {
 
       s"call close SomeResource after run block and throw ${TryTestException.getClass.getSimpleName}" in {
 
@@ -192,7 +193,7 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
         }
 
         a[TryTestException.type] should be thrownBy {
-          TryWith(resource) { someResource =>
+          tryWith(resource) { someResource =>
             someResource.run()
           }
         }
@@ -200,8 +201,8 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
       }
     }
 
-    """TryWith(SomeResource) { someResource =>
-      |         TryWith(new AutoCloseable {
+    """tryWith(SomeResource) { someResource =>
+      |         tryWith(new AutoCloseable {
       |           override def close(): Unit = ()
       |         }) { anotherResource =>
       |           someResource.run() // throws TryTestException here
@@ -220,8 +221,8 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
         }
 
         a[TryTestException.type] should be thrownBy {
-          TryWith(resource) { someResource =>
-            TryWith(new AutoCloseable {
+          tryWith(resource) { someResource =>
+            tryWith(new AutoCloseable {
               override def close(): Unit = ()
             }) { anotherResource =>
               someResource.run()
@@ -232,10 +233,10 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
       }
     }
 
-    """TryWith(resource) { someResource =>
+    """tryWith(resource) { someResource =>
       |         someResource.run() // throws TryTestException
       |
-      |         TryWith(resource2) { anotherResource =>
+      |         tryWith(resource2) { anotherResource =>
       |           anotherResource.run() // should never be called
       |         }
       |       }""".stripMargin should {
@@ -258,10 +259,10 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
         }
 
         a[TryTestException.type] should be thrownBy {
-          TryWith(resource) { someResource =>
+          tryWith(resource) { someResource =>
             someResource.run()
 
-            TryWith(resource2) { anotherResource =>
+            tryWith(resource2) { anotherResource =>
               anotherResource.run()
             }
           }
@@ -269,7 +270,7 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
       }
     }
 
-    "TryWith(an instantiation of a resource)" should {
+    "tryWith(an instantiation of a resource)" should {
       val expected = ()
       s"instantiate it once and use the same one and return $expected" in {
 
@@ -283,7 +284,7 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
           def close(): Unit = ()
         }
 
-        val actual = TryWith(new CountableCloseable()) { resource =>
+        val actual = tryWith(new CountableCloseable()) { resource =>
           resource.run()
         }
 
@@ -297,15 +298,15 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
   }
 
 
-  "Try(TryWith)" when {
+  "Try(tryWith)" when {
 
-    "Try(TryWith(resource which is null) { // run block })" should {
+    "Try(tryWith(resource which is null) { // run block })" should {
 
       "return Failure(NPE)" in {
 
         val resource: SomeResource[Nothing] = null
 
-        val actual = Try(TryWith(resource) { someResource =>
+        val actual = Try(tryWith(resource) { someResource =>
           someResource.run()
         })
 
@@ -316,7 +317,7 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
       }
     }
 
-    "Try(TryWith(SomeResource) { // run block })" should {
+    "Try(tryWith(SomeResource) { // run block })" should {
 
       val expected = Success(())
       s"call close SomeResource after run block and return $expected" in {
@@ -329,7 +330,7 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
           (resource.close _).expects().returning(()).once()
         }
 
-        val actual = Try(TryWith(resource) { someResource =>
+        val actual = Try(tryWith(resource) { someResource =>
           someResource.run()
         })
 
@@ -338,7 +339,7 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
       }
     }
 
-    "val actual = TryWith(SomeResource) { // run block }" should {
+    "val actual = tryWith(SomeResource) { // run block }" should {
 
       val expectedString = "Hello"
       val expected = Success(expectedString)
@@ -352,7 +353,7 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
 
           resource.close _ expects() once()
         }
-        val actual = Try(TryWith(resource) { someResource =>
+        val actual = Try(tryWith(resource) { someResource =>
           someResource.run()
         })
         actual should be(expected)
@@ -360,8 +361,8 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
     }
 
     """:
-      |    TryWith(SomeResource) {
-      |      TryWith(AnotherResource) {
+      |    tryWith(SomeResource) {
+      |      tryWith(AnotherResource) {
       |        // run block
       |      }
       |    }""".stripMargin should {
@@ -378,8 +379,8 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
           (resource.close _).expects().returning(()).twice()
         }
 
-        val actual = Try(TryWith(resource) { someResource =>
-          TryWith(new AnotherResource[Unit](someResource)) { anotherSource =>
+        val actual = Try(tryWith(resource) { someResource =>
+          tryWith(new AnotherResource[Unit](someResource)) { anotherSource =>
             anotherSource.run()
           }
         })
@@ -389,8 +390,8 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
       }
     }
 
-    """val actual = TryWith(SomeResource) {
-      |                      TryWith(AnotherResource) {
+    """val actual = tryWith(SomeResource) {
+      |                      tryWith(AnotherResource) {
       |                        // run block
       |                      }
       |                    }""".stripMargin should {
@@ -411,8 +412,8 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
           resource.close _ expects() twice()
         }
 
-        val actual = Try(TryWith(resource) { someResource =>
-          TryWith(anotherResource) { someOtherResource =>
+        val actual = Try(tryWith(resource) { someResource =>
+          tryWith(anotherResource) { someOtherResource =>
             someOtherResource.run()
           }
         })
@@ -420,8 +421,8 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
       }
     }
 
-    """val actual = Try(TryWith(resource) { someResource =>
-      |                      TryWith(anotherResource) { someOtherResource =>
+    """val actual = Try(tryWith(resource) { someResource =>
+      |                      tryWith(anotherResource) { someOtherResource =>
       |                        someOtherResource.run()
       |                      }
       |                    })""".stripMargin should {
@@ -442,8 +443,8 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
           resource.close _ expects() once()
         }
 
-        val actual = Try(TryWith(resource) { someResource =>
-          TryWith(anotherResource) { someOtherResource =>
+        val actual = Try(tryWith(resource) { someResource =>
+          tryWith(anotherResource) { someOtherResource =>
             someOtherResource.run()
           }
         })
@@ -452,7 +453,7 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
     }
 
 
-    "TryWith(SomeResource) { someResource => someResource.run() // throwing TryTestException }" should {
+    "tryWith(SomeResource) { someResource => someResource.run() // throwing TryTestException }" should {
 
       val expected = Failure(TryTestException)
       s"call close SomeResource after run block and return $expected" in {
@@ -466,7 +467,7 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
           (resource.close _).expects().returning(()).once()
         }
 
-        val actual = Try(TryWith(resource) { someResource =>
+        val actual = Try(tryWith(resource) { someResource =>
           someResource.run()
         })
 
@@ -475,8 +476,8 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
       }
     }
 
-    """Try(TryWith(SomeResource) { someResource =>
-      |         TryWith(new AutoCloseable {
+    """Try(tryWith(SomeResource) { someResource =>
+      |         tryWith(new AutoCloseable {
       |           override def close(): Unit = ()
       |         }) { anotherResource =>
       |           someResource.run() // throws TryTestException here
@@ -495,8 +496,8 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
           (resource.close _).expects().returning(()).once()
         }
 
-        val actual = Try(TryWith(resource) { someResource =>
-          TryWith(new AutoCloseable {
+        val actual = Try(tryWith(resource) { someResource =>
+          tryWith(new AutoCloseable {
             override def close(): Unit = ()
           }) { anotherResource =>
             someResource.run()
@@ -508,10 +509,10 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
       }
     }
 
-    """TryWith(resource) { someResource =>
+    """tryWith(resource) { someResource =>
       |         someResource.run() // throws TryTestException
       |
-      |         TryWith(resource2) { anotherResource =>
+      |         tryWith(resource2) { anotherResource =>
       |           anotherResource.run() // should never be called
       |         }
       |       }""".stripMargin should {
@@ -535,10 +536,10 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
           (resource2.close _).expects().returning(()).never()
         }
 
-        val actual = Try(TryWith(resource) { someResource =>
+        val actual = Try(tryWith(resource) { someResource =>
           someResource.run()
 
-          TryWith(resource2) { anotherResource =>
+          tryWith(resource2) { anotherResource =>
             anotherResource.run()
           }
         })
@@ -547,7 +548,7 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
       }
     }
 
-    "TryWith(an instantiation of a resource)" should {
+    "tryWith(an instantiation of a resource)" should {
       val expected = Success(())
       s"instantiate it once and use the same one and return $expected" in {
 
@@ -561,7 +562,7 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
           def close(): Unit = ()
         }
 
-        val actual = Try(TryWith(new CountableCloseable()) { resource =>
+        val actual = Try(tryWith(new CountableCloseable()) { resource =>
           resource.run()
         })
 
@@ -572,7 +573,7 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
       }
     }
 
-    "TryWith(an instantiation of a resource that throws a RuntimException when close is called){ // block }(logger)" should {
+    "tryWith(an instantiation of a resource that throws a RuntimException when close is called){ // block }(logger)" should {
       val expected = 999
       s"instantiate it once and use the same one and return $expected and the exception when closing should be handled by the logger" in {
 
@@ -590,7 +591,7 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
         var logCount = 0
         var exceptionThrown: Option[Throwable] = None
 
-        val actual = TryWith(CountableCloseable()) { resource =>
+        val actual = tryWith(CountableCloseable()) { resource =>
           resource.run()
         } { x =>
           exceptionThrown = Some(x)

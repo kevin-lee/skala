@@ -4,7 +4,7 @@ name := "skala"
 
 organization := "io.kevinlee"
 
-val ProjectVersion = "0.0.6"
+val ProjectVersion = "0.0.7"
 
 version := ProjectVersion
 

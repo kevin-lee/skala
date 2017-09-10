@@ -9,8 +9,7 @@ Skala
 [![Coverage Status](https://coveralls.io/repos/Kevin-Lee/skala/badge.svg)](https://coveralls.io/r/Kevin-Lee/skala)
 [![Issue Stats](http://www.issuestats.com/github/Kevin-Lee/skala/badge/issue)](http://www.issuestats.com/github/Kevin-Lee/skala)
 
-[![views](https://sourcegraph.com/api/repos/github.com/Kevin-Lee/skala/.counters/views.svg)](https://sourcegraph.com/github.com/Kevin-Lee/skala)
-[![views 24h](https://sourcegraph.com/api/repos/github.com/Kevin-Lee/skala/.counters/views-24h.svg)](https://sourcegraph.com/github.com/Kevin-Lee/skala)
+[![views](https://sourcegraph.com/api/repos/github.com/Kevin-Lee/skala/.counters/views.svg)](https://sourcegraph.com/github.com/Kevin-Lee/skala) / [![views 24h](https://sourcegraph.com/api/repos/github.com/Kevin-Lee/skala/.counters/views-24h.svg)](https://sourcegraph.com/github.com/Kevin-Lee/skala)
 
 Utilities for Scala
 
@@ -171,15 +170,21 @@ median(numbers)  // return BigDecimal(3)
 ```
 
 ## Try with Resource
+### tryWith
 
+```scala
+import io.kevinlee.skala.util.TryWith.SideEffect.tryWith
 ```
+
+```scala
 tryWith(AutoCloseable) { autoCloseable =>
   // run block
 }
 ```
+**`tryWith` is similar to Java's Try with Resource so it may throw an exception if the block or `AutoCloseable` throws any exception.**
 
-```
-val result = tryWith(AutoCloseable) { autoCloseable =>
+```scala
+val result: WhatEverTheRunBlockReturns = tryWith(AutoCloseable) { autoCloseable =>
   // run block
 }
 ```
@@ -212,6 +217,53 @@ val result = tryWith(new SomeResource()) { someSource =>
 }
 ```
 
+### TryWith
+
+```scala
+import io.kevinlee.skala.util.TryWith
+```
+
+```scala
+TryWith(AutoCloseable) { autoCloseable =>
+  // run block
+}
+```
+**`TryWith` returns `Try` type after apply the given function then closes the `AutoCloseable`.**
+
+```scala
+val result: Try[WhatEverTheRunBlockReturns] = tryWith(AutoCloseable) { autoCloseable =>
+  // run block
+}
+```
+
+```scala
+tryWith(new FileInputStream("/path/to/file.txt")) { inputStream =>
+  var c = inputStream.read()
+  while (c != -1) {
+    print(c.asInstanceOf[Char])
+    c = inputStream.read()
+  }
+}
+```
+
+```scala
+tryWith(new FileInputStream("/path/to/file.txt")) { inputStream =>
+  tryWith(new InputStreamReader(inputStream)) { reader =>
+    var c = reader.read()
+    while (c != -1) {
+      print(c.asInstanceOf[Char])
+      c = reader.read()
+    }
+  }
+}
+```
+
+```scala
+val result: Try[String] = tryWith(new SomeResource()) { someSource =>
+  someSource.get    // returns String 
+}
+```
+
 # Get Skala
 
 In your `build.sbt`, add the following repo and dependency.
@@ -221,5 +273,5 @@ In your `build.sbt`, add the following repo and dependency.
 ```scala
 resolvers += "3rd Party Repo" at "http://dl.bintray.com/kevinlee/maven"
 
-libraryDependencies += "io.kevinlee" %% "skala" % "0.0.5"
+libraryDependencies += "io.kevinlee" %% "skala" % "0.0.7"
 ```

@@ -1,13 +1,32 @@
 package io.kevinlee.skala.util
 
+import scala.util.Try
+
 /**
   * @author Kevin Lee
   * @since 2017-03-07
   */
 object TryWith {
 
-  implicit val printlnLogger: Throwable => Unit = println
-  implicit val dummyLogger: Throwable => Unit = _ => ()
+  type CloseFailureHandler = Throwable => Unit
+
+  val printlnLogger: CloseFailureHandler = println
+  val dummyLogger: CloseFailureHandler = _ => ()
+
+  def apply[T <: AutoCloseable, R](closeable: => T)(
+                                   f: T => R)(
+                                   implicit closeFailureHandler: CloseFailureHandler = dummyLogger): Try[R] = {
+    lazy val resource = closeable
+    try {
+      Try(resource).map(f)
+    } finally {
+      try {
+        resource.close()
+      } catch {
+        case ex: Throwable => closeFailureHandler(ex)
+      }
+    }
+  }
 
   object SideEffect {
 
@@ -126,8 +145,8 @@ object TryWith {
       * @throws          Throwable when any Throwable was thrown. It depends on the given closeable or the function f.
       */
     def tryWith[T <: AutoCloseable, R](closeable: => T)(
-      f: T => R)(
-                                        implicit closeFailureHandler: Throwable => Unit): R = {
+                                       f: T => R)(
+                                       implicit closeFailureHandler: CloseFailureHandler = dummyLogger): R = {
       lazy val resource = closeable
       try {
         f(resource)
@@ -139,5 +158,6 @@ object TryWith {
         }
       }
     }
+
   }
 }

@@ -2,14 +2,13 @@ Skala
 =====
 [![Build Status](https://semaphoreci.com/api/v1/projects/0749a644-9deb-49a2-8781-da758bc731be/439826/badge.svg)](https://semaphoreci.com/kevin-lee/skala)
 [![Build Status](https://semaphoreci.com/api/v1/projects/0749a644-9deb-49a2-8781-da758bc731be/439826/shields_badge.svg)](https://semaphoreci.com/kevin-lee/skala)
-[![Build Status](https://travis-ci.org/Kevin-Lee/skala.svg)](https://travis-ci.org/Kevin-Lee/skala)
 [![Download](https://api.bintray.com/packages/kevinlee/maven/skala/images/download.svg)](https://bintray.com/kevinlee/maven/skala/_latestVersion)
 
 [![Codacy Badge](https://www.codacy.com/project/badge/6918a01879ce4870b7210f0f1c0bef18)](https://www.codacy.com/app/kevin-lee/skala)
 [![Coverage Status](https://coveralls.io/repos/Kevin-Lee/skala/badge.svg)](https://coveralls.io/r/Kevin-Lee/skala)
-[![Issue Stats](http://www.issuestats.com/github/Kevin-Lee/skala/badge/issue)](http://www.issuestats.com/github/Kevin-Lee/skala)
 
-[![views](https://sourcegraph.com/api/repos/github.com/Kevin-Lee/skala/.counters/views.svg)](https://sourcegraph.com/github.com/Kevin-Lee/skala) / [![views 24h](https://sourcegraph.com/api/repos/github.com/Kevin-Lee/skala/.counters/views-24h.svg)](https://sourcegraph.com/github.com/Kevin-Lee/skala)
+[![Build Status](https://travis-ci.org/Kevin-Lee/skala.svg)](https://travis-ci.org/Kevin-Lee/skala)
+
 
 Utilities for Scala
 
@@ -231,13 +230,13 @@ TryWith(AutoCloseable) { autoCloseable =>
 **`TryWith` returns `Try` type after apply the given function then closes the `AutoCloseable`.**
 
 ```scala
-val result: Try[WhatEverTheRunBlockReturns] = tryWith(AutoCloseable) { autoCloseable =>
+val result: Try[WhatEverTheRunBlockReturns] = TryWith(AutoCloseable) { autoCloseable =>
   // run block
 }
 ```
 
 ```scala
-tryWith(new FileInputStream("/path/to/file.txt")) { inputStream =>
+TryWith(new FileInputStream("/path/to/file.txt")) { inputStream =>
   var c = inputStream.read()
   while (c != -1) {
     print(c.asInstanceOf[Char])
@@ -247,7 +246,12 @@ tryWith(new FileInputStream("/path/to/file.txt")) { inputStream =>
 ```
 
 ```scala
-tryWith(new FileInputStream("/path/to/file.txt")) { inputStream =>
+TryWith(new FileInputStream("/path/to/file.txt")) { inputStream =>
+  /* 
+   * NOTE: The inner tryWith is tryWith not TryWith. 
+   * Otherwise, it results in Try[Try[T]] instead of Try[T]
+   * Try[Try[T]] case will be handled in a future release
+   */
   tryWith(new InputStreamReader(inputStream)) { reader =>
     var c = reader.read()
     while (c != -1) {
@@ -273,5 +277,5 @@ In your `build.sbt`, add the following repo and dependency.
 ```scala
 resolvers += "3rd Party Repo" at "http://dl.bintray.com/kevinlee/maven"
 
-libraryDependencies += "io.kevinlee" %% "skala" % "0.0.7"
+libraryDependencies += "io.kevinlee" %% "skala" % "0.0.8"
 ```

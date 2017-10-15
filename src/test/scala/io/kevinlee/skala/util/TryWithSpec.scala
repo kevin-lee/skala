@@ -665,9 +665,24 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
         }
 
         actual match {
-          case expected@Failure(npe: NullPointerException) =>
+          case _@Failure(npe: NullPointerException) =>
           case _ => fail(s"$actual is not ${classOf[NullPointerException]}")
         }
+      }
+    }
+
+    "TryWith(SomeResource throwing an Exception) { // run block }" should {
+
+      val expected = Failure(TryTestException)
+      s"return $expected" in {
+
+        def resource: SomeResource[Unit] = throw TryTestException
+
+        val actual = TryWith(resource) { _ =>
+        }
+
+        actual should be(expected)
+
       }
     }
 

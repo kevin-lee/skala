@@ -4,11 +4,11 @@ name := "skala"
 
 organization := "io.kevinlee"
 
-val ProjectVersion = "0.0.7"
+val ProjectVersion = "0.0.8"
 
 version := ProjectVersion
 
-scalaVersion := "2.11.8"
+scalaVersion := "2.11.11"
 
 scalacOptions ++= Seq(
   "-deprecation",             // Emit warning and location for usages of deprecated APIs.

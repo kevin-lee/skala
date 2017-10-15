@@ -230,13 +230,13 @@ TryWith(AutoCloseable) { autoCloseable =>
 **`TryWith` returns `Try` type after apply the given function then closes the `AutoCloseable`.**
 
 ```scala
-val result: Try[WhatEverTheRunBlockReturns] = tryWith(AutoCloseable) { autoCloseable =>
+val result: Try[WhatEverTheRunBlockReturns] = TryWith(AutoCloseable) { autoCloseable =>
   // run block
 }
 ```
 
 ```scala
-tryWith(new FileInputStream("/path/to/file.txt")) { inputStream =>
+TryWith(new FileInputStream("/path/to/file.txt")) { inputStream =>
   var c = inputStream.read()
   while (c != -1) {
     print(c.asInstanceOf[Char])
@@ -246,7 +246,12 @@ tryWith(new FileInputStream("/path/to/file.txt")) { inputStream =>
 ```
 
 ```scala
-tryWith(new FileInputStream("/path/to/file.txt")) { inputStream =>
+TryWith(new FileInputStream("/path/to/file.txt")) { inputStream =>
+  /* 
+   * NOTE: The inner tryWith is tryWith not TryWith. 
+   * Otherwise, it results in Try[Try[T]] instead of Try[T]
+   * Try[Try[T]] case will be handled in a future release
+   */
   tryWith(new InputStreamReader(inputStream)) { reader =>
     var c = reader.read()
     while (c != -1) {
@@ -272,5 +277,5 @@ In your `build.sbt`, add the following repo and dependency.
 ```scala
 resolvers += "3rd Party Repo" at "http://dl.bintray.com/kevinlee/maven"
 
-libraryDependencies += "io.kevinlee" %% "skala" % "0.0.7"
+libraryDependencies += "io.kevinlee" %% "skala" % "0.0.8"
 ```

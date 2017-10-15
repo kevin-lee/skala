@@ -16,14 +16,16 @@ object TryWith {
   def apply[T <: AutoCloseable, R](closeable: => T)(
                                    f: T => R)(
                                    implicit closeFailureHandler: CloseFailureHandler = dummyLogger): Try[R] = {
-    lazy val resource = closeable
+    lazy val resource = Try(closeable)
     try {
-      Try(resource).map(f)
+      resource.map(f)
     } finally {
-      try {
-        resource.close()
-      } catch {
-        case ex: Throwable => closeFailureHandler(ex)
+      resource.map{ x =>
+        try {
+          x.close()
+        } catch {
+          case ex: Throwable => closeFailureHandler(ex)
+        }
       }
     }
   }

@@ -9,11 +9,19 @@ echo "Run: sbt clean +coverage +test +coverageReport +coverageAggregate +package
 echo "--------------------------------------------"
 if [[ "$BRANCH_NAME" == "rc" ]]
   then
-  if sbt clean +coverage +test +coverageReport +coverageAggregate +packageBin +packageSrc +packageDoc ; then
-    echo "Done: sbt clean +coverage +test +coverageReport +coverageAggregate +packageBin +packageSrc +packageDoc"
+  if sbt clean +coverage +test +coverageReport +coverageAggregate ; then
+    echo "Done: sbt clean +coverage +test +coverageReport +coverageAggregate"
     echo "============================================"
   else
-    echo "Failed: sbt clean +coverage +test +coverageReport +coverageAggregate +packageBin +packageSrc +packageDoc" 1>&2
+    echo "Failed: sbt clean +coverage +test +coverageReport +coverageAggregate" 1>&2
+    echo "============================================"
+    exit 1
+  fi
+  if sbt +packageBin +packageSrc +packageDoc ; then
+    echo "Done: sbt +packageBin +packageSrc +packageDoc"
+    echo "============================================"
+  else
+    echo "Failed: sbt +packageBin +packageSrc +packageDoc" 1>&2
     echo "============================================"
     exit 1
   fi

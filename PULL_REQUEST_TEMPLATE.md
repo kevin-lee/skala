@@ -1,6 +1,6 @@
 Summary
 =======
-Closes #0 - Summary
+Close #0 - Summary
 * Details
 * 
 

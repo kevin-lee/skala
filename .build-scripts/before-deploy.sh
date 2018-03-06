@@ -21,8 +21,8 @@ else
   git push git@github.com:Kevin-Lee/skala --tags
 
   echo "======================================================"
-  echo "ls -l target/scala-2.11/skala_*.jar"
-  ls -l target/scala-2.11/skala_*.jar
+  echo "ls -l target/scala-*/skala_*.jar"
+  ls -l target/scala-*/skala_*.jar
   echo "======================================================"
   echo "Create a folder to put all the binary files."
   echo "------------------------------------------------------"
@@ -32,8 +32,8 @@ else
   ls -l target/all-bin
 
   echo "------------------------------------------------------"
-  echo "cp target/scala-2.11/skala_*.jar target/all-bin/"
-  cp target/scala-2.11/skala_*.jar target/all-bin/
+  echo "cp target/scala-*/skala_*.jar target/all-bin/"
+  cp target/scala-*/skala_*.jar target/all-bin/
   echo "------------------------------------------------------"
   echo "ls -lR target/all-bin"
   ls -lR target/all-bin

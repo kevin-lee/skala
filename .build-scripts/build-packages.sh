@@ -9,13 +9,13 @@ sbt writeVersion
 
 echo ""
 echo "======================================================"
-echo "Run: sbt clean packageBin packageSrc packageDoc "
+echo "Run: sbt clean +packageBin +packageSrc +packageDoc "
 echo "------------------------------------------------------"
-if sbt clean packageBin packageSrc packageDoc ; then
-  echo "Done: sbt clean packageBin packageSrc packageDoc "
+if sbt clean +packageBin +packageSrc +packageDoc ; then
+  echo "Done: sbt clean +packageBin +packageSrc +packageDoc "
   echo "======================================================"
 else
-  echo "Failed: sbt clean packageBin packageSrc packageDoc " 1>&2
+  echo "Failed: sbt clean +packageBin +packageSrc +packageDoc " 1>&2
   echo "======================================================"
   exit 1
 fi

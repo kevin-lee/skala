@@ -7,10 +7,9 @@ scala:
   - 2.11.6
 jdk:
   - oraclejdk8
-  - openjdk7
 script:
-  - sbt clean coverage test package
-#  - if [ "$TRAVIS_BRANCH" == "release" ]; then sbt publish; fi
+  - sbt clean +coverage +test +coverageReport +coverageAggregate +package
+#  - if [ "$TRAVIS_BRANCH" == "release" ]; then sbt +publish; fi
   - find $HOME/.sbt -name "*.lock" | xargs rm
   - find $HOME/.ivy2 -name "ivydata-*.properties" | xargs rm
 # after_success: "sbt coveralls"

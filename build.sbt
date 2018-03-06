@@ -5,10 +5,14 @@ name := "skala"
 organization := "io.kevinlee"
 
 val ProjectVersion = "0.0.8"
+//val ScalaVersion = "2.11.12"
+val TheScalaVersion = "2.12.4"
 
 version := ProjectVersion
 
-scalaVersion := "2.11.11"
+scalaVersion := TheScalaVersion
+
+crossScalaVersions := Seq("2.11.12", "2.12.4")
 
 scalacOptions ++= Seq(
   "-deprecation",             // Emit warning and location for usages of deprecated APIs.
@@ -30,9 +34,11 @@ libraryDependencies ++= Seq(
 //  "org.scala-lang.modules" % "scala-xml_2.11" % "1.0.5",
 //  "org.scala-lang.modules" % "scala-parser-combinators_2.11" % "1.0.4",
 
-  "org.scalatest" % "scalatest_2.11" % "2.2.4" % Test,
-  "com.storm-enroute" %% "scalameter" % "0.7" % Test,
-  "org.scalamock" %% "scalamock-scalatest-support" % "3.2.2" % Test
+  "org.scalamock" %% "scalamock" % "4.1.0" % Test,
+
+  "org.scalatest" %% "scalatest" % "3.0.5" % Test,
+  "com.storm-enroute" %% "scalameter" % "0.9" % Test
+//  "org.scalamock" %% "scalamock-scalatest-support" % "3.5.0" % Test
 )
 
 scalacOptions in (Compile, doc) ++= Seq(

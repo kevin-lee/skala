@@ -10,7 +10,6 @@ object TryWith {
 
   type CloseFailureHandler = Throwable => Unit
 
-  val printlnLogger: CloseFailureHandler = println
   val dummyLogger: CloseFailureHandler = _ => ()
 
   def apply[T <: AutoCloseable, R](closeable: => T)(

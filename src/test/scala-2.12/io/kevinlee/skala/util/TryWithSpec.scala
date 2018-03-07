@@ -1,11 +1,10 @@
 package io.kevinlee.skala.util
 
+import io.kevinlee.skala.util.TryWith.SideEffect.tryWith
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{Matchers, WordSpec}
 
 import scala.util.{Failure, Success, Try}
-
-import TryWith.SideEffect.tryWith
 
 /**
   * @author Kevin Lee
@@ -53,9 +52,9 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
         val resource = mock[SomeResource[Unit]]
 
         inSequence {
-          (resource.run _).expects().returning(()).once()
+          (resource.run _: () => Unit).expects().returning(()).once()
 
-          (resource.close _).expects().returning(()).once()
+          (resource.close _: () => Unit).expects().returning(()).once()
         }
 
         val actual = tryWith(resource) { someResource =>
@@ -76,9 +75,9 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
         val resource = mock[SomeResource[String]]
 
         inSequence {
-          resource.run _ expects() returning expected once()
+          (resource.run _: () => String) expects() returning expected once()
 
-          resource.close _ expects() once()
+          (resource.close _: () => Unit) expects() once()
         }
         val actual = tryWith(resource) { someResource =>
           someResource.run()
@@ -101,9 +100,9 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
 
         inSequence {
 
-          (resource.run _).expects().returning(()).once()
+          (resource.run _: () => Unit).expects().returning(()).once()
 
-          (resource.close _).expects().returning(()).twice()
+          (resource.close _: () => Unit).expects().returning(()).twice()
         }
 
         val actual = tryWith(resource) { someResource =>
@@ -132,11 +131,11 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
         val anotherResource = mock[SomeResource[String]]
 
         inSequence {
-          anotherResource.run _ expects() onCall { _ => resource.run() } once()
-          resource.run _ expects() returning expected once()
+          (anotherResource.run _: () => String) expects() onCall { _ => resource.run() } once()
+          (resource.run _: () => String) expects() returning expected once()
 
-          anotherResource.close _ expects() onCall { _ => resource.close() } once()
-          resource.close _ expects() twice()
+          (anotherResource.close _: () => Unit) expects() onCall { _ => resource.close() } once()
+          (resource.close _: () => Unit) expects() twice()
         }
 
         val actual = tryWith(resource) { someResource =>
@@ -164,11 +163,11 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
         val anotherResource = mock[SomeResource[String]]
 
         inSequence {
-          resource.run _ expects() once()
-          anotherResource.run _ expects() returning expected once()
+          (resource.run _: () => String) expects() once()
+          (anotherResource.run _: () => String) expects() returning expected once()
 
-          anotherResource.close _ expects() once()
-          resource.close _ expects() once()
+          (anotherResource.close _: () => Unit) expects() once()
+          (resource.close _: () => Unit) expects() once()
         }
 
         val actual = tryWith(resource) { someResource =>
@@ -195,11 +194,11 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
         val anotherResource = mock[SomeResource[String]]
 
         inSequence {
-          anotherResource.run _ expects() onCall { _ => resource.run() } once()
-          resource.run _ expects() returning expected once()
+          (anotherResource.run _: () => String)expects() onCall { _ => resource.run() } once()
+          (resource.run _: () => String) expects() returning expected once()
 
-          anotherResource.close _ expects() once()
-          resource.close _ expects() once()
+          (anotherResource.close _: () => Unit) expects() once()
+          (resource.close _: () => Unit) expects() once()
         }
 
         val actual = tryWith(resource) { someResource =>
@@ -218,9 +217,9 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
         val resource = mock[SomeResource[Unit]]
 
         inSequence {
-          (resource.run _) expects() throws TryTestException
+          (resource.run _: () => Unit) expects() throws TryTestException
 
-          (resource.close _).expects().returning(()).once()
+          (resource.close _: () => Unit).expects().returning(()).once()
         }
 
         a[TryTestException.type] should be thrownBy {
@@ -246,9 +245,9 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
         val resource = mock[SomeResource[Unit]]
 
         inSequence {
-          (resource.run _) expects() throwing (TryTestException) once() //throws TryTestException
+          (resource.run _: () => Unit) expects() throwing (TryTestException) once() //throws TryTestException
 
-          (resource.close _).expects().returning(()).once()
+          (resource.close _: () => Unit).expects().returning(()).once()
         }
 
         a[TryTestException.type] should be thrownBy {
@@ -277,16 +276,16 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
         val resource = mock[SomeResource[Unit]]
 
         inSequence {
-          (resource.run _) expects() throws TryTestException
+          (resource.run _: () => Unit) expects() throws TryTestException
 
-          (resource.close _).expects().returning(()).once()
+          (resource.close _: () => Unit).expects().returning(()).once()
         }
         val resource2 = mock[SomeResource[Unit]]
 
         inSequence {
-          (resource2.run _) expects() never()
+          (resource2.run _: () => Unit) expects() never()
 
-          (resource2.close _).expects().returning(()).never()
+          (resource2.close _: () => Unit).expects().returning(()).never()
         }
 
         a[TryTestException.type] should be thrownBy {
@@ -401,9 +400,9 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
         val resource = mock[SomeResource[Unit]]
 
         inSequence {
-          (resource.run _).expects().returning(()).once()
+          (resource.run _: () => Unit).expects().returning(()).once()
 
-          (resource.close _).expects().returning(()).once()
+          (resource.close _: () => Unit).expects().returning(()).once()
         }
 
         val actual = Try(tryWith(resource) { someResource =>
@@ -425,9 +424,9 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
         val resource = mock[SomeResource[String]]
 
         inSequence {
-          resource.run _ expects() returning expectedString once()
+          (resource.run _: () => String) expects() returning expectedString once()
 
-          resource.close _ expects() once()
+          (resource.close _: () => Unit) expects() once()
         }
         val actual = Try(tryWith(resource) { someResource =>
           someResource.run()
@@ -450,9 +449,9 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
 
         inSequence {
 
-          (resource.run _).expects().returning(()).once()
+          (resource.run _: () => Unit).expects().returning(()).once()
 
-          (resource.close _).expects().returning(()).twice()
+          (resource.close _: () => Unit).expects().returning(()).twice()
         }
 
         val actual = Try(tryWith(resource) { someResource =>
@@ -481,11 +480,11 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
         val anotherResource = mock[SomeResource[String]]
 
         inSequence {
-          anotherResource.run _ expects() onCall { _ => resource.run() } once()
-          resource.run _ expects() returning expectedString once()
+          (anotherResource.run _: () => String) expects() onCall { _ => resource.run() } once()
+          (resource.run _: () => String) expects() returning expectedString once()
 
-          anotherResource.close _ expects() onCall { _ => resource.close() } once()
-          resource.close _ expects() twice()
+          (anotherResource.close _: () => Unit) expects() onCall { _ => resource.close() } once()
+          (resource.close _: () => Unit) expects() twice()
         }
 
         val actual = Try(tryWith(resource) { someResource =>
@@ -512,11 +511,11 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
         val anotherResource = mock[SomeResource[String]]
 
         inSequence {
-          anotherResource.run _ expects() onCall { _ => resource.run() } once()
-          resource.run _ expects() returning expectedString once()
+          (anotherResource.run _: () => String) expects() onCall { _ => resource.run() } once()
+          (resource.run _: () => String) expects() returning expectedString once()
 
-          anotherResource.close _ expects() once()
-          resource.close _ expects() once()
+          (anotherResource.close _: () => Unit) expects() once()
+          (resource.close _: () => Unit) expects() once()
         }
 
         val actual = Try(tryWith(resource) { someResource =>
@@ -538,9 +537,9 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
         val resource = mock[SomeResource[Unit]]
 
         inSequence {
-          (resource.run _) expects() throws TryTestException
+          (resource.run _: () => Unit) expects() throws TryTestException
 
-          (resource.close _).expects().returning(()).once()
+          (resource.close _: () => Unit).expects().returning(()).once()
         }
 
         val actual = Try(tryWith(resource) { someResource =>
@@ -567,9 +566,9 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
         val resource = mock[SomeResource[Unit]]
 
         inSequence {
-          (resource.run _) expects() throwing (TryTestException) once() //throws TryTestException
+          (resource.run _: () => Unit) expects() throwing (TryTestException) once() //throws TryTestException
 
-          (resource.close _).expects().returning(()).once()
+          (resource.close _: () => Unit).expects().returning(()).once()
         }
 
         val actual = Try(tryWith(resource) { someResource =>
@@ -600,16 +599,16 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
         val resource = mock[SomeResource[Unit]]
 
         inSequence {
-          (resource.run _) expects() throws TryTestException
+          (resource.run _: () => Unit) expects() throws TryTestException
 
-          (resource.close _).expects().returning(()).once()
+          (resource.close _: () => Unit).expects().returning(()).once()
         }
         val resource2 = mock[SomeResource[Unit]]
 
         inSequence {
-          (resource2.run _) expects() never()
+          (resource2.run _: () => Unit) expects() never()
 
-          (resource2.close _).expects().returning(()).never()
+          (resource2.close _: () => Unit).expects().returning(()).never()
         }
 
         val actual = Try(tryWith(resource) { someResource =>
@@ -694,9 +693,9 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
         val resource = mock[SomeResource[Unit]]
 
         inSequence {
-          (resource.run _).expects().returning(()).once()
+          (resource.run _: () => Unit).expects().returning(()).once()
 
-          (resource.close _).expects().returning(()).once()
+          (resource.close _: () => Unit).expects().returning(()).once()
         }
 
         val actual = TryWith(resource) { someResource =>
@@ -718,9 +717,9 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
         val resource = mock[SomeResource[String]]
 
         inSequence {
-          resource.run _ expects() returning expectedString once()
+          (resource.run _: () => String) expects() returning expectedString once()
 
-          resource.close _ expects() once()
+          (resource.close _: () => Unit) expects() once()
         }
         val actual = TryWith(resource) { someResource =>
           someResource.run()
@@ -743,9 +742,9 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
 
         inSequence {
 
-          (resource.run _).expects().returning(()).once()
+          (resource.run _: () => Unit).expects().returning(()).once()
 
-          (resource.close _).expects().returning(()).twice()
+          (resource.close _: () => Unit).expects().returning(()).twice()
         }
 
         val actual = TryWith(resource) { someResource =>
@@ -774,11 +773,11 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
         val anotherResource = mock[SomeResource[String]]
 
         inSequence {
-          anotherResource.run _ expects() onCall { _ => resource.run() } once()
-          resource.run _ expects() returning expectedString once()
+          (anotherResource.run _: () => String) expects() onCall { _ => resource.run() } once()
+          (resource.run _: () => String) expects() returning expectedString once()
 
-          anotherResource.close _ expects() onCall { _ => resource.close() } once()
-          resource.close _ expects() twice()
+          (anotherResource.close _: () => Unit) expects() onCall { _ => resource.close() } once()
+          (resource.close _: () => Unit) expects() twice()
         }
 
         val actual = TryWith(resource) { someResource =>
@@ -805,11 +804,11 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
         val anotherResource = mock[SomeResource[String]]
 
         inSequence {
-          anotherResource.run _ expects() onCall { _ => resource.run() } once()
-          resource.run _ expects() returning expectedString once()
+          (anotherResource.run _: () => String) expects() onCall { _ => resource.run() } once()
+          (resource.run _: () => String) expects() returning expectedString once()
 
-          anotherResource.close _ expects() once()
-          resource.close _ expects() once()
+          (anotherResource.close _: () => Unit) expects() once()
+          (resource.close _: () => Unit) expects() once()
         }
 
         val actual = TryWith(resource) { someResource =>
@@ -831,9 +830,9 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
         val resource = mock[SomeResource[Unit]]
 
         inSequence {
-          (resource.run _) expects() throws TryTestException
+          (resource.run _: () => Unit) expects() throws TryTestException
 
-          (resource.close _).expects().returning(()).once()
+          (resource.close _: () => Unit).expects().returning(()).once()
         }
 
         val actual = TryWith(resource) { someResource =>
@@ -860,9 +859,9 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
         val resource = mock[SomeResource[Unit]]
 
         inSequence {
-          (resource.run _) expects() throwing (TryTestException) once() //throws TryTestException
+          (resource.run _: () => Unit) expects() throwing (TryTestException) once() //throws TryTestException
 
-          (resource.close _).expects().returning(()).once()
+          (resource.close _: () => Unit).expects().returning(()).once()
         }
 
         val actual = TryWith(resource) { someResource =>
@@ -893,16 +892,16 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
         val resource = mock[SomeResource[Unit]]
 
         inSequence {
-          (resource.run _) expects() throws TryTestException
+          (resource.run _: () => Unit) expects() throws TryTestException
 
-          (resource.close _).expects().returning(()).once()
+          (resource.close _: () => Unit).expects().returning(()).once()
         }
         val resource2 = mock[SomeResource[Unit]]
 
         inSequence {
-          (resource2.run _) expects() never()
+          (resource2.run _: () => Unit) expects() never()
 
-          (resource2.close _).expects().returning(()).never()
+          (resource2.close _: () => Unit).expects().returning(()).never()
         }
 
         val actual = TryWith(resource) { someResource =>

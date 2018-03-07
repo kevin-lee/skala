@@ -4,7 +4,7 @@ Skala
 [![Build Status](https://semaphoreci.com/api/v1/projects/0749a644-9deb-49a2-8781-da758bc731be/439826/shields_badge.svg)](https://semaphoreci.com/kevin-lee/skala)
 [![Download](https://api.bintray.com/packages/kevinlee/maven/skala/images/download.svg)](https://bintray.com/kevinlee/maven/skala/_latestVersion)
 
-[![Codacy Badge](https://www.codacy.com/project/badge/6918a01879ce4870b7210f0f1c0bef18)](https://www.codacy.com/app/kevin-lee/skala)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/6918a01879ce4870b7210f0f1c0bef18)](https://www.codacy.com/app/kevin-lee/skala?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Kevin-Lee/skala&amp;utm_campaign=Badge_Grade)
 [![Coverage Status](https://coveralls.io/repos/Kevin-Lee/skala/badge.svg)](https://coveralls.io/r/Kevin-Lee/skala)
 
 [![Build Status](https://travis-ci.org/Kevin-Lee/skala.svg)](https://travis-ci.org/Kevin-Lee/skala)
@@ -272,10 +272,10 @@ val result: Try[String] = tryWith(new SomeResource()) { someSource =>
 
 In your `build.sbt`, add the following repo and dependency.
 
-**Note: It supports only Skala 2.11.x.**
+**Note: It supports Scala 2.11 and 2.12.**
 
 ```scala
 resolvers += "3rd Party Repo" at "http://dl.bintray.com/kevinlee/maven"
 
-libraryDependencies += "io.kevinlee" %% "skala" % "0.0.8"
+libraryDependencies += "io.kevinlee" %% "skala" % "0.0.9"
 ```

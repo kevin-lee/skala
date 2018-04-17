@@ -8,6 +8,8 @@ import scala.collection.TraversableLike
  */
 object BigInts {
 
+  import io.kevinlee.skala.Predef.AnyEquals
+
   /**
    * Returns the square root of a BigInt value.
    * @param number the given BitInt number
@@ -95,7 +97,7 @@ object BigInts {
   def mode(numbers: Seq[BigInt]): Seq[BigInt] = CommonMath.mode(numbers)
 
   def stdev(numbers: TraversableLike[BigInt, TraversableLike[BigInt, _]], length: Int, mean: BigDecimal): BigDecimal =
-    if (length == 0)
+    if (length === 0)
       0
     else
       BigDecimals.sqrt(

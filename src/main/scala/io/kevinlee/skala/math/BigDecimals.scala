@@ -9,6 +9,8 @@ import scala.collection.TraversableLike
  */
 object BigDecimals {
 
+  import io.kevinlee.skala.Predef.AnyEquals
+
   private def isGoodEnough(guess: BigDecimal, number: BigDecimal): Boolean = ((guess * guess - number).abs / number) < 1E-32
   private def improve(guess: BigDecimal, number: BigDecimal): BigDecimal = (guess + number / guess) / 2
 
@@ -18,7 +20,7 @@ object BigDecimals {
       if (isGoodEnough(guess, number)) guess
       else sqrtIter(improve(guess, number), number)
 
-    if ((number compare 0) == 0) BigDecimal(0) else sqrtIter(guess, number)
+    if ((number compare 0) === 0) BigDecimal(0) else sqrtIter(guess, number)
   }
 
   /**
@@ -51,7 +53,7 @@ object BigDecimals {
   def mode(numbers: Seq[BigDecimal]): Seq[BigDecimal] = CommonMath.mode(numbers)
 
   def stdev(numbers: TraversableLike[BigDecimal, TraversableLike[BigDecimal, _]], length: Int, mean: BigDecimal): BigDecimal =
-    if (length == 0)
+    if (length === 0)
       0
     else
       sqrt(

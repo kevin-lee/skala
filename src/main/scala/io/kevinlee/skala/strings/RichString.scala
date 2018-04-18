@@ -27,7 +27,7 @@ object RichString {
     */
   def uncapitalize(value: String): String =
     if (value.isEmpty) value
-    else value.head.toLower + value.tail
+    else value.head.toLower.toString + value.tail
 
   implicit class ToUncapitalize(val value: String) extends AnyVal {
     /**

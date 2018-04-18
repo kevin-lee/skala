@@ -9,6 +9,8 @@ import scala.collection.TraversableLike
  */
 object BigDecimals {
 
+  import io.kevinlee.skala.SkalaPredef.AnyEquals
+
   private def isGoodEnough(guess: BigDecimal, number: BigDecimal): Boolean = ((guess * guess - number).abs / number) < 1E-32
   private def improve(guess: BigDecimal, number: BigDecimal): BigDecimal = (guess + number / guess) / 2
 
@@ -18,7 +20,7 @@ object BigDecimals {
       if (isGoodEnough(guess, number)) guess
       else sqrtIter(improve(guess, number), number)
 
-    if ((number compare 0) == 0) BigDecimal(0) else sqrtIter(guess, number)
+    if ((number compare 0) === 0) BigDecimal(0) else sqrtIter(guess, number)
   }
 
   /**
@@ -26,10 +28,15 @@ object BigDecimals {
    * @param number the given BigDecimal number
    * @return the positive square root of the given number.
    */
+  @SuppressWarnings(Array("org.wartremover.warts.Throw"))
   @throws[IllegalArgumentException]("If the argument is less than zero.")
   def sqrt(number: BigDecimal): BigDecimal =
-    if (number < 0) throw new IllegalArgumentException(s"\u221A of negative number! sqrt can handle only non-negative numbers. [entered: $number]")
-    else sqrt(1, number)
+    if (number < 0)
+      throw new IllegalArgumentException(
+        s"\u221A of negative number! sqrt can handle only non-negative numbers. [entered: $number]"
+      )
+    else
+      sqrt(1, number)
 
   def findSqrt(number: BigDecimal): Option[BigDecimal] = if (number < 0) None else Option(sqrt(1, number))
 
@@ -37,7 +44,8 @@ object BigDecimals {
     def sqrt(): BigDecimal = BigDecimals.sqrt(number)
   }
 
-  def mean(numbers: TraversableLike[BigDecimal, TraversableLike[BigDecimal, _]]): BigDecimal = if (numbers.isEmpty) 0 else numbers.sum / numbers.size
+  def mean(numbers: TraversableLike[BigDecimal, TraversableLike[BigDecimal, _]]): BigDecimal =
+    if (numbers.isEmpty) 0 else numbers.sum / numbers.size
 
   def median(sortedNumbers: Seq[BigDecimal], length: Int): BigDecimal = length match {
     case 0 => 0
@@ -51,7 +59,7 @@ object BigDecimals {
   def mode(numbers: Seq[BigDecimal]): Seq[BigDecimal] = CommonMath.mode(numbers)
 
   def stdev(numbers: TraversableLike[BigDecimal, TraversableLike[BigDecimal, _]], length: Int, mean: BigDecimal): BigDecimal =
-    if (length == 0)
+    if (length === 0)
       0
     else
       sqrt(

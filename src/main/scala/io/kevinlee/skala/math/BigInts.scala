@@ -8,7 +8,7 @@ import scala.collection.TraversableLike
  */
 object BigInts {
 
-  import io.kevinlee.skala.Predef.AnyEquals
+  import io.kevinlee.skala.SkalaPredef.AnyEquals
 
   /**
    * Returns the square root of a BigInt value.
@@ -128,7 +128,8 @@ object BigInts {
     def stdev: BigDecimal = BigInts.stdev(numbers, numbers.length, mean)
   }
 
-  private final val bigInts_11_12_13 =Set(BigInt(11), BigInt(12), BigInt(13))
+  private val bigInts_11_12_13 =Set(BigInt(11), BigInt(12), BigInt(13))
+
   def toOrdinal(number: BigInt): String =
     if (bigInts_11_12_13 contains number)
       s"${number}th"

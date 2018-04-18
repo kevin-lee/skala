@@ -49,6 +49,7 @@ class RichStringSpec extends WordSpec with Matchers {
       }
     }
 
+    @SuppressWarnings(Array("org.wartremover.warts.Null"))
     val input5 = null
     s"""uncapitalize($input5)""" should {
       s"""throw NullPointerException""" in {
@@ -100,6 +101,7 @@ class RichStringSpec extends WordSpec with Matchers {
       }
     }
 
+    @SuppressWarnings(Array("org.wartremover.warts.Null"))
     val input5: String = null
     s"""$input5.uncapitalize""" should {
       s"""throw NullPointerException""" in {

@@ -8,22 +8,19 @@ import scala.util.Try
   */
 object TryWith {
 
-  type CloseFailureHandler = Throwable => Unit
-
-  val dummyLogger: CloseFailureHandler = _ => ()
-
+  @SuppressWarnings(Array("org.wartremover.warts.ImplicitParameter", "org.wartremover.warts.DefaultArguments"))
   def apply[T <: AutoCloseable, R](closeable: => T)(
                                    f: T => R)(
-                                   implicit closeFailureHandler: CloseFailureHandler = dummyLogger): Try[R] = {
+                                   implicit closeFailureLogger: LoggerLike = LoggerLike.dummyLogger): Try[R] = {
     lazy val resource = Try(closeable)
     try {
       resource.map(f)
     } finally {
-      resource.map{ x =>
+      resource.foreach { x =>
         try {
           x.close()
         } catch {
-          case ex: Throwable => closeFailureHandler(ex)
+          case ex: Throwable => closeFailureLogger.log(ex)
         }
       }
     }
@@ -39,7 +36,7 @@ object TryWith {
       *
       * @example
       * {{{
-      * TryWith(new FileInputStream("/path/to/file.txt")) { inputStream =>
+      * tryWith(new FileInputStream("/path/to/file.txt")) { inputStream =>
       *   var c = inputStream.read()
       *   while (c != -1) {
       *     print(c.toChar)
@@ -51,7 +48,7 @@ object TryWith {
       * {{{
       *
       * // content == result
-      * val content = TryWith(new FileInputStream("/tmp/kevin-test/old.csv")) { inputStream =>
+      * val content = tryWith(new FileInputStream("/tmp/kevin-test/old.csv")) { inputStream =>
       *   var c = inputStream.read()
       *   var result = Vector(c.toChar)
       *   while (c != -1) {
@@ -65,7 +62,7 @@ object TryWith {
       * Or a better example might be
       * {{{
       * // content is Success(Vector) when it succeeds or Failure(Throwable) if it fails.
-      * val content = Try(TryWith(new FileInputStream("/tmp/kevin-test/old.csv")) { inputStream =>
+      * val content = Try(tryWith(new FileInputStream("/tmp/kevin-test/old.csv")) { inputStream =>
       *   var c = inputStream.read()
       *   var result = Vector(c.toChar)
       *   while (c != -1) {
@@ -77,8 +74,8 @@ object TryWith {
       * }}}
       *
       * {{{
-      * TryWith(new FileInputStream("/path/to/file.txt")) { inputStream =>
-      *   TryWith(new InputStreamReader(inputStream)) { reader =>
+      * tryWith(new FileInputStream("/path/to/file.txt")) { inputStream =>
+      *   tryWith(new InputStreamReader(inputStream)) { reader =>
       *
       *     var c = reader.read()
       *     while (c != -1) {
@@ -91,9 +88,9 @@ object TryWith {
       *
       * {{{
       * // content == result
-      * val content = TryWith(new FileInputStream("/path/to/file.txt")) { inputStream =>
+      * val content = tryWith(new FileInputStream("/path/to/file.txt")) { inputStream =>
       *
-      *   TryWith(new InputStreamReader(inputStream)) { reader =>
+      *   tryWith(new InputStreamReader(inputStream)) { reader =>
       *
       *     var c = reader.read()
       *     var result = Vector(c.toChar)
@@ -109,9 +106,9 @@ object TryWith {
       * Or a better example might be
       * {{{
       * // content is Success(Vector) when it succeeds or Failure(Throwable) if it fails.
-      * val content = Try(TryWith(new FileInputStream("/path/to/file.txt")) { inputStream =>
+      * val content = Try(tryWith(new FileInputStream("/path/to/file.txt")) { inputStream =>
       *
-      *   TryWith(new InputStreamReader(inputStream)) { reader =>
+      *   tryWith(new InputStreamReader(inputStream)) { reader =>
       *
       *     var c = reader.read()
       *     var result = Vector(c.toChar)
@@ -125,29 +122,30 @@ object TryWith {
       * }}}
       *
       * <br />
-      * To handle an exception thrown when closing the resource, use closeFailureHandler: Throwable => Unit
+      * To handle an exception thrown when closing the resource, use closeFailureLogger: LoggerLike
       * <br />
       * To log it, use some logging framework like
       * {{{
-      * implicit private val logger = (ex: Throwable) => logger.debug(ex)
+      * implicit private val logger = LoggerLike.someLogger(ex => logger.debug(ex))
       *
       * // or if you don't want any logging framework but a simple println
-      * io.kevinlee.skala.util.TryWith.printlnLogger
+      * implicit private val printlnLogger = io.kevinlee.skala.util.TryWith.LoggerLike#printlnLogger
       *
       * // or if you don't want to log anything, use this dummy logger
-      * io.kevinlee.skala.util.TryWith.dummyLogger
+      * implicit private val dummyLogger = io.kevinlee.skala.util.TryWith.LoggerLike#dummyLogger
       * }}}
       * @param closeable           The given [[java.lang.AutoCloseable]] object which is used by the given function.
       * @param f                   The function which does actual work before [[java.lang.AutoCloseable#close()]] is called.
-      * @param closeFailureHandler The given function to handle an error properly when close throws an exception.
+      * @param closeFailureLogger The given function to handle an error properly when close throws an exception.
       * @tparam T Any [[java.lang.AutoCloseable]] type
       * @tparam R The type of the result returned by the given function f.
       * @return The result from the given function f if it succeeds or it may throw an exception when it fails.
       * @throws          Throwable when any Throwable was thrown. It depends on the given closeable or the function f.
       */
+    @SuppressWarnings(Array("org.wartremover.warts.ImplicitParameter", "org.wartremover.warts.DefaultArguments"))
     def tryWith[T <: AutoCloseable, R](closeable: => T)(
                                        f: T => R)(
-                                       implicit closeFailureHandler: CloseFailureHandler = dummyLogger): R = {
+                                       implicit closeFailureLogger: LoggerLike = LoggerLike.dummyLogger): R = {
       lazy val resource = closeable
       try {
         f(resource)
@@ -155,7 +153,7 @@ object TryWith {
         try {
           resource.close()
         } catch {
-          case ex: Throwable => closeFailureHandler(ex)
+          case ex: Throwable => closeFailureLogger.log(ex)
         }
       }
     }

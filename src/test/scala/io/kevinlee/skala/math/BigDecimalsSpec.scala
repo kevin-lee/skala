@@ -1,13 +1,15 @@
 package io.kevinlee.skala.math
 
-import org.scalatest.Matchers._
+import io.kevinlee.skala.testing.PredefForTesting
 import org.scalatest.WordSpec
 
 /**
  * @author Lee, SeongHyun (Kevin)
  * @since 2015-03-22
  */
+@SuppressWarnings(Array("org.wartremover.warts.NonUnitStatements"))
 class BigDecimalsSpec extends WordSpec {
+  import PredefForTesting._
 
   "BigDecimals.sqrt" when {
     "sqrt(BigDecimal(-1))" should {
@@ -95,7 +97,7 @@ class BigDecimalsSpec extends WordSpec {
     "findSqrt(BigDecimal(1))" should {
       "return Some(BigDecimal(1))" in {
         val number: BigDecimal = 1
-        val expected = Option[BigDecimal](1)
+        val expected = Option(BigDecimal(1))
         val actual = BigDecimals.findSqrt(number)
         assert(actual === expected)
       }
@@ -103,27 +105,28 @@ class BigDecimalsSpec extends WordSpec {
     "findSqrt(BigDecimal(0))" should {
       "return Some(BigDecimal(0))" in {
         val number: BigDecimal = 0
-        val expected = Option[BigDecimal](0)
+        val expected = Option(BigDecimal(0))
         val actual = BigDecimals.findSqrt(number)
         assert(actual === expected)
       }
     }
+
     "findSqrt(BigDecimal(2))" should {
       "return Some(BigDecimal(1.414213562373095...)) and actual * actual === BigDecimal(2)" in {
         val number: BigDecimal = 2
-        val expected = Option[BigDecimal](BigDecimals.sqrt(number))
+        val expected: Option[BigDecimal] = Some(BigDecimals.sqrt(number))
         val actual = BigDecimals.findSqrt(number)
         assert(actual === expected)
-        assert(actual.map(x => x * x).get === number)
+        actual.map(x => x * x) shouldHave number
       }
     }
     "findSqrt(BigDecimal(9))" should {
       "return Some(BigDecimal(3)) and actual * actual === BigDecimal(9)" in {
         val number: BigDecimal = 9
-        val expected = Option[BigDecimal](3)
+        val expected = Option(BigDecimal(3))
         val actual = BigDecimals.findSqrt(number)
         assert(actual === expected)
-        assert(actual.map(x => x * x).get === number)
+        actual.map(x => x * x) shouldHave number
       }
     }
     "findSqrt(BigDecimal(10))" should {
@@ -132,7 +135,7 @@ class BigDecimalsSpec extends WordSpec {
         val expected = Option[BigDecimal](BigDecimals.sqrt(number))
         val actual = BigDecimals.findSqrt(number)
         assert(actual === expected)
-        assert(actual.map(x => x * x).get === (number +- 0.00000000000000000000000000000001))
+        actual.map(x => x * x) shouldHave approximately (number +- 0.00000000000000000000000000000001)
       }
     }
     "findSqrt(BigDecimal(6E-10))" should {
@@ -141,7 +144,7 @@ class BigDecimalsSpec extends WordSpec {
         val expected = Option[BigDecimal](BigDecimals.sqrt(number))
         val actual = BigDecimals.findSqrt(number)
         assert(actual === expected)
-        assert(actual.map(x => x * x).get === (number +- BigDecimal("0.01E-40")))
+        actual.map(x => x * x) shouldHave approximately (number +- BigDecimal("0.01E-40"))
       }
     }
     "findSqrt(BigDecimal(894792233.72423))" should {
@@ -150,7 +153,7 @@ class BigDecimalsSpec extends WordSpec {
         val expected = Option[BigDecimal](BigDecimals.sqrt(number))
         val actual = BigDecimals.findSqrt(number)
         assert(actual === expected)
-        assert(actual.map(x => x * x).get === number)
+        actual.map(x => x * x) shouldHave number
       }
     }
   }
@@ -442,10 +445,10 @@ class BigDecimalsSpec extends WordSpec {
     }
   }
 
-    val longMax = BigDecimal(Long.MaxValue)
-    val longMaxX2 = longMax * 2
-    val longMaxX3 = longMax * 3
-    val numbersContainingBigLong = List[BigDecimal](1, 1, 2, longMaxX3, longMaxX3, longMaxX3, longMaxX3, longMaxX3, 5, 5, 7, 7, 7, 7, longMaxX2, longMaxX2, longMaxX2, longMaxX2, longMaxX2, 8)
+  private val longMax = BigDecimal(Long.MaxValue)
+  private val longMaxX2 = longMax * 2
+  private val longMaxX3 = longMax * 3
+  private val numbersContainingBigLong = List[BigDecimal](1, 1, 2, longMaxX3, longMaxX3, longMaxX3, longMaxX3, longMaxX3, 5, 5, 7, 7, 7, 7, longMaxX2, longMaxX2, longMaxX2, longMaxX2, longMaxX2, 8)
 
   "BigDecimals.mode" when {
     val emptyList = List.empty[BigDecimal]

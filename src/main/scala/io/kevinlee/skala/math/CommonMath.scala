@@ -5,7 +5,7 @@ package io.kevinlee.skala.math
  * @since 2015-07-18
  */
 object CommonMath {
-  import io.kevinlee.skala.Predef.AnyEquals
+  import io.kevinlee.skala.SkalaPredef.AnyEquals
 
   def isOdd(number: Int):Boolean = (number & 1) !== 0
   def isEven(number: Int):Boolean = !isOdd(number)

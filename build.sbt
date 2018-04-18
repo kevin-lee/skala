@@ -4,7 +4,7 @@ name := "skala"
 
 organization := "io.kevinlee"
 
-val ProjectVersion = "0.0.9"
+val ProjectVersion = "0.0.10"
 val TheScalaVersion = "2.12.4"
 
 version := ProjectVersion
@@ -18,7 +18,7 @@ scalacOptions ++= Seq(
   "-feature",                 // Emit warning and location for usages of features that should be imported explicitly.
   "-unchecked",               // Enable additional warnings where generated code depends on assumptions.
   "-Xfatal-warnings",         // Fail the compilation if there are any warnings.
-//  "-Xlint",                 // Enable recommended additional warnings.
+  "-Xlint",                 // Enable recommended additional warnings.
   "-Ywarn-adapted-args",      // Warn if an argument list is modified to match the receiver.
   "-Ywarn-dead-code",         // Warn when dead code is identified.
   "-Ywarn-inaccessible",      // Warn about inaccessible types in method signatures.
@@ -26,18 +26,15 @@ scalacOptions ++= Seq(
   "-Ywarn-numeric-widen"      // Warn when numerics are widened.
 )
 
+wartremoverErrors ++= Warts.allBut(Wart.Overloading)
+
 libraryDependencies ++= Seq(
-//  "org.scala-lang" % "scala-compiler" % "2.11.8",
-//  "org.scala-lang" % "scala-library" % "2.11.8",
-//  "org.scala-lang" % "scala-reflect" % "2.11.8",
-//  "org.scala-lang.modules" % "scala-xml_2.11" % "1.0.5",
-//  "org.scala-lang.modules" % "scala-parser-combinators_2.11" % "1.0.4",
+  "org.scalatest" %% "scalatest" % "3.0.5" % Test,
+  "org.scalacheck" %% "scalacheck" % "1.13.4" % Test,
 
   "org.scalamock" %% "scalamock" % "4.1.0" % Test,
 
-  "org.scalatest" %% "scalatest" % "3.0.5" % Test,
   "com.storm-enroute" %% "scalameter" % "0.9" % Test
-//  "org.scalamock" %% "scalamock-scalatest-support" % "3.5.0" % Test
 )
 
 scalacOptions in (Compile, doc) ++= Seq(

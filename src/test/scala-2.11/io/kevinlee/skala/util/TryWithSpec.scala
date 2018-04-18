@@ -10,6 +10,18 @@ import scala.util.{Failure, Success, Try}
   * @author Kevin Lee
   * @since 2016-05-08
   */
+@SuppressWarnings(
+  Array(
+    "org.wartremover.warts.Any",
+    "org.wartremover.warts.NonUnitStatements",
+    "org.wartremover.warts.Nothing",
+    "org.wartremover.warts.Null",
+    "org.wartremover.warts.Product",
+    "org.wartremover.warts.PublicInference",
+    "org.wartremover.warts.Throw",
+    "org.wartremover.warts.Var"
+  )
+)
 class TryWithSpec extends WordSpec with Matchers with MockFactory {
 
   trait SomeResource[T] extends AutoCloseable {
@@ -343,12 +355,14 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
         var logCount = 0
         var exceptionThrown: Option[Throwable] = None
 
-        val actual = tryWith(CountableCloseable()) { resource =>
-          resource.run()
-        } { x =>
+        val loggerLike = LoggerLike.someLogger { x =>
           exceptionThrown = Some(x)
           logCount += 1
         }
+
+        val actual = tryWith(CountableCloseable()) { resource =>
+          resource.run()
+        } (loggerLike)
 
         count should be (1)
         logCount should be (1)
@@ -959,12 +973,14 @@ class TryWithSpec extends WordSpec with Matchers with MockFactory {
         var logCount = 0
         var exceptionThrown: Option[Throwable] = None
 
-        val actual = TryWith(CountableCloseable()) { resource =>
-          resource.run()
-        } { x =>
+        val loggerLike = LoggerLike.someLogger { x =>
           exceptionThrown = Some(x)
           logCount += 1
         }
+
+        val actual = TryWith(CountableCloseable()) { resource =>
+          resource.run()
+        } (loggerLike)
 
         count should be (1)
         logCount should be (1)

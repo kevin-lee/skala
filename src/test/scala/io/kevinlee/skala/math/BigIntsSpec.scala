@@ -1,13 +1,14 @@
 package io.kevinlee.skala.math
 
-import org.scalatest.Matchers._
 import org.scalatest.WordSpec
 
 /**
  * @author Lee, SeongHyun (Kevin)
  * @since 2015-03-22
  */
+@SuppressWarnings(Array("org.wartremover.warts.NonUnitStatements"))
 class BigIntsSpec extends WordSpec {
+  import io.kevinlee.skala.testing.PredefForTesting._
 
   "BigInts.sqrt" when {
     "sqrt(BigInt(-1))" should {
@@ -85,7 +86,7 @@ class BigIntsSpec extends WordSpec {
     "findSqrt(BigInt(1))" should {
       "return BigDecimal(1)" in {
         val number: BigInt = 1
-        val expected = Option[BigDecimal](1)
+        val expected = Option(BigDecimal(1))
         val actual = BigInts.findSqrt(number)
         assert(actual === expected)
       }
@@ -93,7 +94,7 @@ class BigIntsSpec extends WordSpec {
     "findSqrt(BigInt(0))" should {
       "return BigDecimal(0)" in {
         val number: BigInt = 0
-        val expected = Option[BigDecimal](0)
+        val expected = Option(BigDecimal(0))
         val actual = BigInts.findSqrt(number)
         assert(actual === expected)
       }
@@ -104,16 +105,19 @@ class BigIntsSpec extends WordSpec {
         val expected = Option[BigDecimal](BigInts.sqrt(number))
         val actual = BigInts.findSqrt(number)
         assert(actual === expected)
-        assert(actual.map(x => x * x).get === number)
+
+        val expectedValue = BigDecimal(number)
+        actual.map(x => x * x) shouldHave expectedValue
       }
     }
     "findSqrt(BigInt(9))" should {
       "return BigDecimal(3) and actual * actual === BigInt(9)" in {
         val number: BigInt = 9
-        val expected = Option[BigDecimal](3)
+        val expected = Option(BigDecimal(3))
         val actual = BigInts.findSqrt(number)
         assert(actual === expected)
-        assert(actual.map(x => x * x).get === number)
+        val expectedValue = BigDecimal(number)
+        actual.map(x => x * x) shouldHave expectedValue
       }
     }
     "findSqrt(BigInt(10))" should {
@@ -122,7 +126,7 @@ class BigIntsSpec extends WordSpec {
         val expected = Option[BigDecimal](BigInts.sqrt(number))
         val actual = BigInts.findSqrt(number)
         assert(actual === expected)
-        assert(actual.map(x => x * x).get === (BigDecimal(number) +- 0.00000000000000000000000000000001))
+        actual.map(x => x * x) shouldHave approximately (BigDecimal(number) +- 0.00000000000000000000000000000001)
       }
     }
     "findSqrt(BigInt(89479223372))" should {
@@ -131,7 +135,7 @@ class BigIntsSpec extends WordSpec {
         val expected = Option[BigDecimal](BigInts.sqrt(number))
         val actual = BigInts.findSqrt(number)
         assert(actual === expected)
-        assert(actual.map(x => x * x).get === (BigDecimal(number) +- 0.0000000000000000000001))
+        actual.map(x => x * x) shouldHave approximately (BigDecimal(number) +- 0.0000000000000000000001)
       }
     }
   }

@@ -10,6 +10,18 @@ import scala.util.{Failure, Success, Try}
   * @author Kevin Lee
   * @since 2016-05-08
   */
+@SuppressWarnings(
+  Array(
+    "org.wartremover.warts.Any",
+    "org.wartremover.warts.NonUnitStatements",
+    "org.wartremover.warts.Nothing",
+    "org.wartremover.warts.Null",
+    "org.wartremover.warts.Product",
+    "org.wartremover.warts.PublicInference",
+    "org.wartremover.warts.Throw",
+    "org.wartremover.warts.Var"
+  )
+)
 class TryWithSpec extends WordSpec with Matchers with MockFactory {
 
   trait SomeResource[T] extends AutoCloseable {

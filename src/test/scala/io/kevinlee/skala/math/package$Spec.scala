@@ -3,12 +3,11 @@ package io.kevinlee.skala.math
 import org.scalatest.Matchers._
 import org.scalatest.{BeforeAndAfterEach, WordSpec}
 
-import scala.language.postfixOps
-
 /**
   * @author Lee, Seong Hyun (Kevin)
   * @since 2015-04-13
   */
+@SuppressWarnings(Array("org.wartremover.warts.NonUnitStatements"))
 class package$Spec extends WordSpec with BeforeAndAfterEach {
 
   /* MathInt.isOdd */

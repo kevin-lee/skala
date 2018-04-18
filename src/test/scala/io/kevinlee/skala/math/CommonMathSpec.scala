@@ -10,6 +10,7 @@ import scala.util.Random
  * @author Lee, Seong Hyun (Kevin)
  * @since 2015-07-18
  */
+@SuppressWarnings(Array("org.wartremover.warts.NonUnitStatements"))
 class CommonMathSpec extends WordSpec {
 
   import io.kevinlee.skala.math.{CommonMath => commonMath}
@@ -909,16 +910,16 @@ class CommonMathSpec extends WordSpec {
 
 
 object CommonMathBenchmark extends Bench.LocalTime {
-  val sizes = Gen.range("size")(10, 100011, 10000)
-  val upTo = 10
-  val numberPool = (0 to upTo).toVector
-  val random = new Random(999)
+  private val sizes = Gen.range("size")(10, 100011, 10000)
+  private val upTo = 10
+  private val numberPool = (0 to upTo).toVector
+  private val random = new Random(999)
 
   def getRandomNumbers(howMany: Int): Vector[BigInt] = Random.shuffle(
     (0 until howMany).map(_ => BigInt(numberPool(random.nextInt(upTo)))).toVector ++ Vector.fill[BigInt](999)(7)
   )
 
-  val ranges = for {
+  private val ranges = for {
     size <- sizes
   } yield getRandomNumbers(size)
 
@@ -931,16 +932,16 @@ object CommonMathBenchmark extends Bench.LocalTime {
   }
 }
 object CommonMathBenchmark2 extends Bench.LocalTime {
-  val sizes = Gen.range("size")(10, 1000010, 500000)
-  val upTo = 10
-  val numberPool = (0 to upTo).toVector
-  val random = new Random(999)
+  private val sizes = Gen.range("size")(10, 1000010, 500000)
+  private val upTo = 10
+  private val numberPool = (0 to upTo).toVector
+  private val random = new Random(999)
 
   def getRandomNumbers(howMany: Int): Vector[BigInt] = Random.shuffle(
     (0 until howMany).map(_ => BigInt(numberPool(random.nextInt(upTo)))).toVector ++ Vector.fill[BigInt](999)(7)
   )
 
-  val ranges = for {
+  private val ranges = for {
     size <- sizes
   } yield getRandomNumbers(size)
 

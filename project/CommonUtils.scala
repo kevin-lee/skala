@@ -110,4 +110,25 @@ object CommonUtils {
       }
   }
 
+  /* GitHub */
+  case class Origin(organization: String, name: String)
+
+  def githubOrigin(base: File): Option[Origin] = {
+    import scala.util.Try
+    val repoExtractPattern = """.+[:/]([^/]*)/([^/]*)""".r
+
+    val maybeOriginUrl = Try {
+      sys.process.Process(Seq("git", "ls-remote", "--get-url", "origin"), base).!!
+    }.toOption
+
+    maybeOriginUrl.flatMap { out =>
+      val originUrl = out.trim.stripSuffix(".git")
+      originUrl match {
+        case repoExtractPattern(organization, name) =>
+          Some(Origin(organization, name))
+        case _ => None
+      }
+    }
+  }
+
 }

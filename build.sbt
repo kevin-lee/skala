@@ -28,6 +28,16 @@ scalacOptions ++= Seq(
 
 wartremoverErrors ++= Warts.allBut(Wart.Overloading)
 
+coverageMinimum := 80
+
+coverageFailOnMinimum := true
+
+coverageHighlighting := true
+
+publishArtifact in Test := false
+
+parallelExecution in Test := false
+
 libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest" % "3.0.5" % Test,
   "org.scalacheck" %% "scalacheck" % "1.13.4" % Test,
@@ -77,25 +87,31 @@ import org.scoverage.coveralls.Imports.CoverallsKeys._
 coverallsTokenFile := Option(s"""${Path.userHome.absolutePath}/.coveralls-credentials""")
 
 
-val repoLocation = "Kevin-Lee/skala"
+lazy val ghreleaseGithubOrigin  = settingKey[Option[Origin]]("GitHub origin")
+
+ghreleaseGithubOrigin := githubOrigin(baseDirectory.value)
 
 /* GitHub Release { */
-GithubRelease.repo := repoLocation
+ghreleaseRepoOrg :=
+  ghreleaseGithubOrigin.value.map(_.organization)
+                             .getOrElse(throw new RuntimeException("No Repo organization (user) name found"))
 
-GithubRelease.tag := s"v$ProjectVersion"
+ghreleaseRepoName :=
+  ghreleaseGithubOrigin.value.map(_.name)
+                             .getOrElse(throw new RuntimeException("No Repo name found"))
 
-GithubRelease.releaseName := GithubRelease.tag.value
-
-GithubRelease.commitish := "release"
-
-GithubRelease.notesFile := GithubRelease.notesDir.value / s"${ProjectVersion}.md"
-
-GithubRelease.releaseAssets := {
-
-  val binNames = listFiles(target.value / "ci", "*.jar")
-
-  println(s"fileNames: $binNames")
-
-  binNames
+ghreleaseNotes := { tagName =>
+  val ver = tagName.stripPrefix("v")
+  IO.read(baseDirectory.value / "notes" / s"$ver.md")
 }
+
+ghreleaseTitle := { tagName => s"${name.value} $tagName" }
+
+ghreleaseAssets := {
+  lazy val nameFilter = wildcardFilter("*.jar")
+  val assets = packagedArtifacts.value.values.toSeq.filter(nameFilter.accept)
+  println(s">>> Assets to release: ${assets.mkString("\n")}")
+  assets
+}
+
 /* } GitHub Release */

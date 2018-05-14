@@ -58,7 +58,7 @@ if [ "$THIS_BRANCH" == "release" ];
     export REPO_LOCATION="git@github.com:Kevin-Lee/skala.git"
     echo "REPO_LOCATION=$REPO_LOCATION"
 
-    export USER_EMAIL="builder+github@lckymn.com"
+    export USER_EMAIL="builder+github@kevinlee.io"
     echo "USER_EMAIL=$USER_EMAIL"
 
     export USER_NAME="Kevin-App-Builder"

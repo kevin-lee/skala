@@ -14,7 +14,7 @@ if git ls-remote --exit-code --tags origin $GIT_TAG 2>&1 > /dev/null ; then
   echo "the given tag: '$GIT_TAG' already exists so skip it!"
 else
   echo "the given tag: '$GIT_TAG' does not exist so run it!"
-  git config --global user.email "kevin.code@lckymn.com"
+  git config --global user.email "kevin.code@kevinlee.io"
   git config --global user.name "Kecin-CI"
 
   git tag $GIT_TAG -a -m "Automatically generated tag by Travis CI for build $TRAVIS_BUILD_NUMBER"

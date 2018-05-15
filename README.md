@@ -277,5 +277,5 @@ In your `build.sbt`, add the following repo and dependency.
 ```scala
 resolvers += "3rd Party Repo" at "http://dl.bintray.com/kevinlee/maven"
 
-libraryDependencies += "io.kevinlee" %% "skala" % "0.0.10"
+libraryDependencies += "io.kevinlee" %% "skala" % "0.1.0"
 ```

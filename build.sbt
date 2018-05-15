@@ -4,31 +4,56 @@ name := "skala"
 
 organization := "io.kevinlee"
 
-val ProjectVersion = "0.0.10"
-val TheScalaVersion = "2.12.4"
+val ProjectVersion = "0.1.0"
+val TheScalaVersion = "2.12.6"
 
 version := ProjectVersion
 
 scalaVersion := TheScalaVersion
 
-crossScalaVersions := Seq("2.11.12", "2.12.4")
+crossScalaVersions := Seq("2.11.12", TheScalaVersion)
 
-scalacOptions ++= Seq(
-  "-deprecation",             // Emit warning and location for usages of deprecated APIs.
-  "-feature",                 // Emit warning and location for usages of features that should be imported explicitly.
-  "-unchecked",               // Enable additional warnings where generated code depends on assumptions.
-  "-Xfatal-warnings",         // Fail the compilation if there are any warnings.
-  "-Xlint",                 // Enable recommended additional warnings.
-  "-Ywarn-adapted-args",      // Warn if an argument list is modified to match the receiver.
-  "-Ywarn-dead-code",         // Warn when dead code is identified.
-  "-Ywarn-inaccessible",      // Warn about inaccessible types in method signatures.
-  "-Ywarn-nullary-override",  // Warn when non-nullary overrides nullary, e.g. def foo() over def foo.
-  "-Ywarn-numeric-widen"      // Warn when numerics are widened.
-)
+def crossScalacOptions(
+  commonOptions: Seq[String],
+  current: Seq[String],
+  scalaVersion: String)(
+  versionSpecific: PartialFunction[Option[(Long, Long)], Seq[String]]
+): Seq[String] =
+  commonOptions ++
+  current ++
+  versionSpecific(CrossVersion.partialVersion(scalaVersion))
+
+scalacOptions := crossScalacOptions(
+  Seq(
+    "-deprecation",             // Emit warning and location for usages of deprecated APIs.
+    "-feature",                 // Emit warning and location for usages of features that should be imported explicitly.
+    "-unchecked",               // Enable additional warnings where generated code depends on assumptions.
+    "-Xfatal-warnings",         // Fail the compilation if there are any warnings.
+    "-Xlint",                   // Enable recommended additional warnings.
+    "-Ywarn-adapted-args",      // Warn if an argument list is modified to match the receiver.
+    "-Ywarn-dead-code",         // Warn when dead code is identified.
+    "-Ywarn-inaccessible",      // Warn about inaccessible types in method signatures.
+    "-Ywarn-nullary-override",  // Warn when non-nullary overrides nullary, e.g. def foo() over def foo.
+    "-Xlint:nullary-unit",      // Warn when nullary methods return Unit.
+    "-Ywarn-numeric-widen"      // Warn when numerics are widened.
+  ),
+  scalacOptions.value,
+  scalaVersion.value
+) {
+  case Some((2, 12)) =>
+    Seq(
+      "-Ywarn-unused:implicits", // Warn if an implicit parameter is unused.
+      "-Ywarn-unused:imports",   // Warn if an import selector is not referenced.
+      "-Ywarn-unused:locals",    // Warn if a local definition is unused.
+      "-Ywarn-unused:params"     // Warn if a value parameter is unused.
+    )
+  case _ =>
+    Nil
+}
 
 wartremoverErrors ++= Warts.allBut(Wart.Overloading)
 
-coverageMinimum := 80
+coverageMinimum := 90
 
 coverageFailOnMinimum := true
 

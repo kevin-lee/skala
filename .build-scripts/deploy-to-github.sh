@@ -2,7 +2,7 @@
 
 echo "======================================================"
 echo "Deploying to GitHub"
-if sbt checkGithubCredentials releaseOnGithub ; then
+if sbt githubRelease ; then
   echo "------------------------------------------------------"
   echo "Deploying to GitHub: Done"
   echo "======================================================"

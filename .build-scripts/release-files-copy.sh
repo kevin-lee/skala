@@ -30,8 +30,8 @@ echo ""
 echo "======================================================"
 if [ -d "target/ci" ]; then
   echo "Clean up existing target/ci/*"
-  echo "rm -R target/ci/*"
-  rm -R target/ci/*
+  echo "rm -Rf target/ci/*"
+  rm -Rf target/ci/*
   echo "------------------------------------------------------"
 fi
 echo "Create a folder to put all the binary files."

@@ -4,29 +4,64 @@ name := "skala"
 
 organization := "io.kevinlee"
 
-val ProjectVersion = "0.0.10"
-val TheScalaVersion = "2.12.4"
+val ProjectVersion = "0.1.0"
+val TheScalaVersion = "2.12.6"
 
 version := ProjectVersion
 
 scalaVersion := TheScalaVersion
 
-crossScalaVersions := Seq("2.11.12", "2.12.4")
+crossScalaVersions := Seq("2.11.12", TheScalaVersion)
 
-scalacOptions ++= Seq(
-  "-deprecation",             // Emit warning and location for usages of deprecated APIs.
-  "-feature",                 // Emit warning and location for usages of features that should be imported explicitly.
-  "-unchecked",               // Enable additional warnings where generated code depends on assumptions.
-  "-Xfatal-warnings",         // Fail the compilation if there are any warnings.
-  "-Xlint",                 // Enable recommended additional warnings.
-  "-Ywarn-adapted-args",      // Warn if an argument list is modified to match the receiver.
-  "-Ywarn-dead-code",         // Warn when dead code is identified.
-  "-Ywarn-inaccessible",      // Warn about inaccessible types in method signatures.
-  "-Ywarn-nullary-override",  // Warn when non-nullary overrides nullary, e.g. def foo() over def foo.
-  "-Ywarn-numeric-widen"      // Warn when numerics are widened.
-)
+def crossScalacOptions(
+  commonOptions: Seq[String],
+  current: Seq[String],
+  scalaVersion: String)(
+  versionSpecific: PartialFunction[Option[(Long, Long)], Seq[String]]
+): Seq[String] =
+  commonOptions ++
+  current ++
+  versionSpecific(CrossVersion.partialVersion(scalaVersion))
+
+scalacOptions := crossScalacOptions(
+  Seq(
+    "-deprecation",             // Emit warning and location for usages of deprecated APIs.
+    "-feature",                 // Emit warning and location for usages of features that should be imported explicitly.
+    "-unchecked",               // Enable additional warnings where generated code depends on assumptions.
+    "-Xfatal-warnings",         // Fail the compilation if there are any warnings.
+    "-Xlint",                   // Enable recommended additional warnings.
+    "-Ywarn-adapted-args",      // Warn if an argument list is modified to match the receiver.
+    "-Ywarn-dead-code",         // Warn when dead code is identified.
+    "-Ywarn-inaccessible",      // Warn about inaccessible types in method signatures.
+    "-Ywarn-nullary-override",  // Warn when non-nullary overrides nullary, e.g. def foo() over def foo.
+    "-Xlint:nullary-unit",      // Warn when nullary methods return Unit.
+    "-Ywarn-numeric-widen"      // Warn when numerics are widened.
+  ),
+  scalacOptions.value,
+  scalaVersion.value
+) {
+  case Some((2, 12)) =>
+    Seq(
+      "-Ywarn-unused:implicits", // Warn if an implicit parameter is unused.
+      "-Ywarn-unused:imports",   // Warn if an import selector is not referenced.
+      "-Ywarn-unused:locals",    // Warn if a local definition is unused.
+      "-Ywarn-unused:params"     // Warn if a value parameter is unused.
+    )
+  case _ =>
+    Nil
+}
 
 wartremoverErrors ++= Warts.allBut(Wart.Overloading)
+
+coverageMinimum := 90
+
+coverageFailOnMinimum := true
+
+coverageHighlighting := true
+
+publishArtifact in Test := false
+
+parallelExecution in Test := false
 
 libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest" % "3.0.5" % Test,
@@ -77,25 +112,38 @@ import org.scoverage.coveralls.Imports.CoverallsKeys._
 coverallsTokenFile := Option(s"""${Path.userHome.absolutePath}/.coveralls-credentials""")
 
 
-val repoLocation = "Kevin-Lee/skala"
+lazy val ghreleaseGithubOrigin  = settingKey[Option[Origin]]("GitHub origin")
+
+ghreleaseGithubOrigin := githubOrigin(baseDirectory.value)
 
 /* GitHub Release { */
-GithubRelease.repo := repoLocation
+ghreleaseRepoOrg :=
+  ghreleaseGithubOrigin.value.map(_.organization)
+                             .getOrElse(throw new RuntimeException("No Repo organization (user) name found"))
 
-GithubRelease.tag := s"v$ProjectVersion"
+ghreleaseRepoName :=
+  ghreleaseGithubOrigin.value.map(_.name)
+                             .getOrElse(throw new RuntimeException("No Repo name found"))
 
-GithubRelease.releaseName := GithubRelease.tag.value
-
-GithubRelease.commitish := "release"
-
-GithubRelease.notesFile := GithubRelease.notesDir.value / s"${ProjectVersion}.md"
-
-GithubRelease.releaseAssets := {
-
-  val binNames = listFiles(target.value / "ci", "*.jar")
-
-  println(s"fileNames: $binNames")
-
-  binNames
+ghreleaseNotes := { tagName =>
+  val ver = tagName.stripPrefix("v")
+  IO.read(baseDirectory.value / "notes" / s"$ver.md")
 }
+
+ghreleaseTitle := { tagName => s"${name.value} $tagName" }
+
+ghreleaseAssets := {
+  val assets = listFiles(target.value / "ci", "*.jar")
+
+  println(
+    s"""
+       |>>> Assets to release:
+       |----------------------
+       |  ${assets.mkString("\n  ")}
+       |""".stripMargin)
+
+  assets
+
+}
+
 /* } GitHub Release */

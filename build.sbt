@@ -133,10 +133,17 @@ ghreleaseNotes := { tagName =>
 ghreleaseTitle := { tagName => s"${name.value} $tagName" }
 
 ghreleaseAssets := {
-  lazy val nameFilter = wildcardFilter("*.jar")
-  val assets = packagedArtifacts.value.values.toSeq.filter(nameFilter.accept)
-  println(s">>> Assets to release: ${assets.mkString("\n")}")
+  val assets = listFiles(target.value / "ci", "*.jar")
+
+  println(
+    s"""
+       |>>> Assets to release:
+       |----------------------
+       |  ${assets.mkString("\n  ")}
+       |""".stripMargin)
+
   assets
+
 }
 
 /* } GitHub Release */

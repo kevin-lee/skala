@@ -1,35 +1,15 @@
 package io.kevinlee.skala.util
 
-import scala.util.Try
-
 /**
   * @author Kevin Lee
   * @since 2017-03-07
   */
 object TryWith {
 
-  @SuppressWarnings(Array("org.wartremover.warts.ImplicitParameter", "org.wartremover.warts.DefaultArguments"))
-  def apply[T <: AutoCloseable, R](closeable: => T)(
-                                   f: T => R)(
-                                   implicit closeFailureLogger: LoggerLike = LoggerLike.dummyLogger): Try[R] = {
-    lazy val resource = Try(closeable)
-    try {
-      resource.map(f)
-    } finally {
-      resource.foreach { x =>
-        try {
-          x.close()
-        } catch {
-          case ex: Throwable => closeFailureLogger.log(ex)
-        }
-      }
-    }
-  }
-
   object SideEffect {
 
     /**
-      * runs the given function with the given [[java.lang.AutoCloseable]] param then calls the [[java.lang.AutoCloseable#close()]].
+      * runs the given function with the given takes a param of type A which has a type class [[io.kevinlee.skala.util.CanClose]] then returns B. After applying f to A and before returning the result it closes A using the type class  [[io.kevinlee.skala.util.CanClose]].
       *
       * It is design to dispose the resource after it is used.
       * Reading and writing might be good examples of when this tryWith can be useful.
@@ -122,38 +102,42 @@ object TryWith {
       * }}}
       *
       * <br />
-      * To handle an exception thrown when closing the resource, use closeFailureLogger: LoggerLike
+      * To handle an exception thrown when closing the resource, check out [[Throwable#getSuppressed]] as the exception thrown when closing is added to suppressed.
       * <br />
-      * To log it, use some logging framework like
-      * {{{
-      * implicit private val logger = LoggerLike.someLogger(ex => logger.debug(ex))
       *
-      * // or if you don't want any logging framework but a simple println
-      * implicit private val printlnLogger = io.kevinlee.skala.util.TryWith.LoggerLike#printlnLogger
-      *
-      * // or if you don't want to log anything, use this dummy logger
-      * implicit private val dummyLogger = io.kevinlee.skala.util.TryWith.LoggerLike#dummyLogger
-      * }}}
-      * @param closeable           The given [[java.lang.AutoCloseable]] object which is used by the given function.
-      * @param f                   The function which does actual work before [[java.lang.AutoCloseable#close()]] is called.
-      * @param closeFailureLogger The given function to handle an error properly when close throws an exception.
-      * @tparam T Any [[java.lang.AutoCloseable]] type
-      * @tparam R The type of the result returned by the given function f.
+      * @param a  Some type A used for the given function. There should be a type-class CanClose of A.
+      * @param f  The function which does actual work before [[CanClose#close()]] is called.
+      * @tparam A For A, type class CanClose[A] should exist
+      * @tparam B The type of the result returned by the given function f.
       * @return The result from the given function f if it succeeds or it may throw an exception when it fails.
-      * @throws          Throwable when any Throwable was thrown. It depends on the given closeable or the function f.
+      * @throws Throwable when any Throwable was thrown. It depends on the given param, a or the function f or the type class CanClose[A].
       */
-    @SuppressWarnings(Array("org.wartremover.warts.ImplicitParameter", "org.wartremover.warts.DefaultArguments"))
-    def tryWith[T <: AutoCloseable, R](closeable: => T)(
-                                       f: T => R)(
-                                       implicit closeFailureLogger: LoggerLike = LoggerLike.dummyLogger): R = {
-      lazy val resource = closeable
+    @SuppressWarnings(Array(
+      "org.wartremover.warts.Throw"
+    , "org.wartremover.warts.Var"
+    , "org.wartremover.warts.Equals"
+    , "org.wartremover.warts.Null")
+    )
+    def tryWith[A : CanClose, B](a: => A)(f: A => B): B = {
+      lazy val resource = a
+      var firstEx: Throwable = null
       try {
         f(resource)
+      } catch {
+        case ex: Throwable =>
+          firstEx = ex
+          throw ex
       } finally {
-        try {
-          resource.close()
-        } catch {
-          case ex: Throwable => closeFailureLogger.log(ex)
+        if (firstEx == null) {
+          implicitly[CanClose[A]].close(resource)
+        } else {
+          try {
+            implicitly[CanClose[A]].close(resource)
+          } catch {
+            case ex2: Throwable =>
+              firstEx.addSuppressed(ex2)
+              throw firstEx
+          }
         }
       }
     }

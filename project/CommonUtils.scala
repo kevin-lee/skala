@@ -111,7 +111,7 @@ object CommonUtils {
   }
 
   /* GitHub */
-  case class Origin(organization: String, name: String)
+  import ohnosequences.sbt.GithubRelease.Origin
 
   def githubOrigin(base: File): Option[Origin] = {
     import scala.util.Try

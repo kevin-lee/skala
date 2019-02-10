@@ -112,11 +112,10 @@ import org.scoverage.coveralls.Imports.CoverallsKeys._
 coverallsTokenFile := Option(s"""${Path.userHome.absolutePath}/.coveralls-credentials""")
 
 
-lazy val ghreleaseGithubOrigin  = settingKey[Option[Origin]]("GitHub origin")
-
-ghreleaseGithubOrigin := githubOrigin(baseDirectory.value)
 
 /* GitHub Release { */
+ghreleaseGithubOrigin := githubOrigin(baseDirectory.value)
+
 ghreleaseRepoOrg :=
   ghreleaseGithubOrigin.value.map(_.organization)
                              .getOrElse(throw new RuntimeException("No Repo organization (user) name found"))

@@ -150,7 +150,7 @@ class SideEffectSpec extends WordSpec with Matchers with MockFactory {
           (resource.close _: () => Unit) expects() twice()
         }
 
-        val actual = tryWith(resource) { someResource =>
+        val actual = tryWith(resource) { _ =>
           tryWith(anotherResource) { someOtherResource =>
             someOtherResource.run()
           }
@@ -213,7 +213,7 @@ class SideEffectSpec extends WordSpec with Matchers with MockFactory {
           (resource.close _: () => Unit) expects() once()
         }
 
-        val actual = tryWith(resource) { someResource =>
+        val actual = tryWith(resource) { _ =>
           tryWith(anotherResource) { someOtherResource =>
             someOtherResource.run()
           }
@@ -266,7 +266,7 @@ class SideEffectSpec extends WordSpec with Matchers with MockFactory {
           tryWith(resource) { someResource =>
             tryWith(new AutoCloseable {
               override def close(): Unit = ()
-            }) { anotherResource =>
+            }) { _ =>
               someResource.run()
             }
             throw AnotherTryTestException
@@ -484,7 +484,7 @@ class SideEffectSpec extends WordSpec with Matchers with MockFactory {
           (resource.close _: () => Unit) expects() twice()
         }
 
-        val actual = Try(tryWith(resource) { someResource =>
+        val actual = Try(tryWith(resource) { _ =>
           tryWith(anotherResource) { someOtherResource =>
             someOtherResource.run()
           }
@@ -515,7 +515,7 @@ class SideEffectSpec extends WordSpec with Matchers with MockFactory {
           (resource.close _: () => Unit) expects() once()
         }
 
-        val actual = Try(tryWith(resource) { someResource =>
+        val actual = Try(tryWith(resource) { _ =>
           tryWith(anotherResource) { someOtherResource =>
             someOtherResource.run()
           }
@@ -571,7 +571,7 @@ class SideEffectSpec extends WordSpec with Matchers with MockFactory {
         val actual = Try(tryWith(resource) { someResource =>
           tryWith(new AutoCloseable {
             override def close(): Unit = ()
-          }) { anotherResource =>
+          }) { _ =>
             someResource.run()
           }
           throw AnotherTryTestException

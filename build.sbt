@@ -4,8 +4,8 @@ name := "skala"
 
 organization := "io.kevinlee"
 
-val ProjectVersion = "0.1.0"
-val TheScalaVersion = "2.12.6"
+val ProjectVersion = "0.2.0"
+val TheScalaVersion = "2.12.8"
 
 version := ProjectVersion
 
@@ -112,11 +112,10 @@ import org.scoverage.coveralls.Imports.CoverallsKeys._
 coverallsTokenFile := Option(s"""${Path.userHome.absolutePath}/.coveralls-credentials""")
 
 
-lazy val ghreleaseGithubOrigin  = settingKey[Option[Origin]]("GitHub origin")
-
-ghreleaseGithubOrigin := githubOrigin(baseDirectory.value)
 
 /* GitHub Release { */
+ghreleaseGithubOrigin := githubOrigin(baseDirectory.value)
+
 ghreleaseRepoOrg :=
   ghreleaseGithubOrigin.value.map(_.organization)
                              .getOrElse(throw new RuntimeException("No Repo organization (user) name found"))

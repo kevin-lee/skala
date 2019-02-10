@@ -1,6 +1,6 @@
 package io.kevinlee.skala.util
 
-import io.kevinlee.skala.util.TryWith.SideEffect.tryWith
+import io.kevinlee.skala.util.SideEffect.tryWith
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{Matchers, WordSpec}
 
@@ -22,7 +22,7 @@ import scala.util.{Failure, Success, Try}
     "org.wartremover.warts.Var"
   )
 )
-class TryWithSpec extends WordSpec with Matchers with MockFactory {
+class SideEffectSpec extends WordSpec with Matchers with MockFactory {
 
   trait SomeResource[T] extends AutoCloseable {
     def run(): T

@@ -5,7 +5,7 @@ name := "skala"
 organization := "io.kevinlee"
 
 val ProjectVersion = "0.2.0"
-val TheScalaVersion = "2.12.6"
+val TheScalaVersion = "2.12.8"
 
 version := ProjectVersion
 

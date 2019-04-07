@@ -172,7 +172,7 @@ median(numbers)  // return BigDecimal(3)
 ### tryWith
 
 ```scala
-import io.kevinlee.skala.util.TryWith.SideEffect.tryWith
+import io.kevinlee.skala.util.SideEffect.tryWith
 ```
 
 ```scala
@@ -216,57 +216,6 @@ val result = tryWith(new SomeResource()) { someSource =>
 }
 ```
 
-### TryWith
-
-```scala
-import io.kevinlee.skala.util.TryWith
-```
-
-```scala
-TryWith(AutoCloseable) { autoCloseable =>
-  // run block
-}
-```
-**`TryWith` returns `Try` type after apply the given function then closes the `AutoCloseable`.**
-
-```scala
-val result: Try[WhatEverTheRunBlockReturns] = TryWith(AutoCloseable) { autoCloseable =>
-  // run block
-}
-```
-
-```scala
-TryWith(new FileInputStream("/path/to/file.txt")) { inputStream =>
-  var c = inputStream.read()
-  while (c != -1) {
-    print(c.asInstanceOf[Char])
-    c = inputStream.read()
-  }
-}
-```
-
-```scala
-TryWith(new FileInputStream("/path/to/file.txt")) { inputStream =>
-  /* 
-   * NOTE: The inner tryWith is tryWith not TryWith. 
-   * Otherwise, it results in Try[Try[T]] instead of Try[T]
-   * Try[Try[T]] case will be handled in a future release
-   */
-  tryWith(new InputStreamReader(inputStream)) { reader =>
-    var c = reader.read()
-    while (c != -1) {
-      print(c.asInstanceOf[Char])
-      c = reader.read()
-    }
-  }
-}
-```
-
-```scala
-val result: Try[String] = tryWith(new SomeResource()) { someSource =>
-  someSource.get    // returns String 
-}
-```
 
 # Get Skala
 
@@ -277,5 +226,5 @@ In your `build.sbt`, add the following repo and dependency.
 ```scala
 resolvers += "3rd Party Repo" at "http://dl.bintray.com/kevinlee/maven"
 
-libraryDependencies += "io.kevinlee" %% "skala" % "0.1.0"
+libraryDependencies += "io.kevinlee" %% "skala" % "0.2.0"
 ```

@@ -25,8 +25,6 @@ object CommonUtils {
   def wildcardFilter(names: Seq[String]): JFileFilter =
     new WildcardFileFilter(names.toArray).asInstanceOf[JFileFilter]
 
-  def wildcardFilter(name: String, names: String*): JFileFilter =
-    wildcardFilter(name +: names.toSeq)
 
   //  def getAllSubDirs(dir: File): Array[File] = dir.listFiles(DirectoryFilter).flatMap(x => x +: getAllSubDirs(x))
   def getAllSubDirs(dir: File): Seq[File] = {
@@ -71,64 +69,5 @@ object CommonUtils {
 
   case object NoPrefix extends Prefix { val isEmpty = true; val value = "" }
   private case class PrefixVal(value: String) extends Prefix { val isEmpty = false }
-
-  def listFiles(dir: File, name: String, names: String*): Seq[File] =
-    listFiles(dir, (name +: names).toList)
-
-  def listFiles(dir: File, names: Seq[String]): Seq[File] = {
-    def listFiles0(dir: File, names: Seq[String]): Seq[File] =
-      dir.listFiles(wildcardFilter(names)).toList
-
-    (dir +: getAllSubDirs(dir)).flatMap(listFiles0(_, names)).distinct
-  }
-
-  def fileAndPathNameList(basePath: BasePath,
-                          prefix: Prefix,
-                          name: String,
-                          names: String*): Seq[(File, String)] =
-    fileAndPathNameList(basePath, prefix, (name +: names).toList)
-
-  def fileAndPathNameList(basePath: BasePath,
-                          prefix: Prefix,
-                          names: Seq[String]): Seq[(File, String)] = {
-
-    val basePathLength = basePath.pathLength
-    println(
-      s"""
-         |      basePath: ${basePath.base}
-         |           dir: ${basePath.dir}
-         |        prefix: ${prefix.value}
-         |basePathLength: $basePathLength
-       """.stripMargin)
-    listFiles(basePath.base / basePath.dir.getOrElse(""), names)
-      .map(f => (f, f.getPath))
-      .map { case (file, parent) =>
-        (
-          file,
-          basePath.dir.fold(prefix + parent.drop(basePathLength))(_ + s"/${prefix + parent.drop(basePathLength)}")
-        )
-      }
-  }
-
-  /* GitHub */
-  import ohnosequences.sbt.GithubRelease.Origin
-
-  def githubOrigin(base: File): Option[Origin] = {
-    import scala.util.Try
-    val repoExtractPattern = """.+[:/]([^/]*)/([^/]*)""".r
-
-    val maybeOriginUrl = Try {
-      sys.process.Process(Seq("git", "ls-remote", "--get-url", "origin"), base).!!
-    }.toOption
-
-    maybeOriginUrl.flatMap { out =>
-      val originUrl = out.trim.stripSuffix(".git")
-      originUrl match {
-        case repoExtractPattern(organization, name) =>
-          Some(Origin(organization, name))
-        case _ => None
-      }
-    }
-  }
 
 }

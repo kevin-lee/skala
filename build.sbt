@@ -1,4 +1,6 @@
 import CommonUtils._
+import kevinlee.sbt.SbtCommon._
+import kevinlee.semver.{Major, Minor, SemanticVersion}
 
 name := "skala"
 
@@ -13,17 +15,8 @@ scalaVersion := TheScalaVersion
 
 crossScalaVersions := Seq("2.11.12", TheScalaVersion)
 
-def crossScalacOptions(
-  commonOptions: Seq[String],
-  current: Seq[String],
-  scalaVersion: String)(
-  versionSpecific: PartialFunction[Option[(Long, Long)], Seq[String]]
-): Seq[String] =
-  commonOptions ++
-  current ++
-  versionSpecific(CrossVersion.partialVersion(scalaVersion))
-
-scalacOptions := crossScalacOptions(
+scalacOptions := crossVersionProps(
+  scalacOptions.value ++
   Seq(
     "-deprecation",             // Emit warning and location for usages of deprecated APIs.
     "-feature",                 // Emit warning and location for usages of features that should be imported explicitly.
@@ -36,11 +29,10 @@ scalacOptions := crossScalacOptions(
     "-Ywarn-nullary-override",  // Warn when non-nullary overrides nullary, e.g. def foo() over def foo.
     "-Xlint:nullary-unit",      // Warn when nullary methods return Unit.
     "-Ywarn-numeric-widen"      // Warn when numerics are widened.
-  ),
-  scalacOptions.value,
-  scalaVersion.value
+  )
+, SemanticVersion.parseUnsafe(scalaVersion.value)
 ) {
-  case Some((2, 12)) =>
+  case (Major(2), Minor(12)) =>
     Seq(
       "-Ywarn-unused:implicits", // Warn if an implicit parameter is unused.
       "-Ywarn-unused:imports",   // Warn if an import selector is not referenced.
@@ -50,6 +42,8 @@ scalacOptions := crossScalacOptions(
   case _ =>
     Nil
 }
+
+enablePlugins(DevOopsGitReleasePlugin)
 
 wartremoverErrors ++= Warts.allBut(Wart.Overloading)
 
@@ -110,39 +104,3 @@ writeVersion := versionWriter(() => Def.spaceDelimited("filename").parsed)(Proje
 import org.scoverage.coveralls.Imports.CoverallsKeys._
 
 coverallsTokenFile := Option(s"""${Path.userHome.absolutePath}/.coveralls-credentials""")
-
-
-
-/* GitHub Release { */
-ghreleaseGithubOrigin := githubOrigin(baseDirectory.value)
-
-ghreleaseRepoOrg :=
-  ghreleaseGithubOrigin.value.map(_.organization)
-                             .getOrElse(throw new RuntimeException("No Repo organization (user) name found"))
-
-ghreleaseRepoName :=
-  ghreleaseGithubOrigin.value.map(_.name)
-                             .getOrElse(throw new RuntimeException("No Repo name found"))
-
-ghreleaseNotes := { tagName =>
-  val ver = tagName.stripPrefix("v")
-  IO.read(baseDirectory.value / "notes" / s"$ver.md")
-}
-
-ghreleaseTitle := { tagName => s"${name.value} $tagName" }
-
-ghreleaseAssets := {
-  val assets = listFiles(target.value / "ci", "*.jar")
-
-  println(
-    s"""
-       |>>> Assets to release:
-       |----------------------
-       |  ${assets.mkString("\n  ")}
-       |""".stripMargin)
-
-  assets
-
-}
-
-/* } GitHub Release */

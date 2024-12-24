@@ -1,33 +1,59 @@
 package io.kevinlee.skala.testing
 
-import org.scalactic.TripleEqualsSupport.Spread
-import org.scalatest.{Assertion, Matchers}
+import hedgehog._
 
 /**
   * @author Kevin Lee
   * @since 2018-04-18
   */
-object PredefForTesting extends Matchers {
+object PredefForTesting {
 
-  final case class Approx[A](value: Spread[A]) extends AnyVal
+  final case class Approx[A: Numeric](a: A, tolerance: A)
+  object Approx {
+    def isApproximately[A: Numeric](a: A, approx: Approx[A]): Boolean =
+      Numeric[A].gteq(a, Numeric[A].minus(approx.a, approx.tolerance)) &&
+        Numeric[A].lteq(a, Numeric[A].plus(approx.a, approx.tolerance))
 
-  def approximately[A](approx: Spread[A]): Approx[A] = Approx(approx)
+    @SuppressWarnings(Array("org.wartremover.warts.StringPlusAny"))
+    def render[A: Numeric](approx: Approx[A]): String =
+      s"${Numeric[A].minus(approx.a, approx.tolerance)} <= n <= ${Numeric[A].plus(approx.a, approx.tolerance)}"
+
+    @SuppressWarnings(Array("org.wartremover.warts.StringPlusAny"))
+    def renderMessage[A: Numeric](approx: Approx[A]): String =
+      s"${Numeric[A].minus(approx.a, approx.tolerance)} ~ ${Numeric[A].plus(approx.a, approx.tolerance)}"
+  }
+
+  implicit class ToApprox[A](val a: A) extends AnyVal {
+    def +-(tolerance: A)(implicit N: Numeric[A]): Approx[A] =
+      Approx(a, tolerance)
+  }
+
+  implicit class ResultApproximately[A](val a: A) extends AnyVal {
+    @SuppressWarnings(Array("org.wartremover.warts.StringPlusAny"))
+    def isApproximately(approx: Approx[A])(implicit N: Numeric[A]): Result =
+      Result.diffNamed(
+        s"$a is approximately ${Approx.renderMessage(approx)}",
+        a,
+        approx
+      )(Approx.isApproximately)
+  }
 
   implicit class OptionAssert[A](val actual: Option[A]) extends AnyVal {
-    def shouldHave(expected: A): Assertion  =
+    @SuppressWarnings(Array("org.wartremover.warts.StringPlusAny"))
+    def shouldHave(expected: A): Result =
       actual match {
         case Some(actualValue) =>
-          actualValue should be (expected)
+          actualValue ==== expected
         case None =>
-          fail(s"actual must be Some($expected) but None is found")
+          Result.failure.log(s"actual must be Some($expected) but None is found")
       }
 
-    def shouldHave(expected: Approx[A]): Assertion  =
+    def shouldHaveApproximately(expected: Approx[A])(implicit N: Numeric[A]): Result  =
       actual match {
         case Some(actualValue) =>
-          actualValue should be (expected.value)
+          actualValue isApproximately expected
         case None =>
-          fail(s"actual must be Some(${expected.value}) but None is found")
+          Result.failure.log(s"actual must be Some(${Approx.render(expected)}) but None is found")
       }
   }
 

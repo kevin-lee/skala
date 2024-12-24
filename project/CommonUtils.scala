@@ -1,5 +1,4 @@
 import java.io.{File => JFile, FileFilter => JFileFilter}
-
 import org.apache.commons.io.filefilter.WildcardFileFilter
 import sbt._
 
@@ -23,7 +22,7 @@ object CommonUtils {
   }
 
   def wildcardFilter(names: Seq[String]): JFileFilter =
-    new WildcardFileFilter(names.toArray).asInstanceOf[JFileFilter]
+    new WildcardFileFilter(names:_*).asInstanceOf[JFileFilter]
 
 
   //  def getAllSubDirs(dir: File): Array[File] = dir.listFiles(DirectoryFilter).flatMap(x => x +: getAllSubDirs(x))

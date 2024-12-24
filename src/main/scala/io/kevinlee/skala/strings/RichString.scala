@@ -25,8 +25,9 @@ object RichString {
     * @param value
     * @return
     */
+  @SuppressWarnings(Array("org.wartremover.warts.Equals"))
   def uncapitalize(value: String): String =
-    if (value.isEmpty) value
+    if (value == null || value.isEmpty) value
     else value.head.toLower.toString + value.tail
 
   implicit class ToUncapitalize(val value: String) extends AnyVal {

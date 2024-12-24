@@ -1,7 +1,6 @@
 package io.kevinlee.skala.math
 
 import scala.annotation.tailrec
-import scala.collection.TraversableLike
 
 /**
  * @author Lee, SeongHyun (Kevin)
@@ -33,7 +32,7 @@ object BigDecimals {
   def sqrt(number: BigDecimal): BigDecimal =
     if (number < 0)
       throw new IllegalArgumentException(
-        s"\u221A of negative number! sqrt can handle only non-negative numbers. [entered: $number]"
+        s"\u221A of negative number! sqrt can handle only non-negative numbers. [entered: ${number.bigDecimal.toPlainString}]"
       )
     else
       sqrt(1, number)
@@ -44,7 +43,7 @@ object BigDecimals {
     def sqrt(): BigDecimal = BigDecimals.sqrt(number)
   }
 
-  def mean(numbers: TraversableLike[BigDecimal, TraversableLike[BigDecimal, _]]): BigDecimal =
+  def mean(numbers: Seq[BigDecimal]): BigDecimal =
     if (numbers.isEmpty) 0 else numbers.sum / numbers.size
 
   def median(sortedNumbers: Seq[BigDecimal], length: Int): BigDecimal = length match {
@@ -58,7 +57,7 @@ object BigDecimals {
 
   def mode(numbers: Seq[BigDecimal]): Seq[BigDecimal] = CommonMath.mode(numbers)
 
-  def stdev(numbers: TraversableLike[BigDecimal, TraversableLike[BigDecimal, _]], length: Int, mean: BigDecimal): BigDecimal =
+  def stdev(numbers: Seq[BigDecimal], length: Int, mean: BigDecimal): BigDecimal =
     if (length === 0)
       0
     else
@@ -81,7 +80,7 @@ object BigDecimals {
    * @param numbers the given BigDecimal numbers
    * @return the Standard Deviation of the given BigInt numbers
    */
-  def stdev(numbers: TraversableLike[BigDecimal, TraversableLike[BigDecimal, _]]): BigDecimal = stdev(numbers, numbers.size, mean(numbers))
+  def stdev(numbers: Seq[BigDecimal]): BigDecimal = stdev(numbers, numbers.size, mean(numbers))
 
   implicit class BigDecimalSeq(val numbers: Seq[BigDecimal]) extends AnyVal {
     def mean: BigDecimal = BigDecimals.mean(numbers)

@@ -1,47 +1,33 @@
 import CommonUtils._
 import kevinlee.sbt.SbtCommon._
-import kevinlee.semver.{Major, Minor, SemanticVersion}
+import just.semver.SemVer
+import just.semver.SemVer.{Major, Minor}
 
 name := "skala"
 
 organization := "io.kevinlee"
 
 val ProjectVersion = "0.2.0"
-val TheScalaVersion = "2.12.8"
+val TheScalaVersion = "2.13.3"
+
+val hedgehogVersion = "0.5.1"
 
 version := ProjectVersion
 
 scalaVersion := TheScalaVersion
 
-crossScalaVersions := Seq("2.11.12", TheScalaVersion)
+crossScalaVersions := Seq("2.11.12", "2.12.12", TheScalaVersion).distinct
 
-scalacOptions := crossVersionProps(
-  scalacOptions.value ++
-  Seq(
-    "-deprecation",             // Emit warning and location for usages of deprecated APIs.
-    "-feature",                 // Emit warning and location for usages of features that should be imported explicitly.
-    "-unchecked",               // Enable additional warnings where generated code depends on assumptions.
-    "-Xfatal-warnings",         // Fail the compilation if there are any warnings.
-    "-Xlint",                   // Enable recommended additional warnings.
-    "-Ywarn-adapted-args",      // Warn if an argument list is modified to match the receiver.
-    "-Ywarn-dead-code",         // Warn when dead code is identified.
-    "-Ywarn-inaccessible",      // Warn about inaccessible types in method signatures.
-    "-Ywarn-nullary-override",  // Warn when non-nullary overrides nullary, e.g. def foo() over def foo.
-    "-Xlint:nullary-unit",      // Warn when nullary methods return Unit.
-    "-Ywarn-numeric-widen"      // Warn when numerics are widened.
-  )
-, SemanticVersion.parseUnsafe(scalaVersion.value)
-) {
-  case (Major(2), Minor(12)) =>
-    Seq(
-      "-Ywarn-unused:implicits", // Warn if an implicit parameter is unused.
-      "-Ywarn-unused:imports",   // Warn if an import selector is not referenced.
-      "-Ywarn-unused:locals",    // Warn if a local definition is unused.
-      "-Ywarn-unused:params"     // Warn if a value parameter is unused.
-    )
-  case _ =>
-    Nil
-}
+scalacOptions := (SemVer.parseUnsafe(scalaVersion.value) match {
+  case SemVer(SemVer.Major(2), SemVer.Minor(13), SemVer.Patch(patch), _, _) =>
+    val options = scalacOptions.value
+    if (patch >= 3)
+      options.filterNot(_ == "-Xlint:nullary-override")
+    else
+      options
+  case _: SemVer =>
+    scalacOptions.value
+})
 
 enablePlugins(DevOopsGitReleasePlugin)
 
@@ -57,21 +43,53 @@ publishArtifact in Test := false
 
 parallelExecution in Test := false
 
+addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1")
+
+unmanagedSourceDirectories in Compile ++= {
+  val sharedSourceDir = baseDirectory.value / "src/main"
+  if (scalaVersion.value.startsWith("2.13"))
+    Seq(sharedSourceDir / "scala-2.12_2.13")
+  else if (scalaVersion.value.startsWith("2.12"))
+    Seq(sharedSourceDir / "scala-2.12_2.13", sharedSourceDir / "scala-2.11_2.12")
+  else if (scalaVersion.value.startsWith("2.11"))
+    Seq(sharedSourceDir / "scala-2.11_2.12")
+  else
+    Seq.empty
+}
+
+unmanagedSourceDirectories in Test ++= {
+  val sharedSourceDir = baseDirectory.value / "src/main"
+  if (scalaVersion.value.startsWith("2.13"))
+    Seq(sharedSourceDir / "scala-2.12_2.13")
+  else if (scalaVersion.value.startsWith("2.12"))
+    Seq(sharedSourceDir / "scala-2.12_2.13", sharedSourceDir / "scala-2.11_2.12")
+  else if (scalaVersion.value.startsWith("2.11"))
+    Seq(sharedSourceDir / "scala-2.11_2.12")
+  else
+    Seq.empty
+}
+
 libraryDependencies ++= Seq(
-  "org.scalatest" %% "scalatest" % "3.0.5" % Test,
-  "org.scalacheck" %% "scalacheck" % "1.13.4" % Test,
+  "org.scalatest" %% "scalatest" % "3.2.0" % Test,
+  "org.scalacheck" %% "scalacheck" % "1.14.1" % Test,
 
-  "org.scalamock" %% "scalamock" % "4.1.0" % Test,
+  "org.scalamock" %% "scalamock" % "4.4.0" % Test,
 
-  "com.storm-enroute" %% "scalameter" % "0.9" % Test
-)
+  "com.storm-enroute" %% "scalameter" % "0.19" % Test
+) ++ (Seq(
+    "qa.hedgehog" %% "hedgehog-core" % hedgehogVersion,
+    "qa.hedgehog" %% "hedgehog-runner" % hedgehogVersion,
+    "qa.hedgehog" %% "hedgehog-sbt" % hedgehogVersion
+  ).map(_ % Test))
+
 
 scalacOptions in (Compile, doc) ++= Seq(
   "-no-link-warnings" // To ignore Scaladoc error saying "Could not find any member to link for ..."
 )
 
 /* Performance Test { */
-testFrameworks += new TestFramework("org.scalameter.ScalaMeterFramework")
+testFrameworks += TestFramework("org.scalameter.ScalaMeterFramework")
+testFrameworks += TestFramework("hedgehog.sbt.Framework")
 
 parallelExecution in Test := false
 

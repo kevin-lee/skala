@@ -1,7 +1,5 @@
 package io.kevinlee.skala.math
 
-import scala.collection.TraversableLike
-
 /**
  * @author Lee, SeongHyun (Kevin)
  * @since 2015-03-22
@@ -26,7 +24,7 @@ object BigInts {
     def findOrdinal: Option[String] = BigInts.findOrdinal(number)
   }
 
-  def mean(numbers: TraversableLike[BigInt, TraversableLike[BigInt, _]]): BigDecimal = if (numbers.isEmpty) 0 else BigDecimal(numbers.sum) / numbers.size
+  def mean(numbers: Seq[BigInt]): BigDecimal = if (numbers.isEmpty) 0 else BigDecimal(numbers.sum) / numbers.size
 
 
   /**
@@ -96,7 +94,7 @@ object BigInts {
 
   def mode(numbers: Seq[BigInt]): Seq[BigInt] = CommonMath.mode(numbers)
 
-  def stdev(numbers: TraversableLike[BigInt, TraversableLike[BigInt, _]], length: Int, mean: BigDecimal): BigDecimal =
+  def stdev(numbers: Seq[BigInt], length: Int, mean: BigDecimal): BigDecimal =
     if (length === 0)
       0
     else
@@ -119,7 +117,7 @@ object BigInts {
    * @param numbers the given BigInt numbers
    * @return the Standard Deviation of the given BigInt numbers
    */
-  def stdev(numbers: TraversableLike[BigInt, TraversableLike[BigInt, _]]): BigDecimal = stdev(numbers, numbers.size, mean(numbers))
+  def stdev(numbers: Seq[BigInt]): BigDecimal = stdev(numbers, numbers.size, mean(numbers))
 
   implicit class BigIntSeq(val numbers: Seq[BigInt]) extends AnyVal {
     def mean: BigDecimal = BigInts.mean(numbers)
@@ -132,13 +130,13 @@ object BigInts {
 
   def toOrdinal(number: BigInt): String =
     if (bigInts_11_12_13 contains number)
-      s"${number}th"
+      s"${number.toString}th"
     else if (number > 0)
       (number % 10).toInt match {
-        case 1 => s"${number}st"
-        case 2 => s"${number}nd"
-        case 3 => s"${number}rd"
-        case _ => s"${number}th"
+        case 1 => s"${number.toString}st"
+        case 2 => s"${number.toString}nd"
+        case 3 => s"${number.toString}rd"
+        case _ => s"${number.toString}th"
       }
     else ""
 

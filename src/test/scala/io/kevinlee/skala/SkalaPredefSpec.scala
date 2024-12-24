@@ -1,413 +1,389 @@
 package io.kevinlee.skala
 
-import org.scalacheck.Gen
-import org.scalatest.prop.GeneratorDrivenPropertyChecks
-import org.scalatest.{Matchers, WordSpec}
+import hedgehog._
+import hedgehog.runner._
 
+import SkalaPredef._
 
 /**
   * @author Kevin Lee
   * @since 2018-04-18
   */
-@SuppressWarnings(Array("org.wartremover.warts.Any", "org.wartremover.warts.Equals"))
-class SkalaPredefSpec extends WordSpec with GeneratorDrivenPropertyChecks with Matchers with SkalaPredefTestRun {
+@SuppressWarnings(Array("org.wartremover.warts.Equals", "org.wartremover.warts.StringPlusAny"))
+object SkalaPredefSpec extends Properties {
 
-  "PredefSpec.AnyEquals.===" when {
+  def genSomething: Gen[Something] = for {
+    id <- Gen.int(Range.linear(Int.MinValue, Int.MaxValue))
+    name <- Gen.string(Gen.alphaNum, Range.linear(1, 50))
+    valid <- Gen.boolean
+  } yield Something(id, name, valid)
 
-    "(a: Boolean) === (a: Boolean)" should {
-      "return true" in {
-        forAll { (input: Boolean) =>
-          testTwoEquals(input, _ should be(true))
-        }
-      }
-    }
+  def genSomethingDifferent(a: Something): Gen[Something] = for {
+    id <- Gen.int(Range.linear(Int.MinValue, Int.MaxValue)).map(b => if (a.id == b) b + 1 else b)
+    name <- Gen.string(Gen.alphaNum, Range.linear(1, 50)).map(b => if (a.name == b) b + "a" else b)
+    valid <- Gen.boolean.map(b => if (a.valid == b) !b else b)
+  } yield Something(id, name, valid)
 
-    "(a: Byte) === (a: Byte)" should {
-      "return true" in {
-        forAll { (input: Byte) =>
-          testTwoEquals(input, _ should be(true))
-        }
-      }
-    }
+  val anyEquals: String = "PredefSpec.AnyEquals"
 
-    "(a: Short) === (a: Short)" should {
-      "return true" in {
-        forAll { (input: Short) =>
-          testTwoEquals(input, _ should be(true))
-        }
-      }
-    }
+  override def tests: List[Test] = List(
+    property(
+      s"$anyEquals.=== when (a: Boolean) === (a: Boolean) should return true",
+      `testSkalaPredefAnyEqualsBoolean===Boolean`
+    ),
+    property(
+      s"$anyEquals.=== when (a: Byte) === (a: Byte) should return true",
+      `testSkalaPredefAnyEqualsByte===Byte`
+    ),
+    property(
+      s"$anyEquals.=== when (a: Short) === (a: Short) should return true",
+      `testSkalaPredefAnyEqualsShort===Short`
+    ),
+    property(
+      s"$anyEquals.=== when (a: Int) === (a: Int) should return true",
+      `testSkalaPredefAnyEqualsInt===Int`
+    ),
+    property(
+      s"$anyEquals.=== when (a: Long) === (a: Long) should return true",
+      `testSkalaPredefAnyEqualsLong===Long`
+    ),
+    property(
+      s"$anyEquals.=== when (a: Float) === (a: Float) should return true",
+      `testSkalaPredefAnyEqualsFloat===Float`
+    ),
+    property(
+      s"$anyEquals.=== when (a: Double) === (a: Double) should return true",
+      `testSkalaPredefAnyEqualsDouble===Double`
+    ),
+    property(
+      s"$anyEquals.=== when (a: Char) === (a: Char) should return true",
+      `testSkalaPredefAnyEqualsChar===Char`
+    ),
+    property(
+      s"$anyEquals.=== when (a: String) === (a: String) should return true",
+      `testSkalaPredefAnyEqualsString===String`
+    ),
+    property(
+      s"$anyEquals.=== when (a: Something) === (a: Something) should return true",
+      `testSkalaPredefAnyEqualsSomething===Something`
+    ),
+    property(
+      s"$anyEquals.=== when (a: Boolean) === (b: Boolean) should return false",
+      `testSkalaPredefAnyEquals(a: Boolean)===(b: Boolean)`
+    ),
+    property(
+      s"$anyEquals.=== when (a: Byte) === (b: Byte) should return false",
+      `testSkalaPredefAnyEquals(a: Byte)===(b: Byte)`
+    ),
+    property(
+      s"$anyEquals.=== when (a: Short) === (b: Short) should return false",
+      `testSkalaPredefAnyEquals(a: Short)===(b: Short)`
+    ),
+    property(
+      s"$anyEquals.=== when (a: Int) === (b: Int) should return false",
+      `testSkalaPredefAnyEquals(a: Int)===(b: Int)`
+    ),
+    property(
+      s"$anyEquals.=== when (a: Long) === (b: Long) should return false",
+      `testSkalaPredefAnyEquals(a: Long)===(b: Long)`
+    ),
+    property(
+      s"$anyEquals.=== when (a: Float) === (b: Float) should return false",
+      `testSkalaPredefAnyEquals(a: Float)===(b: Float)`
+    ),
+    property(
+      s"$anyEquals.=== when (a: Double) === (b: Double) should return false",
+      `testSkalaPredefAnyEquals(a: Double)===(b: Double)`
+    ),
+    property(
+      s"$anyEquals.=== when (a: Char) === (b: Char) should return false",
+      `testSkalaPredefAnyEquals(a: Char)===(b: Char)`
+    ),
+    property(
+      s"$anyEquals.=== when (a: String) === (b: String) should return false",
+      `testSkalaPredefAnyEquals(a: String)===(b: String)`
+    ),
+    property(
+      s"$anyEquals.=== when (a: Something) === (b: Something) should return false",
+      `testSkalaPredefAnyEquals(a: Something)===(b: Something)`
+    )
+  )
 
-    "(a: Int) === (a: Int)" should {
-      "return true" in {
-        forAll { (input: Int) =>
-          testTwoEquals(input, _ should be(true))
-        }
-      }
-    }
-
-    "(a: Long) === (a: Long)" should {
-      "return true" in {
-        forAll { (input: Long) =>
-          testTwoEquals(input, _ should be(true))
-        }
-      }
-    }
-
-    "(a: Float) === (a: Float)" should {
-      "return true" in {
-        forAll { (input: Float) =>
-          testTwoEquals(input, _ should be(true))
-        }
-      }
-    }
-
-    "(a: Double) === (a: Double)" should {
-      "return true" in {
-        forAll { (input: Double) =>
-          testTwoEquals(input, _ should be(true))
-        }
-      }
-    }
-
-    "(a: Char) === (a: Char)" should {
-      "return true" in {
-        forAll { (input: Char) =>
-          testTwoEquals(input, _ should be(true))
-        }
-      }
-    }
-
-    "(a: String) === (a: String)" should {
-      "return true" in {
-        forAll { (input: String) =>
-          testTwoEquals(input, _ should be(true))
-        }
-      }
-    }
-
-    "(a: Something) === (a: Something)" should {
-      "return true" in {
-        forAll(Gen.choose(1, Int.MaxValue), Gen.alphaLowerStr, Gen.oneOf(true, false)) { (id, name, valid) =>
-          val something = Something(id, name, valid)
-          testTwoEquals(something, _ should be(true))
-        }
-      }
-    }
-
-
-    "(a: Boolean) === (b: Boolean)" should {
-      "return false" in {
-        forAll { (x: Boolean, y: Boolean) =>
-          whenever(x != y) {
-            testTwoEquals(x, y, _ should be(false))
-          }
-        }
-      }
-    }
-
-    "(a: Byte) === (b: Byte)" should {
-      "return false" in {
-        forAll { (x: Byte, y: Byte) =>
-          whenever(x != y) {
-            testTwoEquals(x, y, _ should be(false))
-          }
-        }
-      }
-    }
-
-    "(a: Short) === (b: Short)" should {
-      "return false" in {
-        forAll { (x: Short, y: Short) =>
-          whenever(x != y) {
-            testTwoEquals(x, y, _ should be(false))
-          }
-        }
-      }
-    }
-
-    "(a: Int) === (b: Int)" should {
-      "return false" in {
-        forAll { (x: Int, y: Int) =>
-          whenever(x != y) {
-            testTwoEquals(x, y, _ should be(false))
-          }
-        }
-      }
-    }
-
-    "(a: Long) === (b: Long)" should {
-      "return false" in {
-        forAll { (x: Long, y: Long) =>
-          whenever(x != y) {
-            testTwoEquals(x, y, _ should be(false))
-          }
-        }
-      }
-    }
-
-    "(a: Float) === (b: Float)" should {
-      "return false" in {
-        forAll { (x: Float, y: Float) =>
-          whenever(x != y) {
-            testTwoEquals(x, y, _ should be(false))
-          }
-        }
-      }
-    }
-
-    "(a: Double) === (b: Double)" should {
-      "return false" in {
-        forAll { (x: Double, y: Double) =>
-          whenever(x != y) {
-            testTwoEquals(x, y, _ should be(false))
-          }
-        }
-      }
-    }
-
-    "(a: Char) === (b: Char)" should {
-      "return false" in {
-        forAll { (x: Char, y: Char) =>
-          whenever(x != y) {
-            testTwoEquals(x, y, _ should be(false))
-          }
-        }
-      }
-    }
-
-    "(a: String) === (b: String)" should {
-      "return false" in {
-        forAll { (x: String, y: String) =>
-          whenever(x != y) {
-            testTwoEquals(x, y, _ should be(false))
-          }
-        }
-      }
-    }
-
-    "(a: Something) === (b: Something)" should {
-      "return false" in {
-        forAll(
-          Gen.choose(1, Int.MaxValue), Gen.alphaLowerStr, Gen.oneOf(true, false),
-          Gen.choose(1, Int.MaxValue), Gen.alphaLowerStr, Gen.oneOf(true, false)
-        ) { (id, name, valid, id2, name2, valid2) =>
-          whenever(id != id2 && name != name2 && valid != valid2) {
-            val something = Something(id, name, valid)
-            val something2 = Something(id2, name2, valid2)
-            testTwoEquals(something, something2, _ should be(false))
-          }
-        }
-      }
-    }
-
-
+  def `testSkalaPredefAnyEqualsBoolean===Boolean`: Property = for {
+    a <- Gen.boolean.log("a")
+  } yield {
+    Result.diff(a, a)(_ === _)
   }
 
-  "PredefSpec.AnyEquals.!==" when {
+  def `testSkalaPredefAnyEqualsByte===Byte`: Property = for {
+    a <- Gen.byte(Range.linear(Byte.MinValue, Byte.MaxValue)).log("a")
+  } yield {
+    Result.diff(a, a)(_ === _)
+  }
 
-    "(a: Boolean) !== (b: Boolean)" should {
-      "return true" in {
-        forAll { (x: Boolean, y: Boolean) =>
-          whenever(x != y) {
-            testTwoNonEquals(x, y, _ should be(true))
-          }
-        }
-      }
-    }
+  def `testSkalaPredefAnyEqualsShort===Short`: Property = for {
+    a <- Gen.short(Range.linear(Short.MinValue, Short.MaxValue)).log("a")
+  } yield {
+    Result.diff(a, a)(_ === _)
+  }
 
-    "(a: Byte) !== (b: Byte)" should {
-      "return true" in {
-        forAll { (x: Byte, y: Byte) =>
-          whenever(x != y) {
-            testTwoNonEquals(x, y, _ should be(true))
-          }
-        }
-      }
-    }
+  def `testSkalaPredefAnyEqualsInt===Int`: Property = for {
+    a <- Gen.int(Range.linear(Int.MinValue, Int.MaxValue)).log("a")
+  } yield {
+    Result.diff(a, a)(_ === _)
+  }
 
-    "(a: Short) !== (b: Short)" should {
-      "return true" in {
-        forAll { (x: Short, y: Short) =>
-          whenever(x != y) {
-            testTwoNonEquals(x, y, _ should be(true))
-          }
-        }
-      }
-    }
+  def `testSkalaPredefAnyEqualsLong===Long`: Property = for {
+    a <- Gen.long(Range.linear(Long.MinValue, Long.MaxValue)).log("a")
+  } yield {
+    Result.diff(a, a)(_ === _)
+  }
 
-    "(a: Int) !== (b: Int)" should {
-      "return true" in {
-        forAll { (x: Int, y: Int) =>
-          whenever(x != y) {
-            testTwoNonEquals(x, y, _ should be(true))
-          }
-        }
-      }
-    }
+  def `testSkalaPredefAnyEqualsFloat===Float`: Property = for {
+    a <- Gen.double(Range.linearFrac(Float.MinValue.toDouble, Float.MaxValue.toDouble)).map(_.toFloat).log("a")
+  } yield {
+    Result.diff(a, a)(_ === _)
+  }
 
-    "(a: Long) !== (b: Long)" should {
-      "return true" in {
-        forAll { (x: Long, y: Long) =>
-          whenever(x != y) {
-            testTwoNonEquals(x, y, _ should be(true))
-          }
-        }
-      }
-    }
+  def `testSkalaPredefAnyEqualsDouble===Double`: Property = for {
+    a <- Gen.double(Range.linearFrac(Double.MinValue, Double.MaxValue)).log("a")
+  } yield {
+    Result.diff(a, a)(_ === _)
+  }
 
-    "(a: Float) !== (b: Float)" should {
-      "return true" in {
-        forAll { (x: Float, y: Float) =>
-          whenever(x != y) {
-            testTwoNonEquals(x, y, _ should be(true))
-          }
-        }
-      }
-    }
+  def `testSkalaPredefAnyEqualsChar===Char`: Property = for {
+    a <- Gen.char('a', 'z').log("a")
+  } yield {
+    Result.diff(a, a)(_ === _)
+  }
 
-    "(a: Double) !== (b: Double)" should {
-      "return true" in {
-        forAll { (x: Double, y: Double) =>
-          whenever(x != y) {
-            testTwoNonEquals(x, y, _ should be(true))
-          }
-        }
-      }
-    }
+  def `testSkalaPredefAnyEqualsString===String`: Property = for {
+    a <- Gen.string(Gen.alphaNum, Range.linear(1, 100)).log("a")
+  } yield {
+    Result.diff(a, a)(_ === _)
+  }
 
-    "(a: Char) !== (b: Char)" should {
-      "return true" in {
-        forAll { (x: Char, y: Char) =>
-          whenever(x != y) {
-            testTwoNonEquals(x, y, _ should be(true))
-          }
-        }
-      }
-    }
+  def `testSkalaPredefAnyEqualsSomething===Something`: Property = for {
+    a <- genSomething.log("a")
+  } yield {
+    Result.diff(a, a)(_ === _)
+  }
 
-    "(a: String) !== (b: String)" should {
-      "return false" in {
-        forAll { (x: String, y: String) =>
-          whenever(x != y) {
-            testTwoNonEquals(x, y, _ should be(true))
-          }
-        }
-      }
-    }
+  def `testSkalaPredefAnyEquals(a: Boolean)===(b: Boolean)`: Property = for {
+    a <- Gen.boolean.log("a")
+    b <- Gen.constant(!a).log("b")
+  } yield {
+    Result.diff(a, b)((a, b) => !(a === b))
+  }
 
-    "(a: Something) !== (b: Something)" should {
-      "return true" in {
-        forAll(
-          Gen.choose(1, Int.MaxValue), Gen.alphaLowerStr, Gen.oneOf(true, false),
-          Gen.choose(1, Int.MaxValue), Gen.alphaLowerStr, Gen.oneOf(true, false)
-        ) { (id, name, valid, id2, name2, valid2) =>
-          whenever(id != id2 && name != name2 && valid != valid2) {
-            val something = Something(id, name, valid)
-            val something2 = Something(id2, name2, valid2)
-            testTwoNonEquals(something, something2, _ should be(true))
-          }
-        }
-      }
-    }
+  def `testSkalaPredefAnyEquals(a: Byte)===(b: Byte)`: Property = for {
+    a <- Gen.byte(Range.linear(Byte.MinValue, Byte.MaxValue)).log("a")
+    b <- Gen.byte(Range.linear(Byte.MinValue, Byte.MaxValue)).map(b => if (a == b) (b + 1).toByte else b).log("b")
+  } yield {
+    Result.diff(a, b)((a, b) => !(a === b))
+  }
+
+  def `testSkalaPredefAnyEquals(a: Short)===(b: Short)`: Property = for {
+    a <- Gen.short(Range.linear(Short.MinValue, Short.MaxValue)).log("a")
+    b <- Gen.short(Range.linear(Short.MinValue, Short.MaxValue)).map(b => if (a == b) (b + 1).toShort else b).log("b")
+  } yield {
+    Result.diff(a, b)((a, b) => !(a === b))
+  }
+
+  def `testSkalaPredefAnyEquals(a: Int)===(b: Int)`: Property = for {
+    a <- Gen.int(Range.linear(Int.MinValue, Int.MaxValue)).log("a")
+    b <- Gen.int(Range.linear(Int.MinValue, Int.MaxValue)).map(b => if (a == b) b + 1 else b).log("b")
+  } yield {
+    Result.diff(a, b)((a, b) => !(a === b))
+  }
+
+  def `testSkalaPredefAnyEquals(a: Long)===(b: Long)`: Property = for {
+    a <- Gen.long(Range.linear(Long.MinValue, Long.MaxValue)).log("a")
+    b <- Gen.long(Range.linear(Long.MinValue, Long.MaxValue)).map(b => if (a == b) b + 1 else b).log("b")
+  } yield {
+    Result.diff(a, b)((a, b) => !(a === b))
+  }
+
+  def `testSkalaPredefAnyEquals(a: Float)===(b: Float)`: Property = for {
+    a <- Gen.double(Range.linearFrac(Float.MinValue.toDouble, Float.MaxValue.toDouble)).map(_.toFloat).log("a")
+    b <- Gen.double(Range.linearFrac(Float.MinValue.toDouble, Float.MaxValue.toDouble)).map(b => if (a == b) b + 1 else b).map(_.toFloat).log("b")
+  } yield {
+    Result.diff(a, b)((a, b) => !(a === b))
+  }
+
+  def `testSkalaPredefAnyEquals(a: Double)===(b: Double)`: Property = for {
+    a <- Gen.double(Range.linearFrac(Double.MinValue, Double.MaxValue)).log("a")
+    b <- Gen.double(Range.linearFrac(Double.MinValue, Double.MaxValue)).map(b => if (a == b) b + 1 else b).log("b")
+  } yield {
+    Result.diff(a, b)((a, b) => !(a === b))
+  }
+
+  def `testSkalaPredefAnyEquals(a: Char)===(b: Char)`: Property = for {
+    a <- Gen.char('a', 'z').log("a")
+    b <- Gen.char('a', 'z').map(b => if (a == b) (b + 1).toChar else b).log("b")
+  } yield {
+    Result.diff(a, b)((a, b) => !(a === b))
+  }
+
+  def `testSkalaPredefAnyEquals(a: String)===(b: String)`: Property = for {
+    a <- Gen.string(Gen.alphaNum, Range.linear(1, 100)).log("a")
+    b <- Gen.string(Gen.alphaNum, Range.linear(1, 100)).map(b => if (a == b) b + 1 else b).log("b")
+  } yield {
+    Result.diff(a, b)((a, b) => !(a === b))
+  }
+
+  def `testSkalaPredefAnyEquals(a: Something)===(b: Something)`: Property = for {
+    a <- genSomething.log("a")
+    b <- genSomethingDifferent(a).log("b")
+  } yield {
+    Result.diff(a, b)((a, b) => !(a === b))
+  }
 
 
-    "(a: Boolean) !== (a: Boolean)" should {
-      "return false" in {
-        forAll { (input: Boolean) =>
-          testTwoNonEquals(input, _ should be(false))
-        }
-      }
-    }
 
-    "(a: Byte) !== (a: Byte)" should {
-      "return false" in {
-        forAll { (input: Byte) =>
-          testTwoNonEquals(input, _ should be(false))
-        }
-      }
-    }
+  def `testSkalaPredefAnyEqualsBoolean!==Boolean`: Property = for {
+    a <- Gen.boolean.log("a")
+  } yield {
+    Result.diff(a, a)((a1, a2) => !(a1 !== a2))
+  }
 
-    "(a: Short) !== (a: Short)" should {
-      "return false" in {
-        forAll { (input: Short) =>
-          testTwoNonEquals(input, _ should be(false))
-        }
-      }
-    }
+  def `testSkalaPredefAnyEqualsByte!==Byte`: Property = for {
+    a <- Gen.byte(Range.linear(Byte.MinValue, Byte.MaxValue)).log("a")
+  } yield {
+    Result.diff(a, a)((a1, a2) => !(a1 !== a2))
+  }
 
-    "(a: Int) !== (a: Int)" should {
-      "return false" in {
-        forAll { (input: Int) =>
-          testTwoNonEquals(input, _ should be(false))
-        }
-      }
-    }
+  def `testSkalaPredefAnyEqualsShort!==Short`: Property = for {
+    a <- Gen.short(Range.linear(Short.MinValue, Short.MaxValue)).log("a")
+  } yield {
+    Result.diff(a, a)((a1, a2) => !(a1 !== a2))
+  }
 
-    "(a: Long) !== (a: Long)" should {
-      "return false" in {
-        forAll { (input: Long) =>
-          testTwoNonEquals(input, _ should be(false))
-        }
-      }
-    }
+  def `testSkalaPredefAnyEqualsInt!==Int`: Property = for {
+    a <- Gen.int(Range.linear(Int.MinValue, Int.MaxValue)).log("a")
+  } yield {
+    Result.diff(a, a)((a1, a2) => !(a1 !== a2))
+  }
 
-    "(a: Float) !== (a: Float)" should {
-      "return false" in {
-        forAll { (input: Float) =>
-          testTwoNonEquals(input, _ should be(false))
-        }
-      }
-    }
+  def `testSkalaPredefAnyEqualsLong!==Long`: Property = for {
+    a <- Gen.long(Range.linear(Long.MinValue, Long.MaxValue)).log("a")
+  } yield {
+    Result.diff(a, a)((a1, a2) => !(a1 !== a2))
+  }
 
-    "(a: Double) !== (a: Double)" should {
-      "return false" in {
-        forAll { (input: Double) =>
-          testTwoNonEquals(input, _ should be(false))
-        }
-      }
-    }
+  def `testSkalaPredefAnyEqualsFloat!==Float`: Property = for {
+    a <- Gen.double(Range.linearFrac(Float.MinValue.toDouble, Float.MaxValue.toDouble)).map(_.toFloat).log("a")
+  } yield {
+    Result.diff(a, a)((a1, a2) => !(a1 !== a2))
+  }
 
-    "(a: Char) !== (a: Char)" should {
-      "return false" in {
-        forAll { (input: Char) =>
-          testTwoNonEquals(input, _ should be(false))
-        }
-      }
-    }
+  def `testSkalaPredefAnyEqualsDouble!==Double`: Property = for {
+    a <- Gen.double(Range.linearFrac(Double.MinValue, Double.MaxValue)).log("a")
+  } yield {
+    Result.diff(a, a)((a1, a2) => !(a1 !== a2))
+  }
 
-    "(a: String) !== (a: String)" should {
-      "return false" in {
-        forAll { (input: String) =>
-          testTwoNonEquals(input, _ should be(false))
-        }
-      }
-    }
+  def `testSkalaPredefAnyEqualsChar!==Char`: Property = for {
+    a <- Gen.char('a', 'z').log("a")
+  } yield {
+    Result.diff(a, a)((a1, a2) => !(a1 !== a2))
+  }
 
-    "(a: Something) !== (a: Something)" should {
-      "return false" in {
-        forAll(Gen.choose(1, Int.MaxValue), Gen.alphaLowerStr, Gen.oneOf(true, false)) { (id, name, valid) =>
-          val something = Something(id, name, valid)
-          testTwoNonEquals(something, _ should be(false))
-        }
-      }
-    }
+  def `testSkalaPredefAnyEqualsString!==String`: Property = for {
+    a <- Gen.string(Gen.alphaNum, Range.linear(1, 100)).log("a")
+  } yield {
+    Result.diff(a, a)((a1, a2) => !(a1 !== a2))
+  }
 
+  def `testSkalaPredefAnyEqualsSomething!==Something`: Property = for {
+    a <- genSomething.log("a")
+  } yield {
+    Result.diff(a, a)((a1, a2) => !(a1 !== a2))
+  }
+
+  def `testSkalaPredefAnyEquals(a: Boolean)!==(b: Boolean)`: Property = for {
+    a <- Gen.boolean.log("a")
+    b <- Gen.boolean.map(b => if (a == b) !b else b).log("b")
+  } yield {
+    Result.diff(a, b)(_ !== _)
+  }
+
+  def `testSkalaPredefAnyEquals(a: Byte)!==(b: Byte)`: Property = for {
+    a <- Gen.byte(Range.linear(Byte.MinValue, Byte.MaxValue)).log("a")
+    b <- Gen.byte(Range.linear(Byte.MinValue, Byte.MaxValue)).map(b => if (a == b) (b + 1).toByte else b).log("b")
+  } yield {
+    Result.diff(a, b)(_ !== _)
+  }
+
+  def `testSkalaPredefAnyEquals(a: Short)!==(b: Short)`: Property = for {
+    a <- Gen.short(Range.linear(Short.MinValue, Short.MaxValue)).log("a")
+    b <- Gen.short(Range.linear(Short.MinValue, Short.MaxValue)).map(b => if (a == b) (b + 1).toShort else b).log("b")
+  } yield {
+    Result.diff(a, b)(_ !== _)
+  }
+
+  def `testSkalaPredefAnyEquals(a: Int)!==(b: Int)`: Property = for {
+    a <- Gen.int(Range.linear(Int.MinValue, Int.MaxValue)).log("a")
+    b <- Gen.int(Range.linear(Int.MinValue, Int.MaxValue)).map(b => if (a == b) b + 1 else b).log("b")
+  } yield {
+    Result.diff(a, b)(_ !== _)
+  }
+
+  def `testSkalaPredefAnyEquals(a: Long)!==(b: Long)`: Property = for {
+    a <- Gen.long(Range.linear(Long.MinValue, Long.MaxValue)).log("a")
+    b <- Gen.long(Range.linear(Long.MinValue, Long.MaxValue)).map(b => if (a == b) b + 1 else b).log("b")
+  } yield {
+    Result.diff(a, b)(_ !== _)
+  }
+
+  def `testSkalaPredefAnyEquals(a: Float)!==(b: Float)`: Property = for {
+    a <- Gen.double(Range.linearFrac(Float.MinValue.toDouble, Float.MaxValue.toDouble)).map(_.toFloat).log("a")
+    b <- Gen.double(Range.linearFrac(Float.MinValue.toDouble, Float.MaxValue.toDouble)).map(b => if (a == b) b + 1 else b).map(_.toFloat).log("b")
+  } yield {
+    Result.diff(a, b)(_ !== _)
+  }
+
+  def `testSkalaPredefAnyEquals(a: Double)!==(b: Double)`: Property = for {
+    a <- Gen.double(Range.linearFrac(Double.MinValue, Double.MaxValue)).log("a")
+    b <- Gen.double(Range.linearFrac(Double.MinValue, Double.MaxValue)).map(b => if (a == b) b + 1 else b).log("b")
+  } yield {
+    Result.diff(a, b)(_ !== _)
+  }
+
+  def `testSkalaPredefAnyEquals(a: Char)!==(b: Char)`: Property = for {
+    a <- Gen.char('a', 'z').log("a")
+    b <- Gen.char('a', 'z').map(b => if (a == b) (b + 1).toChar else b).log("b")
+  } yield {
+    Result.diff(a, b)(_ !== _)
+  }
+
+  def `testSkalaPredefAnyEquals(a: String)!==(b: String)`: Property = for {
+    a <- Gen.string(Gen.alphaNum, Range.linear(1, 100)).log("a")
+    b <- Gen.string(Gen.alphaNum, Range.linear(1, 100)).map(b => if (a == b) b + "a" else b).log("b")
+  } yield {
+    Result.diff(a, b)(_ !== _)
+  }
+
+  def `testSkalaPredefAnyEquals(a: Something)!==(b: Something)`: Property = for {
+    a <- genSomething.log("a")
+    b <- genSomethingDifferent(a).log("b")
+  } yield {
+    Result.diff(a, b)(_ !== _)
   }
 
 }
 
 final case class Something(id: Int, name: String, valid: Boolean)
 
-trait SkalaPredefTestRun {
-
-  import io.kevinlee.skala.SkalaPredef.AnyEquals
-  import org.scalatest.Assertion
-
-  final def testTwoEquals[T](x: T, assertion: Boolean => Assertion): Assertion = assertion(x === x)
-  final def testTwoEquals[T](x: T, y: T, assertion: Boolean => Assertion): Assertion = assertion(x === y)
-
-  final def testTwoNonEquals[T](x: T, y: T, assertion: Boolean => Assertion): Assertion = assertion(x !== y)
-  final def testTwoNonEquals[T](x: T, assertion: Boolean => Assertion): Assertion = assertion(x !== x)
-
-}
+//trait SkalaPredefTestRun {
+//
+//  import io.kevinlee.skala.SkalaPredef.AnyEquals
+//  import org.scalatest.Assertion
+//
+//  final def testTwoEquals[T](x: T, assertion: Boolean => Assertion): Assertion = assertion(x === x)
+//  final def testTwoEquals[T](x: T, y: T, assertion: Boolean => Assertion): Assertion = assertion(x === y)
+//
+//  final def testTwoNonEquals[T](x: T, y: T, assertion: Boolean => Assertion): Assertion = assertion(x !== y)
+//  final def testTwoNonEquals[T](x: T, assertion: Boolean => Assertion): Assertion = assertion(x !== x)
+//
+//}

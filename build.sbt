@@ -39,13 +39,13 @@ coverageFailOnMinimum := true
 
 coverageHighlighting := true
 
-publishArtifact in Test := false
+Test / publishArtifact := false
 
-parallelExecution in Test := false
+Test / parallelExecution := false
 
 addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1")
 
-unmanagedSourceDirectories in Compile ++= {
+Compile / unmanagedSourceDirectories ++= {
   val sharedSourceDir = baseDirectory.value / "src/main"
   if (scalaVersion.value.startsWith("2.13"))
     Seq(sharedSourceDir / "scala-2.12_2.13")
@@ -57,7 +57,7 @@ unmanagedSourceDirectories in Compile ++= {
     Seq.empty
 }
 
-unmanagedSourceDirectories in Test ++= {
+Test / unmanagedSourceDirectories ++= {
   val sharedSourceDir = baseDirectory.value / "src/main"
   if (scalaVersion.value.startsWith("2.13"))
     Seq(sharedSourceDir / "scala-2.12_2.13")
@@ -83,7 +83,7 @@ libraryDependencies ++= Seq(
   ).map(_ % Test))
 
 
-scalacOptions in (Compile, doc) ++= Seq(
+Compile / doc / scalacOptions ++= Seq(
   "-no-link-warnings" // To ignore Scaladoc error saying "Could not find any member to link for ..."
 )
 
@@ -91,7 +91,7 @@ scalacOptions in (Compile, doc) ++= Seq(
 testFrameworks += TestFramework("org.scalameter.ScalaMeterFramework")
 testFrameworks += TestFramework("hedgehog.sbt.Framework")
 
-parallelExecution in Test := false
+Test / parallelExecution := false
 
 /* } Performance Test */
 
